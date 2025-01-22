@@ -1,6 +1,4 @@
 
-```{r}
-library(dplyr)
 
 summary_hr <- function(data) {
   # Ensure necessary columns are present
