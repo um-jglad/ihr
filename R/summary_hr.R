@@ -1,9 +1,5 @@
-
-```{r}
-library(dplyr)
-
 summary_hr <- function(data) {
-  # Ensure necessary columns are present
+  # Ensure "ID" and "HR" are present
   if (!all(c("ID", "HR") %in% colnames(data))) {
     stop("The dataset must contain 'ID' and 'HR' columns.")
   }
@@ -19,7 +15,7 @@ summary_hr <- function(data) {
       median_hr = median(HR, na.rm = TRUE),
       min_hr = min(HR, na.rm = TRUE),
       max_hr = max(HR, na.rm = TRUE),
-      count = n()
+      total_minutes = n()
     )
   
   return(summary_data)
