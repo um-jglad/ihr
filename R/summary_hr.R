@@ -13,23 +13,30 @@
 #' Missing HR values (NA) are automatically excluded from calculations.
 
 summary_hr <- function(data) {
-  # Ensure "ID" and "HR" are present
-  if (!all(c("ID", "HR") %in% colnames(data))) {
-    stop("The dataset must contain 'ID' and 'HR' columns.")
+  # Ensure "Id" and "HR Value" are present
+  if (!all(c("Id", "Value") %in% colnames(data))) {
+    stop("The dataset must contain 'Id' and 'Value' columns.")
   }
   
+  # Convert Time column to Date-Time format
+  data <- data %>%
+    mutate(Time = as.POSIXct(Time, format = "%m/%d/%Y %I:%M:%S %p"))
+  
   # Remove rows with missing HR values
-  data <- dplyr::filter(data, !is.na(HR))
+  data <- dplyr::filter(data, !is.na(Value))
   
   # Group by ID and compute summary statistics for HR
   summary_data <- data %>%
-    dplyr::group_by(ID) %>%
+    dplyr::group_by(Id) %>%
     dplyr::summarize(
-      mean_hr = mean(HR, na.rm = TRUE),
-      median_hr = median(HR, na.rm = TRUE),
-      min_hr = min(HR, na.rm = TRUE),
-      max_hr = max(HR, na.rm = TRUE),
-      total_minutes = n()
+      mean_hr = mean(Value, na.rm = TRUE),
+      median_hr = median(Value, na.rm = TRUE),
+      min_hr = min(Value, na.rm = TRUE),
+      q1_hr = quantile(Value, 0.25, na.rm = TRUE),
+      q3_hr = quantile(Value, 0.75, na.rm = TRUE),
+      max_hr = max(Value, na.rm = TRUE),
+      sd_hr = sd(Value, na.rm = TRUE),
+      total_days = length(unique(format(Time, "%Y-%m-%d")))
     )
   
   return(summary_data)
