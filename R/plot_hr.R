@@ -1,19 +1,23 @@
 #' Plotting time series plot of heart rate measurements
 #'
+#' @description
+#' The function 'plot_hr' supports time series plotting for both single and multiple subject data
+#'
+#'
 #' @param data Dataframe with column names ("id, "time", "hr")
 #' @param LHR Lower heart rate set at default = 60 BPM
 #' @param UHR Upper heart rate set at default = 100 BPM
 #' @param from Starting time of plot inclusive (In format %Y-%m-%d)
 #' @param to Ending time of plot exclusive (In format %Y-%m-%d)
 #' @param agg Aggregate data by specified time interval
+#' @param inter_gap Gap allowed between consecutive observations, otherwised connecting line will not be plotted
 #'
 #' @return Heart rate time series plot for a single subject
 #'
-#'
-#'
 
 
-plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none', 'minute', 'hour')){
+plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none', 'minute', 'hour'),
+                    inter_gap = 60){
 
   agg = match.arg(agg, c('none', 'minute', 'hour'))
 
@@ -44,10 +48,19 @@ plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none
       dplyr::summarise(hr = mean(hr))
   }
 
+  # Accounting for gaps
+  gaps <- data %>%
+    dplyr::mutate(gap = ifelse(difftime(time, dplyr::lag(time), units = "secs") > inter_gap,
+                               TRUE, FALSE), row = 1:length(time)) %>%
+    dplyr::slice(1, which(gap))
+  gaps <- c(gaps$row, nrow(data) + 1)
+  data <- data %>%
+    dplyr::mutate(time_group = rep(1:(length(gaps) - 1), diff(gaps)))
+
   # Plotting time series
   plot <- data %>%
     ggplot2::ggplot() +
-    ggplot2::geom_line(aes(x = time, y = hr, group = 1)) +
+    ggplot2::geom_line(aes(x = time, y = hr, group = time_group)) +
     ggplot2::geom_hline(yintercept = LHR, color = "red") +
     ggplot2::geom_hline(yintercept = UHR, color = "red") +
     ggplot2::scale_x_datetime(name = "Time") +
@@ -56,4 +69,5 @@ plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none
 
   return(plot)
 }
+
 
