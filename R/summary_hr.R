@@ -3,13 +3,13 @@
 #' @Description
 #' The function summary_hr computes summary statistics for heart rate (HR) data. 
 #' It is a wrapper for summary() functions and outputs a tibble object with the subject ID and the following summary values:
-#' Minimum, 1st Quartile, Median, Mean, 3rd Quartile, Maximum, Standard Deviation (SD), Total number of unique days, and Total number of HR observations (minutes).
+#' Minimum, 1st Quartile, Median, Mean, 3rd Quartile, Maximum, Standard Deviation (SD), Total number of unique days.
 
 #' @Usage
 #' summary_hr(data)
 
 #' @para
-#' data: A DataFrame object with column names "ID", "Day_Count", "Day", "Minute", and "HR". 
+#' data: A DataFrame object with column names "Id", "Time", "Value". 
 #' Missing HR values (NA) are automatically excluded from calculations.
 
 summary_hr <- function(data) {
