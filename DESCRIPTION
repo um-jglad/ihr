@@ -1,10 +1,11 @@
 Package: ihr
 Title: Interpreting HR dataset
 Version: 0.0.0.9000
-Authors@R: 
-    person("Shuiqing", "Han", "sophihan@umich.edu", role = c("aut"))
-    person("Owen", "Yoo", "owenhy@umich.edu", role = c("aut"))
-    person("Irina", "Gaynanova", "irinagn@umich.edu", role = c("aut", "cre"))
+Authors@R: c(
+    person("Shuiqing", "Han", email = "sophihan@umich.edu", role = "aut"),
+    person("Owen", "Yoo", email = "owenhy@umich.edu", role = "aut"),
+    person("Irina", "Gaynanova", email = "irinagn@umich.edu", role = c("aut", "cre"))
+    )
 Description: Implements a wide range of metrics for measuring heart rate based on the heart rate data gathered from a wearable device.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
