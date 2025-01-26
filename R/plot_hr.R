@@ -10,9 +10,17 @@
 #' @param from Starting time of plot inclusive (In format %Y-%m-%d)
 #' @param to Ending time of plot exclusive (In format %Y-%m-%d)
 #' @param agg Aggregate data by specified time interval
-#' @param inter_gap Gap allowed between consecutive observations, otherwised connecting line will not be plotted
+#' @param inter_gap Gap allowed between consecutive observations, otherwise connecting line will not be plotted
 #'
 #' @return Heart rate time series plot for a single subject
+#'
+#' @export
+#'
+#' @examples
+#' data(example_heart_1)
+#' plot_hr(example_heart_1)
+#'
+#' plot_hr(example_heart_1, to = "2016-04-13", agg = 'minute')
 #'
 
 
