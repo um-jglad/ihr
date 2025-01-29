@@ -21,25 +21,25 @@
 
 active_percent <- function(data) {
   # Ensure necessary columns exist
-  if (!all(c("Id", "Time") %in% colnames(data))) {
-    stop("The dataset must contain 'Id' and 'Time' columns.")
+  if (!all(c("id", "time") %in% colnames(data))) {
+    stop("The dataset must contain 'id' and 'time' columns.")
   }
 
-  # Convert Time column to Date-Time format
+  # Convert time column to Date-Time format
   data <- data %>%
-    mutate(Time = as.POSIXct(Time, format = "%m/%d/%Y %I:%M:%S %p"),
-           Time_minute = floor_date(Time, "minute"))
+    mutate(time = as.POSIXct(time, format = "%m/%d/%Y %I:%M:%S %p"),
+           time_date = as.Date(time))  # Extract only the date
 
   # Remove rows with missing HR values
-  data <- dplyr::filter(data, !is.na(Value))
+  data <- dplyr::filter(data, !is.na(hr))
 
-  # Group by Id and compute active percentage and measurement period length
+  # Group by id and compute active percentage and measurement period length
   active_data <- data %>%
-    group_by(Id) %>%
+    group_by(id) %>%
     summarize(
-      total_minutes = as.numeric(difftime(max(Time), min(Time), units = "mins")),
-      unique_minutes = n_distinct(Time_minute),
-      active_percent = (unique_minutes / total_minutes) * 100
+      total_days = as.integer(difftime(max(time), min(time), units = "days")) + 1,
+      unique_days = n_distinct(time_date),
+      active_percent = (unique_days / total_days) * 100
     )
 
   return(active_data)
