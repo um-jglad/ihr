@@ -23,29 +23,29 @@
 
 summary_hr <- function(data) {
   # Ensure "Id" and "HR Value" are present
-  if (!all(c("Id", "Value") %in% colnames(data))) {
-    stop("The dataset must contain 'Id' and 'Value' columns.")
+  if (!all(c("id", "hr") %in% colnames(data))) {
+    stop("The dataset must contain 'id' and 'hr' columns.")
   }
 
   # Convert Time column to Date-Time format
   data <- data %>%
-    mutate(Time = as.POSIXct(Time, format = "%m/%d/%Y %I:%M:%S %p"))
+    mutate(time = as.POSIXct(time, format = "%m/%d/%Y %I:%M:%S %p"))
 
   # Remove rows with missing HR values
-  data <- dplyr::filter(data, !is.na(Value))
+  data <- dplyr::filter(data, !is.na(hr))
 
   # Group by ID and compute summary statistics for HR
   summary_data <- data %>%
-    dplyr::group_by(Id) %>%
+    dplyr::group_by(id) %>%
     dplyr::summarize(
-      mean_hr = mean(Value, na.rm = TRUE),
-      median_hr = median(Value, na.rm = TRUE),
-      min_hr = min(Value, na.rm = TRUE),
-      q1_hr = quantile(Value, 0.25, na.rm = TRUE),
-      q3_hr = quantile(Value, 0.75, na.rm = TRUE),
-      max_hr = max(Value, na.rm = TRUE),
-      sd_hr = sd(Value, na.rm = TRUE),
-      total_days = length(unique(format(Time, "%Y-%m-%d")))
+      mean_hr = mean(hr, na.rm = TRUE),
+      median_hr = median(hr, na.rm = TRUE),
+      min_hr = min(hr, na.rm = TRUE),
+      q1_hr = quantile(hr, 0.25, na.rm = TRUE),
+      q3_hr = quantile(hr, 0.75, na.rm = TRUE),
+      max_hr = max(hr, na.rm = TRUE),
+      sd_hr = sd(hr, na.rm = TRUE),
+      total_days = length(unique(format(time, "%Y-%m-%d")))
     )
 
   return(summary_data)
