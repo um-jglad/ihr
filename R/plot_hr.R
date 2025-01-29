@@ -5,12 +5,12 @@
 #'
 #'
 #' @param data Dataframe with column names ("id, "time", "hr")
-#' @param LHR Lower heart rate set at default = 60 BPM
-#' @param UHR Upper heart rate set at default = 100 BPM
+#' @param LHR Lower heart rate set at \strong{default = 60 BPM}
+#' @param UHR Upper heart rate set at \strong{default = 100 BPM}
 #' @param from Starting time of plot inclusive (In format %Y-%m-%d)
 #' @param to Ending time of plot exclusive (In format %Y-%m-%d)
 #' @param agg Aggregate data by specified time interval
-#' @param inter_gap Gap allowed between consecutive observations, otherwise connecting line will not be plotted
+#' @param inter_gap Gap allowed between consecutive observations
 #'
 #' @return Heart rate time series plot for a single subject
 #'

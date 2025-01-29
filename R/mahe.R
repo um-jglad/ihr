@@ -5,6 +5,21 @@
 #'
 #' @param data DataFrame object with column names "id", "time", "hr"
 #'
+#' @return A tibble object with two columns: the subject id and corresponding MAHE value.
+#'
+#' @export
+#'
+#' @references
+#' Service et al. (1970) Mean amplitude of glycemic excursions, a measure of diabetic instability
+#' \emph{Diabetes}  \strong{19} .644-655,
+#' \doi{10.2337/diab.19.9.644}.
+#'
+#' Fernandes, Nathaniel J., et al. "Open-source algorithm to calculate mean amplitude of glycemic excursions using short and long moving averages."
+#' Journal of diabetes science and technology 16.2 (2022): 576-577. \doi{10.1177/19322968211061165}
+#'
+#' @example
+#' mahe(example_heart_1)
+#'
 
 mahe <- function(data,
                  short_ma = 5, long_ma = 32,
