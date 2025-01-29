@@ -12,6 +12,10 @@
 #' data: A DataFrame object with column names "Id", "Time", "Value". 
 #' Missing HR values (NA) are automatically excluded from calculations.
 
+#' @examples
+#' data(example_heart_1)
+#' summary_hr(example_heart_1)
+
 summary_hr <- function(data) {
   # Ensure "Id" and "HR Value" are present
   if (!all(c("Id", "Value") %in% colnames(data))) {
