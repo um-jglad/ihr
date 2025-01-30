@@ -22,21 +22,25 @@
 #' summary_hr(example_heart_1)
 
 summary_hr <- function(data) {
+
+  time = hr = id = NULL
+  rm(list = c('time', 'hr', 'id'))
+
   # Ensure "Id" and "HR Value" are present
   if (!all(c("id", "hr") %in% colnames(data))) {
     stop("The dataset must contain 'id' and 'hr' columns.")
   }
 
   # Convert Time column to Date-Time format
-  data <- data %>%
-    mutate(time = as.POSIXct(time, format = "%m/%d/%Y %I:%M:%S %p"))
+  data <- data |>
+    dplyr::mutate(time = as.POSIXct(time, format = "%m/%d/%Y %I:%M:%S %p"))
 
   # Remove rows with missing HR values
   data <- dplyr::filter(data, !is.na(hr))
 
   # Group by ID and compute summary statistics for HR
-  summary_data <- data %>%
-    dplyr::group_by(id) %>%
+  summary_data <- data |>
+    dplyr::group_by(id) |>
     dplyr::summarize(
       mean_hr = mean(hr, na.rm = TRUE),
       median_hr = median(hr, na.rm = TRUE),

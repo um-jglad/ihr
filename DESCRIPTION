@@ -7,11 +7,15 @@ Authors@R: c(
     person("Irina", "Gaynanova", email = "irinagn@umich.edu", role = c("aut", "cre"))
     )
 Description: Implements a wide range of metrics for measuring heart rate based on the heart rate data gathered from a wearable device.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: GPL-2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends: 
     R (>= 3.5)
+Imports:
+    ggplot2,
+    dplyr,
+    stats,
+    lubridate
 LazyData: true

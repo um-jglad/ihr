@@ -44,23 +44,23 @@ mahe_ma <- function(data,
                     inter_gap = 45, tz = "",
                     max_gap = 180,
                     plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions=TRUE) {
-  id = . = MAHE = NULL
-  rm(list = c("id", ".", "MAHE"))
+  id = . = MAHE = hr = NULL
+  rm(list = c("id", ".", "MAHE", "hr"))
 
   data = check_data_columns(data)
   is_vector = attr(data, "is_vector")
   direction = match.arg(direction, c('avg', 'service', 'max', 'plus', 'minus'))
 
-  out <- data %>%
-    dplyr::filter(!is.na(hr)) %>%
-    dplyr::group_by(id) %>%
+  out <- data |>
+    dplyr::filter(!is.na(hr)) |>
+    dplyr::group_by(id) |>
     dplyr::do(MAHE = mahe_ma_single(., short_ma = short_ma, long_ma = long_ma, return_type=return_type, direction=direction,
                                     plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz,
                                     title = title, xlab = xlab, ylab = ylab, show_ma = show_ma, show_excursions = show_excursions, static_or_gui='ggplot'))
 
   # Check if a ggplot or number in list is returned - convert the latter to a number
   if(class(out$MAHE[[1]])[1] == "numeric" | is.na(out$MAHE[[1]][1])) {
-    out <- out %>% dplyr::mutate(MAHE = as.numeric(MAHE))
+    out <- out |> dplyr::mutate(MAHE = as.numeric(MAHE))
   }
   # else must be ggplot output
   else {

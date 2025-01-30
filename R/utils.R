@@ -23,6 +23,61 @@ check_data_columns =  function(data, id = 'id', time = 'time', hr = 'hr', time_c
   return(output)
 }
 
+# checks for time format and any repeated/duplicate timestamps
+check_data_time <- function(data, tz = ""){
+
+  id = NULL
+  rm(list = c("id"))
+
+  check_reps_single <- function(data) {
+
+    check_reps = diff(data$time) == 0
+
+    # no duplicates for this subject, return data and exit
+    if (!any(check_reps)) {
+      return(data)
+    }
+
+    warning(paste0(sum(check_reps), " duplicated timestamps found for subject: ", data$id[1],
+                   ". Heart Rate values averaged for those timestamps"))
+
+    # note rle is robust to any number of repeated identical timestamps
+    # (i.e. can have 2+ duplicates)
+    grouping = rle(as.numeric(data$time))$lengths
+    data = data |>
+      dplyr::mutate(
+        grouping = rep(1:length(grouping), grouping)
+      ) |>
+      dplyr::group_by(grouping) |>
+      dplyr::summarise(
+        id = id[1], time = time[1], gl = mean(gl, na.rm = TRUE),
+        .groups = "drop"
+      ) |>
+      dplyr::select(id, time, gl)
+
+    # returns data after averaging duplicates
+    return(data)
+  }
+
+  if (!lubridate::is.POSIXct(data$time)){ # Check if already in date format
+    tr = as.character(data$time)
+    data$time = as.POSIXct(tr, format='%Y-%m-%d %H:%M:%S', tz = tz)
+
+    if (any(is.na(data$time))) {
+      stop('Automatic identification of timezone unsuccessful. Please manually set `tz` parameter or double check if the timezone is correct.')
+    }
+  }
+
+  out = data |>
+    dplyr::group_by(id) |>
+    dplyr::reframe(
+      check_reps_single(data.frame(id, time, gl))
+    ) |>
+    dplyr::ungroup()
+
+  return(out)
+}
+
 HR2DayByDay <- function(data, dt0 = NULL, inter_gap = 45, tz = ""){
 
   # complete.cases only works with POSIXct, not POSIXlt, so check for correct time format
@@ -39,7 +94,7 @@ HR2DayByDay <- function(data, dt0 = NULL, inter_gap = 45, tz = ""){
     rm(list = c("id"))
 
     first = unique(data$id)[1]
-    data = data %>% dplyr::filter(id == first)
+    data = data |> dplyr::filter(id == first)
     warning(paste("Data contains more than 1 subject. Only the first subject with id", first,  "is used for output."))
   }
 

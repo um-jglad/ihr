@@ -12,8 +12,8 @@ mahe_ma_single <- function(data,
 
   ## 0. Calculates MAHE on 1 segment of CGM trace
   mahe_atomic <- function(.data) {
-    nmeasurements = list_cross = types = count = crosses = num_extrema = minmax = indexes = s1 = s2 = standardD = heights = nadir2peak = idx = peak_or_nadir = plus_or_minus = first_excursion = max_direction = NULL
-    rm(list=c('nmeasurements', 'list_cross', 'types', 'count', 'crosses', 'num_extrema', 'minmax', 'indexes', 's1', 's2', 'standardD', 'heights', 'nadir2peak', 'idx', 'peak_or_nadir', 'plus_or_minus', 'first_excursion'))
+    nmeasurements = list_cross = types = count = crosses = num_extrema = minmax = indexes = s1 = s2 = standardD = heights = nadir2peak = idx = peak_or_nadir = plus_or_minus = first_excursion = max_direction = hr = NULL
+    rm(list=c('nmeasurements', 'list_cross', 'types', 'count', 'crosses', 'num_extrema', 'minmax', 'indexes', 's1', 's2', 'standardD', 'heights', 'nadir2peak', 'idx', 'peak_or_nadir', 'plus_or_minus', 'first_excursion', 'hr'))
 
     if (all(is.na(.data$hr))) {
       return(data.frame(start=utils::head(.data$time, 1), end=utils::tail(.data$time, 1), mahe=NA, plus_or_minus=NA, first_excursion=NA))
@@ -33,11 +33,11 @@ mahe_ma_single <- function(data,
     }
 
     # 2c. Calculate the moving average values
-    .data <- .data %>%
+    .data <- .data |>
       dplyr::mutate(MA_Short = zoo::rollapply(hr, width = short_ma, FUN = mean,
                                               align = 'right', fill = NA, na.rm = TRUE),
                     MA_Long  = zoo::rollapply(hr, width = long_ma, FUN = mean,
-                                              align = 'right', fill = NA, na.rm = TRUE)) %>%
+                                              align = 'right', fill = NA, na.rm = TRUE)) |>
       # fill in leading NA's from using rolling mean
       dplyr::mutate(MA_Short = replace(MA_Short, 1:short_ma, MA_Short[short_ma]),
                     MA_Long  = replace(MA_Long, 1:long_ma, MA_Long[long_ma]),
@@ -205,8 +205,8 @@ mahe_ma_single <- function(data,
   }
 
   ## 1. Preprocessing
-  MA_Short = MA_Long = DELTA_SHORT_LONG = TP = id = .xmin = .xmax = gap = x = y = xend = yend = hours = weight = idx = peak_or_nadir = plus_or_minus = first_excursion = max_direction = NULL
-  rm(list = c("MA_Short", "MA_Long", "DELTA_SHORT_LONG", "TP", ".xmin", ".xmax", "id", "gap", "x", "y", "xend", "yend", "hours", "weight", "idx", "peak_or_nadir", "plus_or_minus", "first_excursion"))
+  MA_Short = MA_Long = DELTA_SHORT_LONG = TP = id = .xmin = .xmax = gap = x = y = xend = yend = hours = weight = idx = peak_or_nadir = plus_or_minus = first_excursion = max_direction = hr = NULL
+  rm(list = c("MA_Short", "MA_Long", "DELTA_SHORT_LONG", "TP", ".xmin", ".xmax", "id", "gap", "x", "y", "xend", "yend", "hours", "weight", "idx", "peak_or_nadir", "plus_or_minus", "first_excursion", "hr"))
 
   data = check_data_columns(data)
 
@@ -235,10 +235,10 @@ mahe_ma_single <- function(data,
   # > drop NA rows before first glucose reading
   # > then drop NA rows after last glucose reading
   # > Label NA glucose as gap (gap = 1)
-  data <- data %>%
-    dplyr::reframe(id = rep(id[1], length(time_ip)), time = time_ip, hr = as.vector(t(data_ip$gd2d))) %>%
-    dplyr::slice(which(!is.na(hr))[1]:dplyr::n()) %>%
-    dplyr::slice(1:utils::tail(which(!is.na(.data$hr)), 1)) %>%
+  data <- data |>
+    dplyr::reframe(id = rep(id[1], length(time_ip)), time = time_ip, hr = as.vector(t(data_ip$gd2d))) |>
+    dplyr::slice(which(!is.na(hr))[1]:dplyr::n()) |>
+    dplyr::slice(1:utils::tail(which(!is.na(.data$hr)), 1)) |>
     dplyr::mutate(gap = dplyr::if_else(is.na(hr), 1, 0))
 
   runlen <- rle(data$gap)
@@ -335,17 +335,17 @@ mahe_ma_single <- function(data,
     if (direction == 'avg') {
       tp_indexes <- dplyr::select(all_tp_indexes, idx, peak_or_nadir, plus_or_minus)
     } else if (direction == 'service') {
-      tp_indexes <- dplyr::filter(all_tp_indexes, first_excursion==TRUE) %>% dplyr::select(idx, peak_or_nadir, plus_or_minus)
+      tp_indexes <- dplyr::filter(all_tp_indexes, first_excursion==TRUE) |> dplyr::select(idx, peak_or_nadir, plus_or_minus)
     } else if (direction == 'max') {
-      tp_indexes <- dplyr::filter(all_tp_indexes, max_direction==TRUE) %>% dplyr::select(idx, peak_or_nadir, plus_or_minus)
+      tp_indexes <- dplyr::filter(all_tp_indexes, max_direction==TRUE) |> dplyr::select(idx, peak_or_nadir, plus_or_minus)
     } else {
-      tp_indexes <- dplyr::filter(all_tp_indexes, plus_or_minus==ifelse(direction == 'plus', "PLUS", "MINUS")) %>% dplyr::select(idx, peak_or_nadir, plus_or_minus)
+      tp_indexes <- dplyr::filter(all_tp_indexes, plus_or_minus==ifelse(direction == 'plus', "PLUS", "MINUS")) |> dplyr::select(idx, peak_or_nadir, plus_or_minus)
     }
 
-    plotting_data <- data %>%
-      tibble::rownames_to_column(var = 'idx') %>%
-      dplyr::mutate(idx = as.numeric(idx)) %>%
-      dplyr::left_join(tp_indexes, by = 'idx') %>%
+    plotting_data <- data |>
+      tibble::rownames_to_column(var = 'idx') |>
+      dplyr::mutate(idx = as.numeric(idx)) |>
+      dplyr::left_join(tp_indexes, by = 'idx') |>
       dplyr::left_join(dplyr::select(all_data, time, MA_Short, MA_Long), by = 'time')
 
     # 6.2 Set a default Title
@@ -355,17 +355,17 @@ mahe_ma_single <- function(data,
     interval <- data_ip$dt0
 
     # filter out hr NAs to enable correct gap identification
-    plotting_data <- plotting_data %>% dplyr::filter(gap != 1)
+    plotting_data <- plotting_data |> dplyr::filter(gap != 1)
 
     # Find the start and end of each gap and merge/sort the two (Must do separately to solve the problem of "back to back" gaps not having correct start & end time)
-    .gap_start <- plotting_data %>%
+    .gap_start <- plotting_data |>
       dplyr::filter(abs(difftime(time, dplyr::lead(time), units = "min")) > 2*interval)
 
-    .gap_end <- plotting_data %>%
+    .gap_end <- plotting_data |>
       dplyr::filter(difftime(time, dplyr::lag(time), units = "min") > interval*2)
 
-    .gaps <- rbind(.gap_start, .gap_end) %>%
-      dplyr::arrange(time) %>%
+    .gaps <- rbind(.gap_start, .gap_end) |>
+      dplyr::arrange(time) |>
       dplyr::mutate(time = dplyr::if_else(dplyr::row_number() %% 2 == 1, time+interval/2, time-interval/2)) # Offset the gap time slightly so not covering peaks/nadirs in some edge cases
 
     .gaps <- if(nrow(.gaps) %% 2 == 1) { .gaps[1:(nrow(.gaps)-1), ] } else { .gaps } # make the df even
@@ -394,8 +394,8 @@ mahe_ma_single <- function(data,
 
     # add excursion_visualization
     if (show_excursions == TRUE) {
-      plus <- plotting_data %>% dplyr::filter(plus_or_minus == "PLUS") %>% dplyr::arrange(idx)
-      minus <- plotting_data %>% dplyr::filter(plus_or_minus == "MINUS") %>% dplyr::arrange(idx)
+      plus <- plotting_data |> dplyr::filter(plus_or_minus == "PLUS") |> dplyr::arrange(idx)
+      minus <- plotting_data |> dplyr::filter(plus_or_minus == "MINUS") |> dplyr::arrange(idx)
 
       if (nrow(plus) %% 2 != 0) {
         stop("There appears to be an error in ihr::mahe_ma_single's plotting functionality. Please rerun with `show_excursions = FALSE`. Also, please file a bug report on GitHub: https://github.com/irinagain/iglu/issues")
@@ -405,8 +405,8 @@ mahe_ma_single <- function(data,
         stop("There appears to be an error in ihr::mahe_ma_single's plotting functionality. Please rerun with `show_excursions = FALSE`. Also, please file a bug report on GitHub: https://github.com/irinagain/iglu/issues")
       }
 
-      arrows = plus %>% dplyr::filter(peak_or_nadir == "NADIR") %>% dplyr::select(x = time, xend = time, y = hr) %>% dplyr::mutate(yend = base::subset(plus, peak_or_nadir == "PEAK")$hr)
-      arrows = rbind(arrows, minus %>% dplyr::filter(peak_or_nadir == "PEAK") %>% dplyr::select(x = time, xend = time, y = hr) %>% dplyr::mutate(yend = base::subset(minus, peak_or_nadir == "NADIR")$hr))
+      arrows = plus |> dplyr::filter(peak_or_nadir == "NADIR") |> dplyr::select(x = time, xend = time, y = hr) |> dplyr::mutate(yend = base::subset(plus, peak_or_nadir == "PEAK")$hr)
+      arrows = rbind(arrows, minus |> dplyr::filter(peak_or_nadir == "PEAK") |> dplyr::select(x = time, xend = time, y = hr) |> dplyr::mutate(yend = base::subset(minus, peak_or_nadir == "NADIR")$hr))
 
       # plotly does not support rendering arrows by default - we use a workaround below (see ~line 487 when we return the plot)
       if (static_or_gui == "ggplot") {
@@ -417,7 +417,7 @@ mahe_ma_single <- function(data,
     }
 
     # add segment boundaries
-    segment_boundaries <- return_val %>% dplyr::filter(!is.na(plus_or_minus))
+    segment_boundaries <- return_val |> dplyr::filter(!is.na(plus_or_minus))
 
     for (e in segment_boundaries$start) {
       .p <- .p + ggplot2::geom_vline(xintercept = e, color="black", linetype = "solid", show.legend = TRUE)
@@ -449,7 +449,7 @@ mahe_ma_single <- function(data,
       .p <- plotly::ggplotly(.p)
 
       if (show_excursions == TRUE && nrow(arrows) > 0) {
-        t <- .p %>% plotly::add_annotations(
+        t <- .p |> plotly::add_annotations(
           text = "",
           showarrow = TRUE,
           arrowcolor="brown",
@@ -483,24 +483,24 @@ mahe_ma_single <- function(data,
 
     # filter by various options
     if (direction == 'plus') {
-      res = return_val %>% dplyr::filter(plus_or_minus == 'PLUS')
+      res = return_val |> dplyr::filter(plus_or_minus == 'PLUS')
     } else if (direction == 'minus') {
-      res = return_val %>% dplyr::filter(plus_or_minus == 'MINUS')
+      res = return_val |> dplyr::filter(plus_or_minus == 'MINUS')
     } else if (direction == 'avg') {
-      res = return_val %>% dplyr::filter(!is.na(mahe))
+      res = return_val |> dplyr::filter(!is.na(mahe))
     } else if (direction == 'max') {
-      res = return_val %>% dplyr::group_by(start, end) %>% dplyr::filter(mahe == max(mahe)) %>% dplyr::ungroup() # Source: https://stackoverflow.com/a/24237538/21711054
+      res = return_val |> dplyr::group_by(start, end) |> dplyr::filter(mahe == max(mahe)) |> dplyr::ungroup() # Source: https://stackoverflow.com/a/24237538/21711054
     } else {
-      res = return_val %>% dplyr::filter(first_excursion == TRUE)
+      res = return_val |> dplyr::filter(first_excursion == TRUE)
     }
 
     if (nrow(res) == 0) {
       return(NA)
     }
 
-    res = res %>%
-      dplyr::mutate(hours = end - start) %>%
-      dplyr::mutate(weight = as.numeric(hours/as.numeric(sum(hours)))) %>% # weight each segment's mahe value contribution by segment length
+    res = res |>
+      dplyr::mutate(hours = end - start) |>
+      dplyr::mutate(weight = as.numeric(hours/as.numeric(sum(hours)))) |> # weight each segment's mahe value contribution by segment length
       dplyr::summarize(sum(mahe*weight))
 
     return(as.numeric(res))

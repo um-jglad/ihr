@@ -26,11 +26,13 @@
 
 plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none', 'minute', 'hour'),
                     inter_gap = 60){
+  id = time = hr = gap = time_group = NULL
+  rm(list = c("id", "time", "hr", "gap", "time_group"))
 
   agg = match.arg(agg, c('none', 'minute', 'hour'))
 
   # Testing to see if appropriate format
-  data %>% select(id, time, hr)
+  data |> dplyr::select(id, time, hr)
 
   # Converting time to an appropriate format
   if(!lubridate::is.POSIXct(data$time)){
@@ -41,32 +43,32 @@ plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none
   # Incorporating time range functionality
   if(from != ""){
     lower_time <- as.POSIXct(from, format = "%Y-%m-%d")
-    data <- data %>% filter(time >= lower_time)
+    data <- data |> filter(time >= lower_time)
   }
   if(to != ""){
     upper_time <- as.POSIXct(to, format = "%Y-%m-%d")
-    data <- data %>% filter(time < upper_time)
+    data <- data |> filter(time < upper_time)
   }
 
   # Aggregating the data by time
   if(agg != 'none'){
     data$time <- lubridate::floor_date(data$time, unit = agg)
-    data <- data %>%
-      dplyr::group_by(id, time) %>%
+    data <- data |>
+      dplyr::group_by(id, time) |>
       dplyr::summarise(hr = mean(hr))
   }
 
   # Accounting for gaps
-  gaps <- data %>%
+  gaps <- data |>
     dplyr::mutate(gap = ifelse(difftime(time, dplyr::lag(time), units = "secs") > inter_gap,
-                               TRUE, FALSE), row = 1:length(time)) %>%
+                               TRUE, FALSE), row = 1:length(time)) |>
     dplyr::slice(1, which(gap))
   gaps <- c(gaps$row, nrow(data) + 1)
-  data <- data %>%
+  data <- data |>
     dplyr::mutate(time_group = rep(1:(length(gaps) - 1), diff(gaps)))
 
   # Plotting time series
-  plot <- data %>%
+  plot <- data |>
     ggplot2::ggplot() +
     ggplot2::geom_line(aes(x = time, y = hr, group = time_group)) +
     ggplot2::geom_hline(yintercept = LHR, color = "red") +

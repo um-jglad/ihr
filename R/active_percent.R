@@ -20,25 +20,27 @@
 #' active_percent(example_heart_1)
 
 active_percent <- function(data) {
+  time = hr = id = time_date = unique_days = total_days = NULL
+  rm(list = c('time', 'hr', 'id', 'time_date', 'unique_days', 'total_days'))
   # Ensure necessary columns exist
   if (!all(c("id", "time") %in% colnames(data))) {
     stop("The dataset must contain 'id' and 'time' columns.")
   }
 
   # Convert time column to Date-Time format
-  data <- data %>%
-    mutate(time = as.POSIXct(time, format = "%m/%d/%Y %I:%M:%S %p"),
+  data <- data |>
+    dplyr::mutate(time = as.POSIXct(time, format = "%m/%d/%Y %I:%M:%S %p"),
            time_date = as.Date(time))  # Extract only the date
 
   # Remove rows with missing HR values
   data <- dplyr::filter(data, !is.na(hr))
 
   # Group by id and compute active percentage and measurement period length
-  active_data <- data %>%
-    group_by(id) %>%
-    summarize(
+  active_data <- data |>
+    dplyr::group_by(id) |>
+    dplyr::summarize(
       total_days = as.integer(difftime(max(time), min(time), units = "days")) + 1,
-      unique_days = n_distinct(time_date),
+      unique_days = dplyr::n_distinct(time_date),
       active_percent = (unique_days / total_days) * 100
     )
 
