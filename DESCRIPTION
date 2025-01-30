@@ -17,5 +17,9 @@ Imports:
     ggplot2,
     dplyr,
     stats,
-    lubridate
+    lubridate,
+    ggpubr,
+    plotly,
+    tibble,
+    zoo
 LazyData: true

@@ -6,6 +6,10 @@
 \usage{
 active_percent(data)
 }
+\arguments{
+\item{data}{A DataFrame object with column names "Id", "Time", "Value".
+Missing HR values (NA) are automatically excluded from calculations.}
+}
 \value{
 If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of percentage missingness is returned.
 'NA' heartrate values are omitted from the calcution of the summary values.

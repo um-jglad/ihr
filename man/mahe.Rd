@@ -23,6 +23,32 @@ mahe(
 }
 \arguments{
 \item{data}{DataFrame object with column names "id", "time", "hr"}
+
+\item{short_ma}{\strong{Default: 5.} Integer for period length of the short moving average. Must be positive and less than \code{long_ma}. (Recommended <15)}
+
+\item{long_ma}{\strong{Default: 32.} Integer for period length for the long moving average. Must be positive and greater than \code{short_ma}. (Recommended >20)}
+
+\item{return_type}{\strong{Default: "num".} One of ("num", "df"). Will return either a single number for the "MAHE over the entire trace" (weighted by segment length) or a DataFrame with the MAHE value for each segment.}
+
+\item{direction}{\strong{Default: "avg".} One of ("avg", "service", "max", "plus", or "minus"). Algorithm will calculate one of the following: MAHE+ (nadir to peak), MAHE- (peak to nadir), MAHEavg = avg(MAHE+, MAHE-), MAHEmax = max(MAHE+, MAHE-), or automatically choose MAHE+/MAHE- based on the first countable excursion (i.e., "service"). NOTE: the selection of peak-to-nadir or nadir-to-peak is chosen independently on each segment, thus MAHEservice may choose peak-to-nadir on one segment and nadir-to-peak on another, for example.}
+
+\item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning}
+
+\item{inter_gap}{The maximum allowable gap (in minutes) for interpolation. The values will not be interpolated between the glucose measurements that are more than inter_gap minutes apart. The default value is 45 min.}
+
+\item{max_gap}{\strong{Default: 180.} Integer for the maximum length of a gap in minutes before the trace is split into segments and MAGE is calculated on each segment independently.}
+
+\item{plot}{\strong{Default: FALSE.} Boolean. If \code{TRUE}, returns a plot that visualizes all identified peaks and nadirs, excursions, and  missing gaps.}
+
+\item{title}{\strong{Default: "Heart Rate Trace Trace - Subject ID".} Title for the ggplot.}
+
+\item{xlab}{\strong{Default: "Time".} Label for x-axis of ggplot.}
+
+\item{ylab}{\strong{Default: "Glucose Level".} Label for y-axis of ggplot.}
+
+\item{show_ma}{\strong{Default: FALSE.} Boolean. If TRUE, plots the moving average lines on the plot.}
+
+\item{show_excursions}{\strong{Default: TRUE.} Boolean. If TRUE, shows identified excursions as arrows from peak-to-nadir/nadir-to-peak on the plot.}
 }
 \value{
 A tibble object with two columns: the subject id and corresponding MAHE value.
