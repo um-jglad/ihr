@@ -31,6 +31,7 @@
 #' Journal of diabetes science and technology 16.2 (2022): 576-577. \doi{10.1177/19322968211061165}
 #'
 #' @example
+#' data(example_heart_1)
 #' mahe(example_heart_1)
 #'
 
