@@ -20,8 +20,6 @@
 #' data(example_heart_1)
 #' plot_hr(example_heart_1)
 #'
-#' plot_hr(example_heart_1, to = "2016-04-13", agg = 'minute')
-#'
 
 
 plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none', 'minute', 'hour'),

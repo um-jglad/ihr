@@ -39,6 +39,4 @@ The function 'plot_hr' supports time series plotting for both single and multipl
 data(example_heart_1)
 plot_hr(example_heart_1)
 
-plot_hr(example_heart_1, to = "2016-04-13", agg = 'minute')
-
 }
