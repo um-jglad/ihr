@@ -128,7 +128,7 @@ HR2DayByDay <- function(data, dt0 = NULL, inter_gap = 45, tz = ""){
   }
 
   if (any(timediff == 0)){
-    warning(paste("Subject", unique(data$id), "has repeated glucose measuremements at exactly the same times. Only the last one of repeated values is used in calculations."))
+    warning(paste("Subject", unique(data$id), "has repeated heart rate measuremements at exactly the same times. Only the last one of repeated values is used in calculations."))
     index = which(timediff == 0)
     tr = tr[-index]
     g = g[-index]
@@ -187,7 +187,7 @@ HR2DayByDay <- function(data, dt0 = NULL, inter_gap = 45, tz = ""){
     for (g in 1:ngaps){
       # Identify affected times
       time_covered = (new$x > tr[gap_start[g]]) & (new$x < tr[gap_start[g] + 1])
-      # Set those glucose values to NA
+      # Set those heart rate values to NA
       new$y[time_covered] = NA
     }
   }
