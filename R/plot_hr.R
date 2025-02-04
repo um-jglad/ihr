@@ -41,11 +41,11 @@ plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none
   # Incorporating time range functionality
   if(from != ""){
     lower_time <- as.POSIXct(from, format = "%Y-%m-%d")
-    data <- data |> filter(time >= lower_time)
+    data <- data |> dplyr::filter(time >= lower_time)
   }
   if(to != ""){
     upper_time <- as.POSIXct(to, format = "%Y-%m-%d")
-    data <- data |> filter(time < upper_time)
+    data <- data |> dplyr::filter(time < upper_time)
   }
 
   # Aggregating the data by time
