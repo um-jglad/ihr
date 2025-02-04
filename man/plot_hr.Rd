@@ -17,9 +17,9 @@ plot_hr(
 \arguments{
 \item{data}{Dataframe with column names ("id, "time", "hr")}
 
-\item{LHR}{Lower heart rate set at \strong{default = 60 BPM}}
+\item{LHR}{Lower Heart Rate set at \strong{default = 60}}
 
-\item{UHR}{Upper heart rate set at \strong{default = 100 BPM}}
+\item{UHR}{Upper Heart Rate set at \strong{default = 100}}
 
 \item{from}{Starting time of plot inclusive (In format \%Y-\%m-\%d)}
 
@@ -27,13 +27,16 @@ plot_hr(
 
 \item{agg}{Aggregate data by specified time interval}
 
-\item{inter_gap}{Gap allowed between consecutive observations}
+\item{inter_gap}{Gap allowed between consecutive observations (in seconds)}
 }
 \value{
 Heart rate time series plot for a single subject
 }
 \description{
 The function 'plot_hr' supports time series plotting for both single and multiple subject data
+}
+\details{
+See reasoning for default LHR and UHR values at \url{https://www.heart.org/en/health-topics/arrhythmia/about-arrhythmia/tachycardia--fast-heart-rate}
 }
 \examples{
 data(example_heart_1)

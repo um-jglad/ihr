@@ -3,14 +3,16 @@
 #' @description
 #' The function 'plot_hr' supports time series plotting for both single and multiple subject data
 #'
-#'
 #' @param data Dataframe with column names ("id, "time", "hr")
-#' @param LHR Lower heart rate set at \strong{default = 60 BPM}
-#' @param UHR Upper heart rate set at \strong{default = 100 BPM}
+#' @param LHR Lower Heart Rate set at \strong{default = 60}
+#' @param UHR Upper Heart Rate set at \strong{default = 100}
 #' @param from Starting time of plot inclusive (In format %Y-%m-%d)
 #' @param to Ending time of plot exclusive (In format %Y-%m-%d)
 #' @param agg Aggregate data by specified time interval
-#' @param inter_gap Gap allowed between consecutive observations
+#' @param inter_gap Gap allowed between consecutive observations (in seconds)
+#'
+#' @details
+#' See reasoning for default LHR and UHR values at \url{https://www.heart.org/en/health-topics/arrhythmia/about-arrhythmia/tachycardia--fast-heart-rate}
 #'
 #' @return Heart rate time series plot for a single subject
 #'
@@ -50,6 +52,9 @@ plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none
 
   # Aggregating the data by time
   if(agg != 'none'){
+    if((agg == "minute" & inter_gap < 60) | (agg == "hour" & inter_gap < 3600)){
+      stop("Error: Adjust inter_gap (>= 60 for agg = 'min', >=3600 for agg = 'hour')")
+    }
     data$time <- lubridate::floor_date(data$time, unit = agg)
     data <- data |>
       dplyr::group_by(id, time) |>
