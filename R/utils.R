@@ -50,10 +50,10 @@ check_data_time <- function(data, tz = ""){
       ) |>
       dplyr::group_by(grouping) |>
       dplyr::summarise(
-        id = id[1], time = time[1], gl = mean(gl, na.rm = TRUE),
+        id = id[1], time = time[1], hr = mean(hr, na.rm = TRUE),
         .groups = "drop"
       ) |>
-      dplyr::select(id, time, gl)
+      dplyr::select(id, time, hr)
 
     # returns data after averaging duplicates
     return(data)
@@ -71,7 +71,7 @@ check_data_time <- function(data, tz = ""){
   out = data |>
     dplyr::group_by(id) |>
     dplyr::reframe(
-      check_reps_single(data.frame(id, time, gl))
+      check_reps_single(data.frame(id, time, hr))
     ) |>
     dplyr::ungroup()
 
