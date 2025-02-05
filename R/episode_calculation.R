@@ -1,3 +1,15 @@
+### algorithm description
+# (1) apply the following to each subject (episode_single)
+#       (a) interpolate to create equidistant grid
+#       (b) split into contiguous segments based on gaps
+#       (c) classify events in each segment (event_class)
+#       (d) summarize episodes (episode_summary)
+# (a) event_class: label events of each type for each segment
+#       (a) must be >= duration (function input is # idx to get # minutes)
+#       (b) ends at >= dur_length (function input is top level dur_length/dt0)
+# (b) episode_summary: calculate summary statistics
+#       (a) return for each type of episode: # episodes, mean duration, mean hr value
+
 event_class = function(data, level_type, threshold, event_duration, end_duration) {
 
   event = level = pos_start = pos_end = NULL
@@ -127,7 +139,7 @@ episode_summary = function (data, dt0) {
   out_list = sapply(labels, function(x) episode_summary_helper(data, x, dt0))
 
   output = data.frame(
-    type = c(rep("low", 3), rep("high", 2), "low", "high"), 
+    type = c(rep("low", 3), rep("high", 2), "low", "high"),
     level = c("lv1", 'lv2', 'extended', 'lv1', 'lv2', 'lv1_excl', 'lv1_excl'), # lv1/lv2/extended
     avg_ep_per_day = out_list[1, ],
     avg_ep_duration = out_list[2, ],
@@ -148,7 +160,7 @@ episode_single = function(data, lv1_low, lv2_low, lv1_high, lv2_high,
   ### interpolate and segment to deal with gaps and uneven grid
   data_ip <- HR2DayByDay(data, dt0 = 5, inter_gap = inter_gap, tz = tz)
   dt0 = data_ip[[3]]
-  
+
   # find first day and number of days
   day_one = as.POSIXct(data_ip[[2]][1], tz = tz)
   ndays = length(data_ip[[2]])
@@ -164,7 +176,7 @@ episode_single = function(data, lv1_low, lv2_low, lv1_high, lv2_high,
     # t to get rowwise vector of a matrix
     hr = as.vector(t(data_ip[[1]]))
   )
-  
+
 
   if (dur_length %% dt0 != 0) {
     warning("Episode duration is not a multiple of recording interval, smallest multiple
@@ -210,7 +222,68 @@ episode_single = function(data, lv1_low, lv2_low, lv1_high, lv2_high,
 }
 
 
-episode_calculation = function(data, lv1_low = 70,lv2_low = 54, lv1_high= 180, lv2_high = 250,
+#' Calculates low/high heartrate episodes with summary statistics
+#' @name episode_calculation
+#'
+#' @description
+#' The function determines episodes or events, calculates summary statistics,
+#' and optionally returns data with episode label columns added
+#'
+#' @inheritParams CGMS2DayByDay
+#'
+#' @param lv1_low Numeric value specifying a low heart rate threshold for level 1
+#' @param lv2_low Numeric value specifying a low heart rate threshold for level 2
+#' @param lv1_high Numeric value specifying a high heart rate threshold for level 1
+#' @param lv2_high Numeric value specifying a high heart rate threshold for level 2
+#' @param dur_length Numeric value specifying the minimum duration in minutes to be
+#' considered an episode. Note dur_length should be a multiple of the data recording
+#' interval otherwise the function will round up to the nearest multiple. Default
+#' is 15 minutes to match consensus.
+#' @param end_length Numeric value specifying the minimum duration in minutes of
+#' improved heart rate for an episode to end. Default is equal to dur_length to match consensus.
+#' @param return_data Boolean indicating whether to also return data with episode labels.
+#' Defaults to FALSE which means only episode summary statistics will be returned
+#'
+#'
+#' @return If return_data is FALSE, a single dataframe with columns:
+#' \item{id}{Subject id}
+#' \item{type}{Type of episode - either low or high}
+#' \item{level}{Level of episode - one of lv1, lv2, extended, lv1_excl}
+#' \item{avg_ep_per_day}{Average number of episodes per day calculated as
+#' (total # episodes)/(recording time in days (24hrs))}
+#' \item{avg_ep_duration}{Average duration of episodes in minutes}
+#' \item{avg_ep_hr}{Average heart rate in the episode in minutes}
+#' \item{total_episodes}{Total number of episodes in the subject's heart rate trace}
+#'
+#' If return_data is TRUE, returns a list where the first entry is the episode summary dataframe
+#' (see above) and the second entry is the input data with episode labels added. Note
+#' the data returned here has been interpolated using the HR2DayByDay() function.
+#' Mostly for use with epicalc_profile function. Format of the second list entry is:
+#' \item{id}{Subject id}
+#' \item{time}{Interpolated timestamps}
+#' \item{hr}{heart rate in minutes}
+#' \item{[episode_label]}{One column per episode label - i.e. lv1_low, lv2_low, lv1_high, lv2_high, ext_low.
+#' 0 means not this type of episode, a positive integer label is assigned to each episode.
+#' Note the labels are *not* unique by subject only unique by segment}
+#'
+#' @details Note we have classified lv2 as a subset of lv1 since we find the consensus to be
+#' slightly ambiguous. For lv1 exclusive of lv2, please see lv1_excl which summarises
+#' episodes that were exclusively lv1 and did not cross the lv2 threshold. Also note,
+#' low extended refers to episodes that are >120 consecutive minutes below lv1 low
+#' and ends with at least 15 minutes of normal heart rate.
+#'
+#' @references
+#' “What Your Heart Rate Is Telling You.” Harvard Health, 13 June 2023,
+#'  www.health.harvard.edu/heart-health/what-your-heart-rate-is-telling-you.
+#'
+#' @export
+#'
+#'
+#' @examples episode_calculation(example_heart_1, lv1_low = 100, lv1_high = 120)
+#'
+
+
+episode_calculation = function(data, lv1_low = 60,lv2_low = 55, lv1_high= 85, lv2_high = 100,
                                dur_length = 15, end_length = 15, return_data = FALSE,
                                dt0 = NULL, inter_gap = 45, tz = "") {
 
