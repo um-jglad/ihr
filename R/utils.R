@@ -27,10 +27,12 @@ check_data_columns =  function(data, id = 'id', time = 'time', hr = 'hr', time_c
 check_data_time <- function(data, tz = ""){
 
   id = NULL
-  rm(list = c("id"))
+  hr = NULL
+  rm(list = c("id", "hr"))
 
   check_reps_single <- function(data) {
-
+    hr = NULL
+    rm(list = c("hr"))
     check_reps = diff(data$time) == 0
 
     # no duplicates for this subject, return data and exit

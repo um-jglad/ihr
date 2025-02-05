@@ -99,13 +99,15 @@ lv1_excl = function (data) {
 # function to calculate summary statistics for each type of episode
 episode_summary = function (data, dt0) {
 
-  event = segment = NULL
-  rm(list = c("event", "segment"))
+  event = segment = hr = NULL
+  rm(list = c("event", "segment", "hr"))
 
   episode_summary_helper = function (data, level_label, dt0) {
-
+    hr = NULL
+    rm(list = c("hr"))
     data = data[, c(1:4, which(colnames(data) == level_label))]
     colnames(data) = c("id", "time", "hr", "segment", "event")
+
 
     # if none of this event exists, return 0 or NA and exit
     if (all(data$event == 0)) {
@@ -154,8 +156,8 @@ episode_summary = function (data, dt0) {
 episode_single = function(data, lv1_low, lv2_low, lv1_high, lv2_high,
                           dur_length, end_length, return_data, dt0, inter_gap, tz) {
 
-  id = segment = NULL
-  rm(list = c("id", "segment"))
+  id = segment = hr = NULL
+  rm(list = c("id", "segment", "hr"))
 
   ### interpolate and segment to deal with gaps and uneven grid
   data_ip <- HR2DayByDay(data, dt0 = 5, inter_gap = inter_gap, tz = tz)
@@ -287,8 +289,8 @@ episode_calculation = function(data, lv1_low = 60,lv2_low = 55, lv1_high= 85, lv
                                dur_length = 15, end_length = 15, return_data = FALSE,
                                dt0 = NULL, inter_gap = 45, tz = "") {
 
-  id = NULL
-  rm(list = c("id"))
+  id = hr = NULL
+  rm(list = c("id", "hr"))
 
 
   if (dur_length > inter_gap) {
