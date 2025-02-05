@@ -1,12 +1,12 @@
 #' Calculate the % missingness of the heart rate value
 
-#' @Description
+#' @description
 #' The function active_percent computes the percentage missingness of the heart rate data.
 
-#' @Usage
+#' @usage
 #' active_percent(data)
 
-#' @param data A DataFrame object with column names "Id", "Time", "Value".
+#' @param data A DataFrame  mobject with column names "Id", "Time", "Value".
 #' Missing HR values (NA) are automatically excluded from calculations.
 
 #' @return
