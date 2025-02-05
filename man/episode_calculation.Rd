@@ -19,6 +19,8 @@ episode_calculation(
 )
 }
 \arguments{
+\item{data}{DataFrame object with column names "id", "time", "hr"}
+
 \item{lv1_low}{Numeric value specifying a low heart rate threshold for level 1}
 
 \item{lv2_low}{Numeric value specifying a low heart rate threshold for level 2}
@@ -37,6 +39,12 @@ improved heart rate for an episode to end. Default is equal to dur_length to mat
 
 \item{return_data}{Boolean indicating whether to also return data with episode labels.
 Defaults to FALSE which means only episode summary statistics will be returned}
+
+\item{dt0}{Grid Length}
+
+\item{inter_gap}{The maximum allowable gap (in minutes) for interpolation.}
+
+\item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning}
 }
 \value{
 If return_data is FALSE, a single dataframe with columns:
@@ -56,9 +64,6 @@ Mostly for use with epicalc_profile function. Format of the second list entry is
 \item{id}{Subject id}
 \item{time}{Interpolated timestamps}
 \item{hr}{heart rate in minutes}
-\item{\link{episode_label}}{One column per episode label - i.e. lv1_low, lv2_low, lv1_high, lv2_high, ext_low.
-0 means not this type of episode, a positive integer label is assigned to each episode.
-Note the labels are \emph{not} unique by subject only unique by segment}
 }
 \description{
 The function determines episodes or events, calculates summary statistics,

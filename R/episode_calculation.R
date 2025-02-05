@@ -233,6 +233,7 @@ episode_single = function(data, lv1_low, lv2_low, lv1_high, lv2_high,
 #'
 #' @inheritParams CGMS2DayByDay
 #'
+#' @param data DataFrame object with column names "id", "time", "hr"
 #' @param lv1_low Numeric value specifying a low heart rate threshold for level 1
 #' @param lv2_low Numeric value specifying a low heart rate threshold for level 2
 #' @param lv1_high Numeric value specifying a high heart rate threshold for level 1
@@ -243,8 +244,11 @@ episode_single = function(data, lv1_low, lv2_low, lv1_high, lv2_high,
 #' is 15 minutes to match consensus.
 #' @param end_length Numeric value specifying the minimum duration in minutes of
 #' improved heart rate for an episode to end. Default is equal to dur_length to match consensus.
+#' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #' @param return_data Boolean indicating whether to also return data with episode labels.
 #' Defaults to FALSE which means only episode summary statistics will be returned
+#' @param inter_gap The maximum allowable gap (in minutes) for interpolation.
+#' @param dt0 Grid Length
 #'
 #'
 #' @return If return_data is FALSE, a single dataframe with columns:
@@ -264,9 +268,6 @@ episode_single = function(data, lv1_low, lv2_low, lv1_high, lv2_high,
 #' \item{id}{Subject id}
 #' \item{time}{Interpolated timestamps}
 #' \item{hr}{heart rate in minutes}
-#' \item{[episode_label]}{One column per episode label - i.e. lv1_low, lv2_low, lv1_high, lv2_high, ext_low.
-#' 0 means not this type of episode, a positive integer label is assigned to each episode.
-#' Note the labels are *not* unique by subject only unique by segment}
 #'
 #' @details Note we have classified lv2 as a subset of lv1 since we find the consensus to be
 #' slightly ambiguous. For lv1 exclusive of lv2, please see lv1_excl which summarises
