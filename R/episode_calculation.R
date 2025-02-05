@@ -231,7 +231,6 @@ episode_single = function(data, lv1_low, lv2_low, lv1_high, lv2_high,
 #' The function determines episodes or events, calculates summary statistics,
 #' and optionally returns data with episode label columns added
 #'
-#' @inheritParams CGMS2DayByDay
 #'
 #' @param data DataFrame object with column names "id", "time", "hr"
 #' @param lv1_low Numeric value specifying a low heart rate threshold for level 1

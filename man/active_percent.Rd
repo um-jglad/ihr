@@ -7,7 +7,7 @@
 active_percent(data)
 }
 \arguments{
-\item{data}{A DataFrame object with column names "Id", "Time", "Value".
+\item{data}{A DataFrame  mobject with column names "Id", "Time", "Value".
 Missing HR values (NA) are automatically excluded from calculations.}
 }
 \value{
@@ -15,7 +15,7 @@ If a dataframe object is passed, then a tibble object with a column for subject 
 'NA' heartrate values are omitted from the calcution of the summary values.
 }
 \description{
-Calculate the \% missingness of the heart rate value
+The function active_percent computes the percentage missingness of the heart rate data.
 }
 \examples{
 data(example_heart_1)
