@@ -17,3 +17,22 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(ihr)
 ```
+
+
+
+# Example Datasets
+
+# Vizualizations
+
+The ihr package supports two plot types described below:
+
+| Function call | Visualization description | 
+|:------------|:------------------------------|
+|`plot_hr` | Time Series plot of Heart Rate | 
+|`mahe`| MAHE plot displying peak and nadirs| 
+
+## Example plot: Time series
+
+## Examlpe plot: MAHE
+
+# 
