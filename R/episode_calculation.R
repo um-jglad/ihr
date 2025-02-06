@@ -137,7 +137,7 @@ episode_summary = function (data, dt0) {
   }
 
   labels = c("lv1_low", "lv2_low", "ext_low", "lv1_high", "lv2_high",
-             "lv1_high_excl", "lv1_high_excl")
+             "lv1_low_excl", "lv1_high_excl")
   out_list = sapply(labels, function(x) episode_summary_helper(data, x, dt0))
 
   output = data.frame(
