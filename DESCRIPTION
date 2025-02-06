@@ -23,3 +23,7 @@ Imports:
     tibble,
     zoo
 LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
