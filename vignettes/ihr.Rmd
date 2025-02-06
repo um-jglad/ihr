@@ -21,6 +21,29 @@ library(ihr)
 
 
 # Example Datasets
+The ihr package includes two datasets: example_heart_1, and example_heart_5. The one subject data is simply the first subject of the five subject data. 
+
+## Example data for 1 subject
+
+Example data with 1 subject can be loaded with:
+
+```{r}
+data("example_data_1")
+```
+  
+This dataset contains 154104 observations of 3 columns corresponding to the three components listed in the introduction:
+
+* `"id"` - Factor (character string) column for subject identification
+* `"time"` - POSIXct column for datetime values
+* `"hr"` - Numeric column for heart rate
+Data used with ihr functions may have additional columns, but the columns for id, time and hr values must be named as above.
+
+```{r}
+dim(example_heart_1)
+str(example_heart_1)
+head(example_heart_1)
+```
+
 
 # Vizualizations
 
