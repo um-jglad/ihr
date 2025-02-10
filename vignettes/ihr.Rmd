@@ -44,6 +44,52 @@ str(example_heart_1)
 head(example_heart_1)
 ```
 
+# Summarizing Data
+
+The ihr package provides summary of heart rate data, it returns multiple values using basic function.
+
+```{r}
+summary_hr(example_heart_1)
+```
+
+# Calculating time-dependent metrics
+
+The ihr package have the function of calculating multiple time-dependent metrics.
+
+## active_percent()
+
+When a dataframe is passed, subject id will always be printed in the id column, and multiple values for a single subject will be printed in the following columns.
+
+```{r}
+active_percent(example_heart_1)
+```
+
+## episode_calculation()
+
+This function calculates low and high heart rate episodes with summary statistics. 
+
+```{r}
+episode_calculation(example_heart_1, lv1_low = 60, lv2_low = 55, lv1_high = 85, lv2_high = 100, dur_length = 15)
+```
+
+
+### Parameters
+
+#### data 
+DataFrame object with column names "id", "time", and "hr". 
+
+#### lv1_low, lv2_low, hy1_high, lv2_high
+Users can set certain thresholds for the low and high heart rate by passing parameters, lv1_low, lv2_low, lv1_high, lv2_high. Level 2 indicates more extreme states than level 1 so the threshold value for the lv2_low value should be lower than lv1_low value, and the threshold for the lv2_high value should higher than lv1_high value.
+
+#### dur_length
+By setting a duration length to 15 minutes (the last parameter), the function will count the number of episodes that heart rate values go below or above the thresholds more than 15 minutes. 
+
+
+### Return Value
+
+For each single subject, it returns a dataframe including average number of episodes per day, average episode length, and average heart rate in episodes for each type and each level.
+
+
 
 # Vizualizations
 
