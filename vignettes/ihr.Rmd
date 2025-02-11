@@ -14,9 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, include = FALSE}
 library(ihr)
 ```
+
 
 
 # Example Datasets
@@ -90,7 +91,13 @@ For each single subject, it returns a dataframe including average number of epis
 
 # MAHE (Mean Amplitude of Heart Rate Excursions)
 
+MAHE is a variability based metric that is influenced by a similar metric used in continuous glucode monitoring. The algorithm used for this metric is used from the open-source algorithm provided in ![Open-Source Algorithm to Calculate Mean Amplitude of Glycemic Excursions Using Short and Long Moving Averages](https://journals.sagepub.com/doi/10.1177/19322968211061165).
 
+`mahe` supports calculation for single or multiple subjects and returns a data frame with columns `id` and `MAHE`. Other parameters adjust the calculation of the algorithm and additional plotting options (further detailed below)
+
+```{r}
+mahe(example_heart_1)
+```
 
 
 # Vizualizations
@@ -140,7 +147,9 @@ plot_hr(example_heart_1, to = "2016-04-13", agg = "hour", inter_gap = 3600)
 
 ## Example plot: MAHE
 
-```{r}
+`mahe` supports a plotting argument that creates a heart rate trace plot that highlights the selected peaks and nadirs that are used in the MAHE calculation. This plot must be specified with the `plot` argument. Additionally, users can show the moving averages using `show_ma` and the excursions with `show_excursions`
 
+```{r}
+mahe(example_heart_1, to = "2016-04-13", plot = T, show_ma = T, show_excursions = T)
 ```
 
