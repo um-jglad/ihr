@@ -19,7 +19,6 @@ library(ihr)
 ```
 
 
-
 # Example Datasets
 The ihr package includes two datasets: example_heart_1, and example_heart_5. The one subject data is simply the first subject of the five subject data. 
 
@@ -28,7 +27,7 @@ The ihr package includes two datasets: example_heart_1, and example_heart_5. The
 Example data with 1 subject can be loaded with:
 
 ```{r}
-data("example_data_1")
+data("example_heart_1")
 ```
   
 This dataset contains 154104 observations of 3 columns corresponding to the three components listed in the introduction:
@@ -89,6 +88,9 @@ By setting a duration length to 15 minutes (the last parameter), the function wi
 
 For each single subject, it returns a dataframe including average number of episodes per day, average episode length, and average heart rate in episodes for each type and each level.
 
+# MAHE (Mean Amplitude of Heart Rate Excursions)
+
+
 
 
 # Vizualizations
@@ -102,6 +104,43 @@ The ihr package supports two plot types described below:
 
 ## Example plot: Time series
 
-## Examlpe plot: MAHE
+The `plot_glu` function generates a time series plot. This function can support both single and multiple subjects.
 
-# 
+```{r fig.width= 7}
+plot_hr(example_heart_1)
+```
+
+`plot_hr` also supports additional arguments to adjust the way the heart rate data can be plotted. 
+
+Due to the sheer number of observations that heart rate can have, `plot_hr` supports a time range argument. Using `from` and `to`, the function will plot the heart rate data only from the specified time interval [from, to). If an argument is not provided to one of the two, the function defaults to the first and last observation, respectively. 
+
+```{r fig.width= 7}
+plot_hr(example_heart_1, to = "2016-04-13")
+```
+
+```{r fig.width= 7}
+plot_hr(example_heart_1, from = "2016-04-30", to = "2016-05-02")
+```
+
+The red lines can be shifted to any Lower or Upper Heart Rate using the parameter `LHR` and `UHR` respectively
+
+```{r fig.width= 7}
+plot_hr(example_heart_1, LHR = 100, UHR = 120)
+```
+
+Finally, `plot_hr` supports a time aggregation argument. Using the parameter `agg`, users can specify if the plot should be plotted using minute or hour long summary for heart rate. If the user chooses to use `agg`, the `inter_gap` argument must be adjusted accordingly, where `inter_gap` must be equal to or longer than the aggregated time in seconds.
+
+```{r fig.width= 7}
+plot_hr(example_heart_1, to = "2016-04-13", agg = "minute")
+```
+
+```{r fig.width= 7}
+plot_hr(example_heart_1, to = "2016-04-13", agg = "hour", inter_gap = 3600)
+```
+
+## Example plot: MAHE
+
+```{r}
+
+```
+

@@ -6,6 +6,8 @@
 #' @param data DataFrame object with column names "id", "time", "hr"
 #' @param short_ma \strong{Default: 5.} Integer for period length of the short moving average. Must be positive and less than `long_ma`. (Recommended <15)
 #' @param long_ma \strong{Default: 32.} Integer for period length for the long moving average. Must be positive and greater than `short_ma`. (Recommended >20)
+#' @param from \strong{Default: First observed time.} Starting time of the data inclusive (In format %Y-%m-%d)
+#' @param to \strong{Default: Last observed time.} Ending time of the data exclusive (In format %Y-%m-%d)
 #' @param return_type \strong{Default: "num".} One of ("num", "df"). Will return either a single number for the "MAHE over the entire trace" (weighted by segment length) or a DataFrame with the MAHE value for each segment.
 #' @param direction \strong{Default: "avg".} One of ("avg", "service", "max", "plus", or "minus"). Algorithm will calculate one of the following: MAHE+ (nadir to peak), MAHE- (peak to nadir), MAHEavg = avg(MAHE+, MAHE-), MAHEmax = max(MAHE+, MAHE-), or automatically choose MAHE+/MAHE- based on the first countable excursion (i.e., "service"). NOTE: the selection of peak-to-nadir or nadir-to-peak is chosen independently on each segment, thus MAHEservice may choose peak-to-nadir on one segment and nadir-to-peak on another, for example.
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
@@ -30,13 +32,14 @@
 #' Fernandes, Nathaniel J., et al. "Open-source algorithm to calculate mean amplitude of glycemic excursions using short and long moving averages."
 #' Journal of diabetes science and technology 16.2 (2022): 576-577. \doi{10.1177/19322968211061165}
 #'
-#' @example
+#' @examples
 #' data(example_heart_1)
 #' mahe(example_heart_1)
 #'
 
 mahe <- function(data,
                  short_ma = 5, long_ma = 32,
+                 from = "", to = "",
                  return_type = c('num', 'df'),
                  direction = c('avg', 'service', 'max', 'plus', 'minus'),
                  tz = "", inter_gap = 45,
@@ -45,7 +48,7 @@ mahe <- function(data,
 
   direction = match.arg(direction, c('avg', 'service', 'max', 'plus', 'minus'))
 
-  return(mahe_ma(data, short_ma = short_ma, long_ma = long_ma, return_type=return_type, direction=direction,
+  return(mahe_ma(data, short_ma = short_ma, long_ma = long_ma, from = from, to = to, return_type=return_type, direction=direction,
                  plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz,
                  title = title, xlab = xlab, ylab = ylab, show_ma = show_ma, show_excursions=show_excursions))
 }
@@ -53,6 +56,7 @@ mahe <- function(data,
 
 mahe_ma <- function(data,
                     short_ma = 5, long_ma = 32,
+                    from = "", to = "",
                     return_type = c('num', 'df'),
                     direction = c('avg', 'service', 'max', 'plus', 'minus'),
                     inter_gap = 45, tz = "",
@@ -64,6 +68,15 @@ mahe_ma <- function(data,
   data = check_data_columns(data)
   is_vector = attr(data, "is_vector")
   direction = match.arg(direction, c('avg', 'service', 'max', 'plus', 'minus'))
+
+  if(from != ""){
+    lower_time <- as.POSIXct(from, format = "%Y-%m-%d")
+    data <- data |> dplyr::filter(time >= lower_time)
+  }
+  if(to != ""){
+    upper_time <- as.POSIXct(to, format = "%Y-%m-%d")
+    data <- data |> dplyr::filter(time < upper_time)
+  }
 
   out <- data |>
     dplyr::filter(!is.na(hr)) |>

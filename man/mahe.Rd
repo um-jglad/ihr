@@ -8,6 +8,8 @@ mahe(
   data,
   short_ma = 5,
   long_ma = 32,
+  from = "",
+  to = "",
   return_type = c("num", "df"),
   direction = c("avg", "service", "max", "plus", "minus"),
   tz = "",
@@ -27,6 +29,10 @@ mahe(
 \item{short_ma}{\strong{Default: 5.} Integer for period length of the short moving average. Must be positive and less than \code{long_ma}. (Recommended <15)}
 
 \item{long_ma}{\strong{Default: 32.} Integer for period length for the long moving average. Must be positive and greater than \code{short_ma}. (Recommended >20)}
+
+\item{from}{\strong{Default: First observed time.} Starting time of the data inclusive (In format \%Y-\%m-\%d)}
+
+\item{to}{\strong{Default: Last observed time.} Ending time of the data exclusive (In format \%Y-\%m-\%d)}
 
 \item{return_type}{\strong{Default: "num".} One of ("num", "df"). Will return either a single number for the "MAHE over the entire trace" (weighted by segment length) or a DataFrame with the MAHE value for each segment.}
 
@@ -55,6 +61,11 @@ A tibble object with two columns: the subject id and corresponding MAHE value.
 }
 \description{
 The function calculates MAHE values (a metric inspired by MAGE from glucose monitoring) and optionally returns a heart trace plot
+}
+\examples{
+data(example_heart_1)
+mahe(example_heart_1)
+
 }
 \references{
 Service et al. (1970) Mean amplitude of glycemic excursions, a measure of diabetic instability
