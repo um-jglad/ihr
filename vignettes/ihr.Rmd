@@ -18,7 +18,19 @@ knitr::opts_chunk$set(
 library(ihr)
 ```
 
+The ihr package is designed to help in the analyses of heart rate data from wearable technologies (i.e. FitBit, Apple Watches, etc.). These wearable technologies capture the heart rate of the user while the user is wearing the device, often in intervals of only a couple of seconds. Data from these wearables are increasingly used to understand a users physical activity and their heart functionality on a day by day basis. 
 
+Previous R packages on heart rate are typically more narrow in their focus. Whether it be more specific on one type of metric (such as heart rate variability) or a specific event that these devices capture (Physical exertion). The ihr package is unique in its ability to measure various types of metric that would be of interest to clinicians, each metric being designed to be outputted with one line of code. In addition, many ihr metrics are inspired by metrics commonly used for continuous glucose monitoring (CGM), which transfers well to heart rate centered data.
+
+The ihr package is designed to work with a data frame object that have the three columns present:
+
+* Heart Rate Measurement (in Beats per Minute) (`"hr"`)
+
+* Timestamp for Measurement (`"time"`)
+
+* Subject identification (`"id"`)
+
+ihr comes with example data from 5 subjects whose heart rate were tracked with FitBit devices. This data is publically available from ![kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1/data)
 
 # Example Datasets
 The ihr package includes two datasets: example_heart_1, and example_heart_5. The one subject data is simply the first subject of the five subject data. 
