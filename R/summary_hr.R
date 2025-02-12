@@ -47,8 +47,7 @@ summary_hr <- function(data) {
       q1_hr = quantile(hr, 0.25, na.rm = TRUE),
       q3_hr = quantile(hr, 0.75, na.rm = TRUE),
       max_hr = max(hr, na.rm = TRUE),
-      sd_hr = sd(hr, na.rm = TRUE),
-      unique_days = length(unique(format(time, "%Y-%m-%d")))
+      sd_hr = sd(hr, na.rm = TRUE)
     )
 
   return(summary_data)
