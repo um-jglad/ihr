@@ -38,8 +38,8 @@ active_percent <- function(data) {
   active_data <- data |>
     dplyr::group_by(id) |>
     dplyr::summarize(
+      unique_days = length(unique(format(time, "%Y-%m-%d"))),
       total_days = as.integer(difftime(max(time), min(time), units = "days")) + 1,
-      unique_days = dplyr::n_distinct(time_date),
       active_percent = (unique_days / total_days) * 100
     )
 
