@@ -163,7 +163,7 @@ epicalc_profile <- function(data,lv1_low=60,lv2_low=55,lv1_high=85,lv2_high=100,
   # match plot ranges colors (AGP)
   colors <- c("#8E1B1B", "#F92D00", "#48BA3C", "#F9F000", "#F9B500")
   p1 = ggplot(plot_data) +
-    geom_point(aes(time, hr, color = class)) +
+    geom_point(aes(time, ep_data$hr, color = class)) +
     scale_color_manual(values = colors, drop = FALSE,
                        labels = c("lv2_low", "lv1_low", "Normal", "lv1_high", "lv2_high")) +
     ggplot2::scale_x_datetime(name = 'Date') +
@@ -174,7 +174,7 @@ epicalc_profile <- function(data,lv1_low=60,lv2_low=55,lv1_high=85,lv2_high=100,
 
   pFinal = (
 
-    wrap_elements(t1) + plot_layout()) / p1
+    patchwork::wrap_elements(t1) + patchwork::plot_layout()) / p1
 
   pFinal
 
