@@ -7,7 +7,7 @@
 summary_hr(data)
 }
 \arguments{
-\item{data}{A DataFrame object with column names "Id", "Time", "Value".
+\item{data}{A DataFrame object with column names "id", "time", "hr".
 Missing HR values (NA) are automatically excluded from calculations.}
 }
 \value{
