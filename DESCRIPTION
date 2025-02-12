@@ -21,7 +21,10 @@ Imports:
     ggpubr,
     plotly,
     tibble,
-    zoo
+    zoo,
+    gridExtra,
+    gtable,
+    patchwork
 LazyData: true
 Suggests: 
     knitr,
