@@ -28,8 +28,8 @@ active_percent <- function(data) {
 
   # Convert time column to Date-Time format
   data <- data |>
-    dplyr::mutate(time = as.POSIXct(time, format = "%m/%d/%Y %I:%M:%S %p"),
-           time_date = as.Date(time))  # Extract only the date
+    dplyr::mutate(time = as.POSIXct(time, format = "%m/%d/%Y %I:%M:%S"),
+                  time_date = as.Date(time))  # Extract only the date
 
   # Remove rows with missing HR values
   data <- dplyr::filter(data, !is.na(hr))
@@ -38,7 +38,9 @@ active_percent <- function(data) {
   active_data <- data |>
     dplyr::group_by(id) |>
     dplyr::summarize(
-      unique_days = length(unique(format(time, "%Y-%m-%d"))),
+      start_date = min(time),  # Now correctly grouped by 'id'
+      end_date = max(time),
+      unique_days = length(unique(format(time, "%m-%d-%Y"))),
       total_days = as.integer(difftime(max(time_date), min(time_date), units = "days")) + 1,
       active_percent = (unique_days / total_days) * 100
     )

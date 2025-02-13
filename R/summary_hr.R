@@ -3,7 +3,7 @@
 #' @description
 #' The function summary_hr computes summary statistics for heart rate (HR) data.
 #' It is a wrapper for summary() functions and outputs a tibble object with the subject ID and the following summary values:
-#' Minimum, 1st Quartile, Median, Mean, 3rd Quartile, Maximum, Standard Deviation (SD), Total number of unique days.
+#' Minimum, 1st Quartile, Median, Mean, 3rd Quartile, Maximum, Standard Deviation (SD).
 
 #' @usage
 #' summary_hr(data)
@@ -47,8 +47,7 @@ summary_hr <- function(data) {
       q1_hr = quantile(hr, 0.25, na.rm = TRUE),
       q3_hr = quantile(hr, 0.75, na.rm = TRUE),
       max_hr = max(hr, na.rm = TRUE),
-      sd_hr = sd(hr, na.rm = TRUE),
-      unique_days = length(unique(format(time, "%Y-%m-%d")))
+      sd_hr = sd(hr, na.rm = TRUE)
     )
 
   return(summary_data)
