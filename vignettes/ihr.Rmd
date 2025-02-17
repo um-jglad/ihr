@@ -1,6 +1,6 @@
 ---
 title: "Getting Started in ihr"
-author: "Irina Gaynanova, Owen Yoo, Sophia Han"
+author: "Owen Yoo, Shuiqing Han, Irina Gaynanova"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting Started in ihr}
@@ -31,10 +31,10 @@ The ihr package is designed to work with a data frame object that have the three
 
 * Subject identification (`"id"`)
 
-ihr comes with example data from 5 subjects whose heart rate were tracked with FitBit devices. This data is publically available from [kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1/data)
+ihr comes with example data from 14 subjects whose heart rate were tracked with FitBit devices. This data is publically available from [kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1/data)
 
 # Example Datasets
-The ihr package includes two datasets: example_heart_1, and example_heart_5. The one subject data is simply the first subject of the five subject data. 
+The ihr package includes two datasets: example_heart_1, and example_heart_14. The one subject data is simply the first subject of the 14 subject data. 
 
 ## Example data for 1 subject
 
@@ -71,36 +71,20 @@ The ihr package have the function of calculating multiple time-dependent metrics
 
 ## active_percent()
 
-When a dataframe is passed, subject id will always be printed in the id column, and multiple values for a single subject will be printed in the following columns.
+The function computes the active percentage, representing the percentage missingness of the heart rate data. 
+
+The resulting output is a structured table where:
+
+Id represents the subject.
+start_date and end_date mark the observation period.
+unique_days counts the actual days with recorded data.
+total_days indicates the full monitoring period(including both start and end date).
+active_percent represents the completeness of heart rate recordings as a percentage at the day level.
 
 ```{r}
 active_percent(example_heart_1)
 ```
 
-## episode_calculation()
-
-This function calculates low and high heart rate episodes with summary statistics. 
-
-```{r}
-episode_calculation(example_heart_1, lv1_low = 60, lv2_low = 55, lv1_high = 85, lv2_high = 100, dur_length = 15)
-```
-
-
-### Parameters
-
-#### data 
-DataFrame object with column names "id", "time", and "hr". 
-
-#### lv1_low, lv2_low, hy1_high, lv2_high
-Users can set certain thresholds for the low and high heart rate by passing parameters, lv1_low, lv2_low, lv1_high, lv2_high. Level 2 indicates more extreme states than level 1 so the threshold value for the lv2_low value should be lower than lv1_low value, and the threshold for the lv2_high value should higher than lv1_high value.
-
-#### dur_length
-By setting a duration length to 15 minutes (the last parameter), the function will count the number of episodes that heart rate values go below or above the thresholds more than 15 minutes. 
-
-
-### Return Value
-
-For each single subject, it returns a dataframe including average number of episodes per day, average episode length, and average heart rate in episodes for each type and each level.
 
 # MAHE (Mean Amplitude of Heart Rate Excursions)
 
@@ -164,5 +148,40 @@ plot_hr(example_heart_1, to = "2016-04-13", agg = "hour", inter_gap = 3600)
 
 ```{r fig.width = 7}
 mahe(example_heart_1, to = "2016-04-13", plot = T, show_ma = T, show_excursions = T)
+```
+
+# Introduction to episodes
+
+## Episode_calculation
+
+The episode_calculation function identifies episodes where heart rate (HR) exceed predefined thresholds. It classifies each data point as:
+
+Low Episode: Heart rate falls below a given threshold.
+High Episode: Heart rate rises above a given threshold.
+Exclusive Episodes: An episode that remains within Level 1 (lv1) and never reaches Level 2 (lv2).
+Level 2 represents a more extreme states that level 1.
+Extended Episodes: Prolonged episodes that meet a minimum duration criterion.
+
+For each episode, the function computes summary statistics, including:
+1. Average episodes per day.
+2. Mean episode duration.
+3. Mean HR levels during episodes.
+4. Total number of episodes.
+
+```{r}
+episode_calculation(example_heart_1, lv1_low = 60, lv2_low = 55, lv1_high = 85, lv2_high = 100, dur_length = 15)
+```
+
+## Epicalc_profile: Visualizing Episode Trends
+
+While episode_calculation identifies and summarizes episodes, epicalc_profile provides a visualization of episode trends over time. It generates:
+
+1. A summary table displaying key episode metrics.
+2. A scatter plot of heart rate values over time, with each data point color-coded by episode classification.
+
+### Example plot for epicalc_profile
+
+```{r}
+epicalc_profile(example_heart_1)
 ```
 
