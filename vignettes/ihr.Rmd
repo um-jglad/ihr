@@ -19,9 +19,9 @@ knitr::opts_chunk$set(
 library(ihr)
 ```
 
-The ihr package is designed to help in the analyses of heart rate data from wearable technologies (i.e. FitBit, Apple Watches, etc.). These wearable technologies capture the heart rate of the user while the user is wearing the device, often in intervals of only a couple of seconds. Data from these wearables are increasingly used to understand a users physical activity and their heart functionality on a day by day basis. 
+The ihr package is designed to help in the analyses of heart rate data from wearable technologies (i.e. FitBit, Apple Watches, etc.). These wearable technologies capture the heart rate of the user while the user is wearing the device, often in intervals of only a couple of seconds. Wearable technologies commonly track heart rate using Photoplethysmography (PPG). Data from these wearable are increasingly used to understand a users physical activity and their heart functionality on a day by day basis. 
 
-Previous R packages on heart rate are typically more narrow in their focus. Whether it be more specific on one type of metric (such as heart rate variability) or a specific event that these devices capture (Physical exertion). The ihr package is unique in its ability to measure various types of metric that would be of interest to clinicians, each metric being designed to be outputted with one line of code. In addition, many ihr metrics are inspired by metrics commonly used for continuous glucose monitoring (CGM), which transfers well to heart rate centered data.
+The ihr package is unique in its ability to measure various types of metric that would be of interest to clinicians, each metric being designed to be outputted with one line of code. In addition, many ihr metrics are inspired by metrics commonly used for continuous glucose monitoring (CGM), which transfers well to heart rate  data due to the similarity in the structure of the data.
 
 The ihr package is designed to work with a data frame object that have the three columns present:
 
@@ -31,7 +31,7 @@ The ihr package is designed to work with a data frame object that have the three
 
 * Subject identification (`"id"`)
 
-ihr comes with example data from 14 subjects whose heart rate were tracked with FitBit devices. This data is publically available from [kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1/data)
+ihr comes with example data from 14 subjects whose heart rate were tracked with FitBit devices. This data is publicly available from [kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1/data)
 
 # Example Datasets
 The ihr package includes two datasets: example_heart_1, and example_heart_14. The one subject data is simply the first subject of the 14 subject data. 
@@ -65,6 +65,34 @@ The ihr package provides summary of heart rate data, it returns multiple values 
 summary_hr(example_heart_1)
 ```
 
+# Vizualizing Data
+
+The `plot_glu` function generates a time series plot. This function can support both single and multiple subjects.
+
+```{r fig.width= 7}
+plot_hr(example_heart_1)
+```
+
+`plot_hr` also supports additional arguments to adjust the way the heart rate data can be plotted. 
+
+Due to the massive number of observations that heart rate data can have, `plot_hr` supports a time range argument. Using `from` and `to`, the function will plot the heart rate data only from the specified time interval [from, to). If an argument is not provided to one of the two, the function defaults to the first and last observation, respectively. 
+
+```{r fig.width= 7}
+plot_hr(example_heart_1, from = "2016-04-30", to = "2016-05-02")
+```
+
+The red lines can be shifted to any Lower or Upper Heart Rate using the parameter `LHR` and `UHR` respectively.
+
+```{r fig.width= 7}
+plot_hr(example_heart_1, LHR = 100, UHR = 120)
+```
+
+Finally, `plot_hr` supports a time aggregation argument. Using the parameter `agg`, users can specify if the plot should be plotted using minute or hour long summary for heart rate. If the user chooses to use `agg`, the `inter_gap` argument must be adjusted accordingly, where `inter_gap` must be equal to or longer than the aggregated time in seconds.
+
+```{r fig.width= 7}
+plot_hr(example_heart_1, to = "2016-04-13", agg = "minute")
+```
+
 # Calculating time-dependent metrics
 
 The ihr package have the function of calculating multiple time-dependent metrics.
@@ -85,61 +113,14 @@ active_percent represents the completeness of heart rate recordings as a percent
 active_percent(example_heart_1)
 ```
 
-
 # MAHE (Mean Amplitude of Heart Rate Excursions)
 
 MAHE is a variability based metric that is influenced by a similar metric used in continuous glucode monitoring. The algorithm used for this metric is used from the open-source algorithm provided in [Open-Source Algorithm to Calculate Mean Amplitude of Glycemic Excursions Using Short and Long Moving Averages](https://journals.sagepub.com/doi/10.1177/19322968211061165).
 
-`mahe` supports calculation for single or multiple subjects and returns a data frame with columns `id` and `MAHE`. Other parameters adjust the calculation of the algorithm and additional plotting options (further detailed below)
+`mahe` supports calculation for single or multiple subjects and returns a data frame with columns `id` and `MAHE`. Other parameters adjust the calculation of the algorithm.
 
 ```{r}
 mahe(example_heart_1)
-```
-
-
-# Vizualizations
-
-The ihr package supports two plot types described below:
-
-| Function call | Visualization description | 
-|:------------|:------------------------------|
-|`plot_hr` | Time Series plot of Heart Rate | 
-|`mahe`| MAHE plot displying peak and nadirs| 
-
-## Example plot: Time series
-
-The `plot_glu` function generates a time series plot. This function can support both single and multiple subjects.
-
-```{r fig.width= 7}
-plot_hr(example_heart_1)
-```
-
-`plot_hr` also supports additional arguments to adjust the way the heart rate data can be plotted. 
-
-Due to the sheer number of observations that heart rate can have, `plot_hr` supports a time range argument. Using `from` and `to`, the function will plot the heart rate data only from the specified time interval [from, to). If an argument is not provided to one of the two, the function defaults to the first and last observation, respectively. 
-
-```{r fig.width= 7}
-plot_hr(example_heart_1, to = "2016-04-13")
-```
-
-```{r fig.width= 7}
-plot_hr(example_heart_1, from = "2016-04-30", to = "2016-05-02")
-```
-
-The red lines can be shifted to any Lower or Upper Heart Rate using the parameter `LHR` and `UHR` respectively
-
-```{r fig.width= 7}
-plot_hr(example_heart_1, LHR = 100, UHR = 120)
-```
-
-Finally, `plot_hr` supports a time aggregation argument. Using the parameter `agg`, users can specify if the plot should be plotted using minute or hour long summary for heart rate. If the user chooses to use `agg`, the `inter_gap` argument must be adjusted accordingly, where `inter_gap` must be equal to or longer than the aggregated time in seconds.
-
-```{r fig.width= 7}
-plot_hr(example_heart_1, to = "2016-04-13", agg = "minute")
-```
-
-```{r fig.width= 7}
-plot_hr(example_heart_1, to = "2016-04-13", agg = "hour", inter_gap = 3600)
 ```
 
 ## Example plot: MAHE
