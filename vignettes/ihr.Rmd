@@ -162,7 +162,7 @@ While episode_calculation identifies and summarizes episodes, epicalc_profile pr
 
 ### Example plot for epicalc_profile
 
-```{r}
+```{r fig.width= 8, fig.height = 6}
 epicalc_profile(example_heart_1)
 ```
 
