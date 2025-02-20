@@ -12,7 +12,7 @@ Missing HR values (NA) are automatically excluded from calculations.}
 }
 \value{
 If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of summary values is returned.
-'NA' heartrate values are omitted from the calcution of the summary values.
+'NA' heartrate values are omitted from the calculation of the summary values.
 }
 \description{
 The function summary_hr computes summary statistics for heart rate (HR) data.

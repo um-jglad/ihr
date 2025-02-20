@@ -13,7 +13,7 @@
 
 #' @return
 #' If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of summary values is returned.
-#' 'NA' heartrate values are omitted from the calcution of the summary values.
+#' 'NA' heartrate values are omitted from the calculation of the summary values.
 
 #' @export
 #' @examples
@@ -32,7 +32,7 @@ summary_hr <- function(data) {
 
   # Convert Time column to Date-Time format
   data <- data |>
-    dplyr::mutate(time = as.POSIXct(time, format = "%m/%d/%Y %I:%M:%S %p"))
+    dplyr::mutate(time = as.POSIXct(time, format = "%Y/%d/%m %I:%M:%S %p"))
 
   # Remove rows with missing HR values
   data <- dplyr::filter(data, !is.na(hr))
