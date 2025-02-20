@@ -2,6 +2,7 @@ mahe_ma_single <- function(data,
                            short_ma = 5, long_ma = 32,
                            return_type = c('num', 'df'),
                            direction = c('avg', 'service', 'max', 'plus', 'minus'),
+                           excursions = FALSE,
                            tz = "", inter_gap = 45,
                            max_gap = 180,
                            plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions = TRUE,
@@ -479,6 +480,33 @@ mahe_ma_single <- function(data,
 
     if (return_type == 'df') {
       return(return_val)
+    }
+
+    # Returning the excursions (Code taken from arrow calculation from plotting)
+    if (excursions) {
+        tp_indexes <- dplyr::select(all_tp_indexes, idx, peak_or_nadir, plus_or_minus)
+
+        exc_data <- data |>
+          tibble::rownames_to_column(var = 'idx') |>
+          dplyr::mutate(idx = as.numeric(idx)) |>
+          dplyr::left_join(tp_indexes, by = 'idx') |>
+          dplyr::left_join(dplyr::select(all_data, time, MA_Short, MA_Long), by = 'time')
+
+
+        plus <- exc_data |> dplyr::filter(plus_or_minus == "PLUS") |> dplyr::arrange(idx)
+        minus <- exc_data |> dplyr::filter(plus_or_minus == "MINUS") |> dplyr::arrange(idx)
+        arrows <- plus |> dplyr::filter(peak_or_nadir == "NADIR") |> dplyr::select(x = time, xend = time, direction = plus_or_minus, y = hr) |> dplyr::mutate(yend = base::subset(plus, peak_or_nadir == "PEAK")$hr)
+        arrows <- rbind(arrows, minus |> dplyr::filter(peak_or_nadir == "PEAK") |> dplyr::select(x = time, xend = time, direction = plus_or_minus, y = hr) |> dplyr::mutate(yend = base::subset(minus, peak_or_nadir == "NADIR")$hr))
+
+        exc_return <- arrows |>
+          dplyr::mutate(Excursions = abs(yend - y),
+                        End = lead(x)) |>
+          dplyr::select(x, End, Excursions, direction) |>
+          dplyr::arrange(x)
+
+        colnames(exc_return) <- c("Start", "End", "Excursions", "Direction")
+
+        return(exc_return)
     }
 
     # filter by various options

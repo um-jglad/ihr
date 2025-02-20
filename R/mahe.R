@@ -42,6 +42,7 @@ mahe <- function(data,
                  from = "", to = "",
                  return_type = c('num', 'df'),
                  direction = c('avg', 'service', 'max', 'plus', 'minus'),
+                 excursions = FALSE,
                  tz = "", inter_gap = 45,
                  max_gap = 180,
                  plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions = TRUE) {
@@ -49,7 +50,7 @@ mahe <- function(data,
   direction = match.arg(direction, c('avg', 'service', 'max', 'plus', 'minus'))
 
   return(mahe_ma(data, short_ma = short_ma, long_ma = long_ma, from = from, to = to, return_type=return_type, direction=direction,
-                 plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz,
+                 plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz, excursions = excursions,
                  title = title, xlab = xlab, ylab = ylab, show_ma = show_ma, show_excursions=show_excursions))
 }
 
@@ -59,6 +60,7 @@ mahe_ma <- function(data,
                     from = "", to = "",
                     return_type = c('num', 'df'),
                     direction = c('avg', 'service', 'max', 'plus', 'minus'),
+                    excursions = FALSE,
                     inter_gap = 45, tz = "",
                     max_gap = 180,
                     plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions=TRUE) {
@@ -82,7 +84,7 @@ mahe_ma <- function(data,
     dplyr::filter(!is.na(hr)) |>
     dplyr::group_by(id) |>
     dplyr::do(MAHE = mahe_ma_single(., short_ma = short_ma, long_ma = long_ma, return_type=return_type, direction=direction,
-                                    plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz,
+                                    plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz, excursions = FALSE,
                                     title = title, xlab = xlab, ylab = ylab, show_ma = show_ma, show_excursions = show_excursions, static_or_gui='ggplot'))
 
   # Check if a ggplot or number in list is returned - convert the latter to a number
