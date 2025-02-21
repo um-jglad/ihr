@@ -12,6 +12,7 @@ mahe(
   to = "",
   return_type = c("num", "df"),
   direction = c("avg", "service", "max", "plus", "minus"),
+  excursions = FALSE,
   tz = "",
   inter_gap = 45,
   max_gap = 180,
@@ -37,6 +38,8 @@ mahe(
 \item{return_type}{\strong{Default: "num".} One of ("num", "df"). Will return either a single number for the "MAHE over the entire trace" (weighted by segment length) or a DataFrame with the MAHE value for each segment.}
 
 \item{direction}{\strong{Default: "avg".} One of ("avg", "service", "max", "plus", or "minus"). Algorithm will calculate one of the following: MAHE+ (nadir to peak), MAHE- (peak to nadir), MAHEavg = avg(MAHE+, MAHE-), MAHEmax = max(MAHE+, MAHE-), or automatically choose MAHE+/MAHE- based on the first countable excursion (i.e., "service"). NOTE: the selection of peak-to-nadir or nadir-to-peak is chosen independently on each segment, thus MAHEservice may choose peak-to-nadir on one segment and nadir-to-peak on another, for example.}
+
+\item{excursions}{\strong{Default: FALSE.} Boolean. If 'TRUE', returns the set of excursions that MAHE used for calculations}
 
 \item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning}
 

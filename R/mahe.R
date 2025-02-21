@@ -10,6 +10,7 @@
 #' @param to \strong{Default: Last observed time.} Ending time of the data exclusive (In format %Y-%m-%d)
 #' @param return_type \strong{Default: "num".} One of ("num", "df"). Will return either a single number for the "MAHE over the entire trace" (weighted by segment length) or a DataFrame with the MAHE value for each segment.
 #' @param direction \strong{Default: "avg".} One of ("avg", "service", "max", "plus", or "minus"). Algorithm will calculate one of the following: MAHE+ (nadir to peak), MAHE- (peak to nadir), MAHEavg = avg(MAHE+, MAHE-), MAHEmax = max(MAHE+, MAHE-), or automatically choose MAHE+/MAHE- based on the first countable excursion (i.e., "service"). NOTE: the selection of peak-to-nadir or nadir-to-peak is chosen independently on each segment, thus MAHEservice may choose peak-to-nadir on one segment and nadir-to-peak on another, for example.
+#' @param excursions \strong{Default: FALSE.} Boolean. If 'TRUE', returns the set of excursions that MAHE used for calculations
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #' @param inter_gap The maximum allowable gap (in minutes) for interpolation. The values will not be interpolated between the glucose measurements that are more than inter_gap minutes apart. The default value is 45 min.
 #' @param plot \strong{Default: FALSE.} Boolean. If `TRUE`, returns a plot that visualizes all identified peaks and nadirs, excursions, and  missing gaps.
@@ -84,11 +85,15 @@ mahe_ma <- function(data,
     dplyr::filter(!is.na(hr)) |>
     dplyr::group_by(id) |>
     dplyr::do(MAHE = mahe_ma_single(., short_ma = short_ma, long_ma = long_ma, return_type=return_type, direction=direction,
-                                    plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz, excursions = FALSE,
+                                    plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz, excursions = excursions,
                                     title = title, xlab = xlab, ylab = ylab, show_ma = show_ma, show_excursions = show_excursions, static_or_gui='ggplot'))
 
   # Check if a ggplot or number in list is returned - convert the latter to a number
-  if(class(out$MAHE[[1]])[1] == "numeric" | is.na(out$MAHE[[1]][1])) {
+  if(class(out$MAHE[[1]])[1] == "data.frame") {
+    # No processing on DataFrames is needed
+    out <- out
+  }
+  else if(class(out$MAHE[[1]])[1] == "numeric" | is.na(out$MAHE[[1]][1])) {
     out <- out |> dplyr::mutate(MAHE = as.numeric(MAHE))
   }
   # else must be ggplot output

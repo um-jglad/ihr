@@ -10,7 +10,7 @@ calc_thresholds(data, q = 0.5)
 \item{data}{A DataFrame object with column names "id", "time", "hr".
 Missing HR values (NA) are automatically excluded from calculations.}
 
-\item{q}{the quantile user wants to use for the thresholds}
+\item{q}{the quantile user wants to use for the thresholds(default = 0.5, calculating the median)}
 }
 \value{
 If a dataframe object is passed, then a tibble object with a column for subject id and a column for the thresholds is returned.

@@ -500,7 +500,7 @@ mahe_ma_single <- function(data,
 
         exc_return <- arrows |>
           dplyr::mutate(Excursions = abs(yend - y),
-                        End = lead(x)) |>
+                        End = dplyr::lead(x)) |>
           dplyr::select(x, End, Excursions, direction) |>
           dplyr::arrange(x)
 
