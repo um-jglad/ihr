@@ -24,7 +24,8 @@ Imports:
     zoo,
     gridExtra,
     gtable,
-    patchwork
+    patchwork,
+    utils
 LazyData: true
 Suggests: 
     knitr,

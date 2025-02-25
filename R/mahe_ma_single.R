@@ -492,6 +492,10 @@ mahe_ma_single <- function(data,
           dplyr::left_join(tp_indexes, by = 'idx') |>
           dplyr::left_join(dplyr::select(all_data, time, MA_Short, MA_Long), by = 'time')
 
+        last_time <- exc_data |>
+          dplyr::filter(!is.na(peak_or_nadir)) |>
+          utils::tail(1) |>
+          dplyr::pull(time)
 
         plus <- exc_data |> dplyr::filter(plus_or_minus == "PLUS") |> dplyr::arrange(idx)
         minus <- exc_data |> dplyr::filter(plus_or_minus == "MINUS") |> dplyr::arrange(idx)
@@ -499,12 +503,13 @@ mahe_ma_single <- function(data,
         arrows <- rbind(arrows, minus |> dplyr::filter(peak_or_nadir == "PEAK") |> dplyr::select(x = time, xend = time, direction = plus_or_minus, y = hr) |> dplyr::mutate(yend = base::subset(minus, peak_or_nadir == "NADIR")$hr))
 
         exc_return <- arrows |>
+          dplyr::arrange(x) |>
           dplyr::mutate(Excursions = abs(yend - y),
                         End = dplyr::lead(x)) |>
-          dplyr::select(x, End, Excursions, direction) |>
-          dplyr::arrange(x)
+          dplyr::select(x, End, Excursions, direction)
 
         colnames(exc_return) <- c("Start", "End", "Excursions", "Direction")
+        exc_return[nrow(exc_return), "End"] <- last_time
 
         return(exc_return)
     }
