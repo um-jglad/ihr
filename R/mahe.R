@@ -12,7 +12,7 @@
 #' @param direction \strong{Default: "avg".} One of ("avg", "service", "max", "plus", or "minus"). Algorithm will calculate one of the following: MAHE+ (nadir to peak), MAHE- (peak to nadir), MAHEavg = avg(MAHE+, MAHE-), MAHEmax = max(MAHE+, MAHE-), or automatically choose MAHE+/MAHE- based on the first countable excursion (i.e., "service"). NOTE: the selection of peak-to-nadir or nadir-to-peak is chosen independently on each segment, thus MAHEservice may choose peak-to-nadir on one segment and nadir-to-peak on another, for example.
 #' @param excursions \strong{Default: FALSE.} Boolean. If 'TRUE', returns the set of excursions that MAHE used for calculations
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
-#' @param inter_gap The maximum allowable gap (in minutes) for interpolation. The values will not be interpolated between the glucose measurements that are more than inter_gap minutes apart. The default value is 45 min.
+#' @param inter_gap \strong{Default: 15.} The maximum allowable gap (in minutes) for interpolation. The values will not be interpolated between the glucose measurements that are more than inter_gap minutes apart.
 #' @param plot \strong{Default: FALSE.} Boolean. If `TRUE`, returns a plot that visualizes all identified peaks and nadirs, excursions, and  missing gaps.
 #' @param max_gap \strong{Default: 180.} Integer for the maximum length of a gap in minutes before the trace is split into segments and MAGE is calculated on each segment independently.
 #' @param title  \strong{Default: "Heart Rate Trace Trace - Subject ID".} Title for the ggplot.
@@ -44,7 +44,7 @@ mahe <- function(data,
                  return_type = c('num', 'df'),
                  direction = c('avg', 'service', 'max', 'plus', 'minus'),
                  excursions = FALSE,
-                 tz = "", inter_gap = 45,
+                 tz = "", inter_gap = 15,
                  max_gap = 180,
                  plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions = TRUE) {
 
@@ -62,7 +62,7 @@ mahe_ma <- function(data,
                     return_type = c('num', 'df'),
                     direction = c('avg', 'service', 'max', 'plus', 'minus'),
                     excursions = FALSE,
-                    inter_gap = 45, tz = "",
+                    inter_gap = 15, tz = "",
                     max_gap = 180,
                     plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions=TRUE) {
   id = . = MAHE = hr = NULL
@@ -71,6 +71,12 @@ mahe_ma <- function(data,
   data = check_data_columns(data)
   is_vector = attr(data, "is_vector")
   direction = match.arg(direction, c('avg', 'service', 'max', 'plus', 'minus'))
+
+  # Summarizing data at a minute level
+  data <- data |>
+    dplyr::mutate(time = floor_date(time, unit = "minute")) |>
+    dplyr::group_by(id, time) |>
+    dplyr::summarise(hr = mean(hr), .groups = "drop")
 
   if(from != ""){
     lower_time <- as.POSIXct(from, format = "%Y-%m-%d")

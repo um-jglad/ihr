@@ -212,8 +212,8 @@ mahe_ma_single <- function(data,
   data = check_data_columns(data)
 
   # 1.1 Interpolate over uniform grid
-  # Note: always interpolate to 5 minute grid
-  data_ip <- HR2DayByDay(data, dt0 = 5, inter_gap = inter_gap, tz = tz)
+  # Note: always interpolate to minute grid
+  data_ip <- HR2DayByDay(data, dt0 = 1, inter_gap = inter_gap, tz = tz)
   day_one = lubridate::as_datetime(data_ip$actual_dates[1])
   ndays = length(data_ip$actual_dates)
 
