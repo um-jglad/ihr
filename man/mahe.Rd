@@ -14,7 +14,7 @@ mahe(
   direction = c("avg", "service", "max", "plus", "minus"),
   excursions = FALSE,
   tz = "",
-  inter_gap = 45,
+  inter_gap = 15,
   max_gap = 180,
   plot = FALSE,
   title = NA,
@@ -43,7 +43,7 @@ mahe(
 
 \item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning}
 
-\item{inter_gap}{The maximum allowable gap (in minutes) for interpolation. The values will not be interpolated between the glucose measurements that are more than inter_gap minutes apart. The default value is 45 min.}
+\item{inter_gap}{\strong{Default: 15.} The maximum allowable gap (in minutes) for interpolation. The values will not be interpolated between the glucose measurements that are more than inter_gap minutes apart.}
 
 \item{max_gap}{\strong{Default: 180.} Integer for the maximum length of a gap in minutes before the trace is split into segments and MAGE is calculated on each segment independently.}
 

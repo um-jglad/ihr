@@ -74,7 +74,7 @@ mahe_ma <- function(data,
 
   # Summarizing data at a minute level
   data <- data |>
-    dplyr::mutate(time = floor_date(time, unit = "minute")) |>
+    dplyr::mutate(time = lubridate::floor_date(time, unit = "minute")) |>
     dplyr::group_by(id, time) |>
     dplyr::summarise(hr = mean(hr), .groups = "drop")
 
