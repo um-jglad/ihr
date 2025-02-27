@@ -80,7 +80,7 @@ check_data_time <- function(data, tz = ""){
   return(out)
 }
 
-HR2DayByDay <- function(data, dt0 = NULL, inter_gap = 45, tz = ""){
+HR2DayByDay <- function(data, dt0 = NULL, inter_gap = 15, tz = ""){
 
   # complete.cases only works with POSIXct, not POSIXlt, so check for correct time format
   if (!lubridate::is.POSIXct(data$time)){
