@@ -50,7 +50,11 @@
 #' roc(example_heart_1)
 #'
 
-roc <- function(data, timelag = 5, inter_gap = 15, tz = ""){
+roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
+
+  hr = NULL
+  rm(list = c("hr"))
+
 
   # Summarizing data at a minute level
   data <- data |>
