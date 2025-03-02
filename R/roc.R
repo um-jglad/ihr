@@ -6,7 +6,6 @@
 #' @usage
 #' roc(data, timelag = 1, inter_gap = 15, tz = "")
 #'
-#'
 #' @param data DataFrame object with column names "id", "time", "hr"
 #' @param timelag Integer indicating the time period (# minutes) over which rate
 #' of change is calculated. Default is 1, e.g. rate of change is the change in
