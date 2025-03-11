@@ -6,12 +6,12 @@
 #' @usage
 #' active_percent(data)
 
-#' @param data A DataFrame  mobject with column names "id", "time", "hr".
+#' @param data A DataFrame object with column names "id", "time", "hr".
 #' Missing HR values (NA) are automatically excluded from calculations.
 
 #' @return
 #' If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of percentage missingness is returned.
-#' 'NA' heartrate values are omitted from the calcution of the summary values.
+#' 'NA' heartrate values are omitted from the calculation of the summary values.
 
 #' @export
 #' @examples
