@@ -1,3 +1,42 @@
+#' Calculate percentage of values above target thresholds
+#'
+#' @description
+#' The function \code{above_percent} produces a tibble object with values equal to
+#' the percentage of heart rate data above target values. The output columns
+#' correspond to the subject id followed by the target values, and the
+#' output rows correspond to the subjects. The values will be between 0
+#' (no measurements) and 100 (all measurements).
+#'
+#' @usage
+#' above_percent(data, targets_above = c(100, 85, 60))
+#'
+#' @param targets_above \strong{Default: (60, 85, 100).} Numeric vector of heart rate thresholds. Heart rate values from
+#' data argument will be compared to each value in the targets_above vector.
+#'
+#' @details
+#' A tibble object with 1 row for each subject, a column for subject id and
+#' column for each target value is returned. NA's will be omitted from the glucose
+#' values in calculation of percent.
+#'
+#' @return If a DataFrame object is passed, then a tibble object with
+#' a column for subject id and then a column for each target value is returned. If a vector of heart rate
+#' values is passed, then a tibble object without the subject id is returned. Wrap
+#' `as.numeric()` around the latter to output a numeric vector.
+#'
+#' @seealso plot_ranges()
+#'
+#' @export
+#'
+#'
+#' @examples
+#'
+#' data(example_data_1_subject)
+#'
+#' above_percent(example_data_1_subject)
+#' above_percent(example_data_1_subject, targets_above = c(100, 150, 180))
+#'
+
+
 above_percent <- function(data, targets_above = c(60, 85, 100)){
 
   x = target_val = id = NULL
