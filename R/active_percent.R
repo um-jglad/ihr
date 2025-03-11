@@ -6,7 +6,7 @@
 #' @usage
 #' active_percent(data)
 
-#' @param data A DataFrame  mobject with column names "Id", "Time", "Value".
+#' @param data A DataFrame  mobject with column names "id", "time", "hr".
 #' Missing HR values (NA) are automatically excluded from calculations.
 
 #' @return
