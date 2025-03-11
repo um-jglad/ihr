@@ -2,6 +2,7 @@
 
 #' @description
 #' The function calculate_RHR computes the resting heart rate.
+#' It calculates the mean hr value between 3am to 7am and consider it as the resting heart rate according to the reference.
 
 #' @usage
 #' calculate_RHR(data)
