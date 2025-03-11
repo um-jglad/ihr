@@ -16,6 +16,7 @@ Depends:
 Imports:
     ggplot2,
     dplyr,
+    tidyr,
     stats,
     lubridate,
     ggpubr,

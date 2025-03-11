@@ -8,10 +8,12 @@
 #' (no measurements) and 100 (all measurements).
 #'
 #' @usage
-#' above_percent(data, targets_above = c(100, 85, 60))
+#' above_percent(data, targets_above = c(60, 85, 100))
 #'
 #' @param targets_above \strong{Default: (60, 85, 100).} Numeric vector of heart rate thresholds. Heart rate values from
 #' data argument will be compared to each value in the targets_above vector.
+#' @param data A DataFrame object with column names "id", "time", "hr".
+#' Missing HR values (NA) are automatically excluded from calculations.
 #'
 #' @details
 #' A tibble object with 1 row for each subject, a column for subject id and
@@ -30,17 +32,16 @@
 #'
 #' @examples
 #'
-#' data(example_data_1_subject)
+#' data(example_heart_1)
 #'
-#' above_percent(example_data_1_subject)
-#' above_percent(example_data_1_subject, targets_above = c(100, 150, 180))
+#' above_percent(example_heart_1)
+#' above_percent(example_heart_1, targets_above = c(100, 150, 180))
 #'
 
 
 above_percent <- function(data, targets_above = c(60, 85, 100)){
-
-  x = target_val = id = NULL
-  rm(list = c("id", "target_val", "x"))
+  x = target_val = id = time = hr = NULL
+  rm(list = c("id", "target_val", "x", "time", "hr"))
   data = check_data_columns(data)
   is_vector = attr(data, "is_vector")
   targets_above = as.double(targets_above)
