@@ -30,8 +30,8 @@ sd_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
   rm(list = c("hr", "id", "sd_roc"))
   data = check_data_columns(data)
 
-  out = roc(data, timelag,inter_gap, tz) %>%
-    dplyr::group_by(id) %>%
+  out = roc(data, timelag,inter_gap, tz) |>
+    dplyr::group_by(id) |>
     dplyr::summarise(
       sd_roc = sd(roc, na.rm = TRUE)
     )

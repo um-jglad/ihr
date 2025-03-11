@@ -18,6 +18,8 @@
 #'
 
 MRROC <- function(data, timelag = 1, inter_gap = 15, tz = ""){
+  id = NULL
+  rm(list = c("id"))
   data = check_data_columns(data)
 
   out = roc(data, timelag = timelag, inter_gap = inter_gap, tz = tz) |>

@@ -14,7 +14,7 @@
 #' data(example_heart_1)
 #' hist_roc(example_heart_1)
 
-hist_roc <- function(data,  timelag = 15, inter_gap = 15, tz = "") {
+hist_roc <- function(data,  timelag = 1, inter_gap = 15, tz = "") {
 
   hr = id = roc = category = NULL
   rm(list = c("hr", "id", "roc", "category"))
