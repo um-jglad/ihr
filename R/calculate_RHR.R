@@ -25,7 +25,7 @@
 
 calculate_RHR <- function(data) {
   time = hr = id = hour = NULL
-  rm(list = c('time', 'hr', 'id', "hour"))
+  rm(list = c('time', 'hr', 'id', 'hour'))
   data$time <- as.POSIXct(data$time, format="%Y-%m-%d %H:%M:%S")
   data$hour <- format(data$time, "%H")
   filtered_data <- subset(data, hour >= "03" & hour < "07")
