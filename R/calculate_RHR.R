@@ -20,7 +20,7 @@
 #' @export
 #' @examples
 #' data(example_heart_1)
-#' summary_hr(example_heart_1)
+#' calculate_RHR(example_heart_1)
 
 
 calculate_RHR <- function(data) {

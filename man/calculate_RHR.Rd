@@ -19,7 +19,7 @@ It calculates the mean hr value between 3am to 7am and consider it as the restin
 }
 \examples{
 data(example_heart_1)
-summary_hr(example_heart_1)
+calculate_RHR(example_heart_1)
 }
 \references{
 Measure by measure: Resting heart rate across the 24-hour cycle,
