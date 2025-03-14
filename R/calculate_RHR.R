@@ -29,6 +29,14 @@ calculate_RHR <- function(data) {
   data$time <- as.POSIXct(data$time, format="%Y-%m-%d %H:%M:%S")
   data$hour <- format(data$time, "%H")
   filtered_data <- subset(data, hour >= "03" & hour < "07")
-  mean_hr <- mean(filtered_data$hr, na.rm = TRUE)
-  return(mean_hr)
+
+  if (nrow(filtered_data) == 0) {
+    print("No data between 03:00 and 07:00")
+    return(NULL)  # Return NULL to indicate no data
+  }
+
+  rhr_data <- filtered_data |>
+    dplyr::group_by(id) |>
+    dplyr::summarize(RHR = mean(hr, na.rm = TRUE), .groups = 'drop')
+  return(rhr_data)
 }
