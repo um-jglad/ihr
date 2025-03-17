@@ -4,10 +4,12 @@
 \alias{calculate_HRR}
 \title{Calculate heart rate reserve}
 \usage{
-calculate_HRR(data)
+calculate_HRR(data, method)
 }
 \arguments{
 \item{data}{A DataFrame object with column names "id", "time", "hr".}
+
+\item{method}{A choice for the user to choose which formula they want to use: HRR = max - Resting heart rate or HRR = max-min}
 }
 \value{
 If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of summary values is returned.
@@ -19,7 +21,7 @@ It calculates HRR using the formula:maximum heart rate - resting heart rate foll
 }
 \examples{
 data(example_heart_1)
-calculate_HRR(example_heart_1)
+calculate_HRR(example_heart_1, 'max-min')
 }
 \references{
 Heart rate reserve as a predictor of cardiovascular and all-cause mortality in men,

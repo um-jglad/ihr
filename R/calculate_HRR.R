@@ -5,9 +5,10 @@
 #' It calculates HRR using the formula:maximum heart rate - resting heart rate following the definition gained from the reference.
 
 #' @usage
-#' calculate_HRR(data)
+#' calculate_HRR(data, method)
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
+#' @param method A choice for the user to choose which formula they want to use: HRR = max - Resting heart rate or HRR = max-min
 
 #' @return
 #' If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of summary values is returned.
@@ -20,9 +21,9 @@
 #' @export
 #' @examples
 #' data(example_heart_1)
-#' calculate_HRR(example_heart_1)
+#' calculate_HRR(example_heart_1, 'max-min')
 
-calculate_HRR <- function(data) {
+calculate_HRR <- function(data, method = "max-RHH") {
   time = hr = id = max_hr = min_hr = RHR = NULL
   rm(list = c('time', 'hr', 'id'))
   data$time <- as.POSIXct(data$time, format="%Y-%m-%d %H:%M:%S")
@@ -43,8 +44,16 @@ calculate_HRR <- function(data) {
 
   HRR_hr_data <- dplyr::left_join(HRR_hr_data, RHR_data, by = "id")
 
-  HRR_hr_data <- HRR_hr_data |>
-    dplyr::mutate(HRR = max_hr - RHR)
+  # Choose calculation method
+  if (method == "max-RHH") {
+    HRR_hr_data <- HRR_hr_data |>
+      dplyr::mutate(HRR = max_hr - RHR)
+  } else if (method == "max-min") {
+    HRR_hr_data <- HRR_hr_data |>
+      dplyr::mutate(HRR = max_hr - min_hr)
+  } else {
+    stop("Invalid method. Choose either 'mx-RHH' or 'max-min'.")
+  }
 
   return(HRR_hr_data)
 }
