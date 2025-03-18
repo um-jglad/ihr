@@ -8,7 +8,7 @@
 #' @param long_ma \strong{Default: 32.} Integer for period length for the long moving average. Must be positive and greater than `short_ma`. (Recommended >20)
 #' @param from \strong{Default: First observed time.} Starting time of the data inclusive (In format %Y-%m-%d)
 #' @param to \strong{Default: Last observed time.} Ending time of the data exclusive (In format %Y-%m-%d)
-#' @param return_type \strong{Default: "num".} One of ("num", "df"). Will return either a single number for the "MAHE over the entire trace" (weighted by segment length) or a DataFrame with the MAHE value for each segment.
+#' @param return_type \strong{Default: "num".} One of ("num", "df-seg", "df-exc). Will return either a single number for the "MAHE over the entire trace" (weighted by segment length), a DataFrame with the MAHE value for each segment, or a DataFrame with the MAHE value for each excursion
 #' @param direction \strong{Default: "avg".} One of ("avg", "service", "max", "plus", or "minus"). Algorithm will calculate one of the following: MAHE+ (nadir to peak), MAHE- (peak to nadir), MAHEavg = avg(MAHE+, MAHE-), MAHEmax = max(MAHE+, MAHE-), or automatically choose MAHE+/MAHE- based on the first countable excursion (i.e., "service"). NOTE: the selection of peak-to-nadir or nadir-to-peak is chosen independently on each segment, thus MAHEservice may choose peak-to-nadir on one segment and nadir-to-peak on another, for example.
 #' @param excursions \strong{Default: FALSE.} Boolean. If 'TRUE', returns the set of excursions that MAHE used for calculations
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
@@ -41,17 +41,17 @@
 mahe <- function(data,
                  short_ma = 5, long_ma = 32,
                  from = "", to = "",
-                 return_type = c('num', 'df'),
+                 return_type = c('num', 'df-seg', 'df-exc'),
                  direction = c('avg', 'service', 'max', 'plus', 'minus'),
-                 excursions = FALSE,
                  tz = "", inter_gap = 15,
                  max_gap = 180,
                  plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions = TRUE) {
 
   direction = match.arg(direction, c('avg', 'service', 'max', 'plus', 'minus'))
+  return_type = match.arg(return_type, c('num', 'df-seg', 'df-exc'))
 
   return(mahe_ma(data, short_ma = short_ma, long_ma = long_ma, from = from, to = to, return_type=return_type, direction=direction,
-                 plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz, excursions = excursions,
+                 plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz,
                  title = title, xlab = xlab, ylab = ylab, show_ma = show_ma, show_excursions=show_excursions))
 }
 
@@ -59,9 +59,8 @@ mahe <- function(data,
 mahe_ma <- function(data,
                     short_ma = 5, long_ma = 32,
                     from = "", to = "",
-                    return_type = c('num', 'df'),
+                    return_type = c('num', 'df-seg', 'df-exc'),
                     direction = c('avg', 'service', 'max', 'plus', 'minus'),
-                    excursions = FALSE,
                     inter_gap = 15, tz = "",
                     max_gap = 180,
                     plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions=TRUE) {
@@ -71,6 +70,7 @@ mahe_ma <- function(data,
   data = check_data_columns(data)
   is_vector = attr(data, "is_vector")
   direction = match.arg(direction, c('avg', 'service', 'max', 'plus', 'minus'))
+  return_type = match.arg(return_type, c('num', 'df-seg', 'df-exc'))
 
   # Summarizing data at a minute level
   data <- data |>
@@ -91,7 +91,7 @@ mahe_ma <- function(data,
     dplyr::filter(!is.na(hr)) |>
     dplyr::group_by(id) |>
     dplyr::do(MAHE = mahe_ma_single(., short_ma = short_ma, long_ma = long_ma, return_type=return_type, direction=direction,
-                                    plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz, excursions = excursions,
+                                    plot = plot, inter_gap = inter_gap, max_gap = max_gap, tz = tz,
                                     title = title, xlab = xlab, ylab = ylab, show_ma = show_ma, show_excursions = show_excursions, static_or_gui='ggplot'))
 
   # Check if a ggplot or number in list is returned - convert the latter to a number
@@ -113,3 +113,4 @@ mahe_ma <- function(data,
 
   return(out)
 }
+

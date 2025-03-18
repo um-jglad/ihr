@@ -1,8 +1,7 @@
 mahe_ma_single <- function(data,
                            short_ma = 5, long_ma = 32,
-                           return_type = c('num', 'df'),
+                           return_type = c('num', 'df-seg', 'df-exc'),
                            direction = c('avg', 'service', 'max', 'plus', 'minus'),
-                           excursions = FALSE,
                            tz = "", inter_gap = 45,
                            max_gap = 180,
                            plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions = TRUE,
@@ -256,9 +255,9 @@ mahe_ma_single <- function(data,
   if (nrow(data) < 7){
     warning(paste0("The number of measurements (", length(data$id), ") is too small for MAHE calculation. Returning NA."))
 
-    return_type = match.arg(return_type, c('num', 'df'))
+    return_type = match.arg(return_type, c('num', 'df-seg', 'df-exc'))
 
-    if (return_type == 'df') {
+    if (return_type == 'df-exc' | return_type == 'df-seg') {
       return(data.frame(start=utils::head(data$time, 1), end=utils::tail(data$time, 1), mahe=NA, plus_or_minus=NA, first_excursion=NA))
     } else {
       return(NA)
@@ -266,9 +265,9 @@ mahe_ma_single <- function(data,
   } else if (nrow(data) < long_ma){
     warning(paste0("The total number of measurements (", length(data$id), ") is smaller than the long moving average. Returning NA."))
 
-    return_type = match.arg(return_type, c('num', 'df'))
+    return_type = match.arg(return_type, c('num', 'df-seg', 'df-exc'))
 
-    if (return_type == 'df') {
+    if (return_type == 'df-seg' | return_type == 'df-exc') {
       return(data.frame(start=utils::head(data$time, 1), end=utils::tail(data$time, 1), mahe=NA, plus_or_minus=NA, first_excursion=NA))
     } else {
       return(NA)
@@ -475,44 +474,89 @@ mahe_ma_single <- function(data,
     }
 
   } else {
-    return_type = match.arg(return_type, c('num', 'df'))
+    return_type = match.arg(return_type, c('num', 'df-seg', 'df-exc'))
     direction = match.arg(direction, c('avg', 'service', 'max', 'plus', 'minus'))
 
-    if (return_type == 'df') {
+
+    if (return_type == 'df-seg') {
       return(return_val)
     }
 
-    # Returning the excursions (Code taken from arrow calculation from plotting)
-    if (excursions) {
-        tp_indexes <- dplyr::select(all_tp_indexes, idx, peak_or_nadir, plus_or_minus)
+    if(return_type == 'df-exc'){
 
-        exc_data <- data |>
-          tibble::rownames_to_column(var = 'idx') |>
-          dplyr::mutate(idx = as.numeric(idx)) |>
-          dplyr::left_join(tp_indexes, by = 'idx') |>
-          dplyr::left_join(dplyr::select(all_data, time, MA_Short, MA_Long), by = 'time')
+      tp_indexes <- dplyr::select(all_tp_indexes, idx, peak_or_nadir, plus_or_minus)
 
-        last_time <- exc_data |>
-          dplyr::filter(!is.na(peak_or_nadir)) |>
-          utils::tail(1) |>
-          dplyr::pull(time)
+      exc_data <- data |>
+        tibble::rownames_to_column(var = 'idx') |>
+        dplyr::mutate(idx = as.numeric(idx)) |>
+        dplyr::left_join(tp_indexes, by = 'idx') |>
+        dplyr::left_join(dplyr::select(all_data, time, MA_Short, MA_Long), by = 'time')
 
-        plus <- exc_data |> dplyr::filter(plus_or_minus == "PLUS") |> dplyr::arrange(idx)
-        minus <- exc_data |> dplyr::filter(plus_or_minus == "MINUS") |> dplyr::arrange(idx)
-        arrows <- plus |> dplyr::filter(peak_or_nadir == "NADIR") |> dplyr::select(x = time, xend = time, direction = plus_or_minus, y = hr) |> dplyr::mutate(yend = base::subset(plus, peak_or_nadir == "PEAK")$hr)
-        arrows <- rbind(arrows, minus |> dplyr::filter(peak_or_nadir == "PEAK") |> dplyr::select(x = time, xend = time, direction = plus_or_minus, y = hr) |> dplyr::mutate(yend = base::subset(minus, peak_or_nadir == "NADIR")$hr))
+      exc_data <- exc_data |>
+        filter(!is.na(peak_or_nadir)) |>
+        arrange(time) |>
+        mutate(Excursion = abs(hr - lead(hr)),
+               timediff = abs(time - lead(time))) |>
+        select(id, time, peak_or_nadir, Excursion, timediff) |>
+        filter(Excursion != 0 | is.na(Excursion))
 
-        exc_return <- arrows |>
-          dplyr::arrange(x) |>
-          dplyr::mutate(Excursions = abs(yend - y),
-                        End = dplyr::lead(x)) |>
-          dplyr::select(x, End, Excursions, direction)
+      dummy <- data.frame(id = test$id[1], time = NA, peak_or_nadir = "NADIR",
+                          Excursion = NA, timediff = NA)
 
-        colnames(exc_return) <- c("Start", "End", "Excursions", "Direction")
-        exc_return[nrow(exc_return), "End"] <- last_time
+      # Format in Nadir-Peak-Nadir format
+      if(exc_data$peak_or_nadir[1] == "PEAK"){
+        # if the first observation doesn't start at nadir we input a dummy nadir point
+        exc_data <- rbind(dummy, exc_data)
+      }
+      if(exc_data$peak_or_nadir[nrow(exc_data)] == "PEAK"){
+        # if the last observation isn't a nadir we input a dummy nadir point
+        exc_data <- rbind(exc_data, dummy)
+      }
 
-        return(exc_return)
+      gap_idx <- which(exc_data$timediff >= 10800)
+
+      # For where a gap
+      if(length(gap_idx) > 0){
+        # j represents added number of gaps
+        j <- 0
+        for(i in gap_idx){
+          # We either end current excursion or start next on a peak
+          if(exc_data$peak_or_nadir[i + j + 1] == "PEAK" | exc_data$peak_or_nadir[i + j] == "PEAK"){
+            exc_data <- exc_data |>
+              add_row(dummy, .after = i + j)
+            j <- j + 1
+          }
+        }
+      }
+
+      # Recognize location of every "Nadir-Peak-Nadir" triples, these are recognized excursions
+      exc_idx <- which(exc_data$peak_or_nadir == "NADIR" &
+                         dplyr::lead(exc_data$peak_or_nadir, 1) == "PEAK" &
+                         dplyr::lead(exc_data$peak_or_nadir, 2) == "NADIR")
+
+      exc_data <- exc_data |>
+        mutate(start = NA,
+               end = NA,
+               plus = NA,
+               minus = NA,
+               avg = NA)
+
+      for(i in exc_idx){
+        exc_data$start[i] <- exc_data$time[i]
+        exc_data$end[i] <- exc_data$time[i + 2]
+        exc_data$plus[i] <- exc_data$Excursion[i]
+        exc_data$minus[i] <- exc_data$Excursion[i + 1]
+        exc_data$avg[i] <- ((exc_data$Excursion[i] + exc_data$Excursion[i + 1]) / 2)
+      }
+
+      exc_data$start <- format(as.POSIXct(exc_data$start, origin = "1970-01-01", tz = "UTC"),
+                               "%Y-%m-%d %H:%M:%S")
+      exc_data$end <- format(as.POSIXct(exc_data$end, origin = "1970-01-01", tz = "UTC"),
+                             "%Y-%m-%d %H:%M:%S")
+      return(exc_data[exc_idx, ] |>
+               select(start, end, plus, minus, avg))
     }
+
 
     # filter by various options
     if (direction == 'plus') {
