@@ -52,7 +52,7 @@ calculate_HRR <- function(data, method = "max-RHH") {
     HRR_hr_data <- HRR_hr_data |>
       dplyr::mutate(HRR = max_hr - min_hr)
   } else {
-    stop("Invalid method. Choose either 'mx-RHH' or 'max-min'.")
+    stop("Invalid method. Choose either 'max-RHH' or 'max-min'.")
   }
 
   return(HRR_hr_data)
