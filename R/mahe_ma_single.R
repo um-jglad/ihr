@@ -205,8 +205,8 @@ mahe_ma_single <- function(data,
   }
 
   ## 1. Preprocessing
-  MA_Short = MA_Long = DELTA_SHORT_LONG = TP = id = .xmin = .xmax = gap = x = y = xend = yend = hours = weight = idx = peak_or_nadir = plus_or_minus = first_excursion = max_direction = hr = End = Excursions = NULL
-  rm(list = c("MA_Short", "MA_Long", "DELTA_SHORT_LONG", "TP", ".xmin", ".xmax", "id", "gap", "x", "y", "xend", "yend", "hours", "weight", "idx", "peak_or_nadir", "plus_or_minus", "first_excursion", "hr", "End", "Excursions"))
+  MA_Short = MA_Long = DELTA_SHORT_LONG = TP = id = .xmin = .xmax = gap = x = y = xend = yend = hours = weight = idx = peak_or_nadir = plus_or_minus = first_excursion = max_direction = hr = Excursion = timediff = test = avg = NULL
+  rm(list = c("MA_Short", "MA_Long", "DELTA_SHORT_LONG", "TP", ".xmin", ".xmax", "id", "gap", "x", "y", "xend", "yend", "hours", "weight", "idx", "peak_or_nadir", "plus_or_minus", "first_excursion", "hr", "Excursion", "timediff", "test", "avg"))
 
   data = check_data_columns(data)
 
@@ -493,12 +493,12 @@ mahe_ma_single <- function(data,
         dplyr::left_join(dplyr::select(all_data, time, MA_Short, MA_Long), by = 'time')
 
       exc_data <- exc_data |>
-        filter(!is.na(peak_or_nadir)) |>
-        arrange(time) |>
-        mutate(Excursion = abs(hr - lead(hr)),
-               timediff = abs(time - lead(time))) |>
-        select(id, time, peak_or_nadir, Excursion, timediff) |>
-        filter(Excursion != 0 | is.na(Excursion))
+        dplyr::filter(!is.na(peak_or_nadir)) |>
+        dplyr::arrange(time) |>
+        dplyr::mutate(Excursion = abs(hr - dplyr::lead(hr)),
+               timediff = abs(time - dplyr::lead(time))) |>
+        dplyr::select(id, time, peak_or_nadir, Excursion, timediff) |>
+        dplyr::filter(Excursion != 0 | is.na(Excursion))
 
       dummy <- data.frame(id = test$id[1], time = NA, peak_or_nadir = "NADIR",
                           Excursion = NA, timediff = NA)
@@ -523,7 +523,7 @@ mahe_ma_single <- function(data,
           # We either end current excursion or start next on a peak
           if(exc_data$peak_or_nadir[i + j + 1] == "PEAK" | exc_data$peak_or_nadir[i + j] == "PEAK"){
             exc_data <- exc_data |>
-              add_row(dummy, .after = i + j)
+              tibble::add_row(dummy, .after = i + j)
             j <- j + 1
           }
         }
@@ -535,7 +535,7 @@ mahe_ma_single <- function(data,
                          dplyr::lead(exc_data$peak_or_nadir, 2) == "NADIR")
 
       exc_data <- exc_data |>
-        mutate(start = NA,
+        dplyr::mutate(start = NA,
                end = NA,
                plus = NA,
                minus = NA,
@@ -554,7 +554,7 @@ mahe_ma_single <- function(data,
       exc_data$end <- format(as.POSIXct(exc_data$end, origin = "1970-01-01", tz = "UTC"),
                              "%Y-%m-%d %H:%M:%S")
       return(exc_data[exc_idx, ] |>
-               select(start, end, plus, minus, avg))
+               dplyr::select(start, end, plus, minus, avg))
     }
 
 
