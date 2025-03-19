@@ -500,7 +500,7 @@ mahe_ma_single <- function(data,
         dplyr::select(id, time, peak_or_nadir, Excursion, timediff) |>
         dplyr::filter(Excursion != 0 | is.na(Excursion))
 
-      dummy <- data.frame(id = test$id[1], time = NA, peak_or_nadir = "NADIR",
+      dummy <- data.frame(id = exc_data$id[1], time = NA, peak_or_nadir = "NADIR",
                           Excursion = NA, timediff = NA)
 
       # Format in Nadir-Peak-Nadir format
@@ -513,7 +513,7 @@ mahe_ma_single <- function(data,
         exc_data <- rbind(exc_data, dummy)
       }
 
-      gap_idx <- which(exc_data$timediff >= 10800)
+      gap_idx <- which(exc_data$timediff >= (60 * max_gap))
 
       # For where a gap
       if(length(gap_idx) > 0){
