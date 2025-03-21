@@ -23,7 +23,7 @@
 #' data(example_heart_1)
 #' calculate_HRR(example_heart_1, 'max-min')
 
-calculate_HRR <- function(data, method = "max-RHH") {
+calculate_HRR <- function(data, method = "max-RHR") {
   time = hr = id = max_hr = min_hr = RHR = NULL
   rm(list = c('time', 'hr', 'id'))
   data$time <- as.POSIXct(data$time, format="%Y-%m-%d %H:%M:%S")
@@ -45,14 +45,14 @@ calculate_HRR <- function(data, method = "max-RHH") {
   HRR_hr_data <- dplyr::left_join(HRR_hr_data, RHR_data, by = "id")
 
   # Choose calculation method
-  if (method == "max-RHH") {
+  if (method == "max-RHR") {
     HRR_hr_data <- HRR_hr_data |>
       dplyr::mutate(HRR = max_hr - RHR)
   } else if (method == "max-min") {
     HRR_hr_data <- HRR_hr_data |>
       dplyr::mutate(HRR = max_hr - min_hr)
   } else {
-    stop("Invalid method. Choose either 'max-RHH' or 'max-min'.")
+    stop("Invalid method. Choose either 'max-RHR' or 'max-min'.")
   }
 
   return(HRR_hr_data)
