@@ -500,6 +500,11 @@ mahe_ma_single <- function(data,
         dplyr::select(id, time, peak_or_nadir, Excursion, timediff) |>
         dplyr::filter(Excursion != 0 | is.na(Excursion))
 
+      # Any excursion values during gaps are invalid excursion values
+      exc_data <- exc_data |>
+        dplyr::mutate(Excursion = dplyr::if_else(timediff > (60 * max_gap), NA, Excursion))
+
+
       dummy <- data.frame(id = exc_data$id[1], time = NA, peak_or_nadir = "NADIR",
                           Excursion = NA, timediff = NA)
 
