@@ -14,12 +14,12 @@
 "example_heart_1"
 
 
-#' @title Example heart rate data set for all 14 subjects
+#' @title Example heart rate data set for 5 subjects
 #'
-#' @description FitBit heart rate measurement from 14 subjects
+#' @description FitBit heart rate measurement from 5 subjects
 #'
 #'
-#'@format A data frame with 999999 rows and 3 variables:
+#'@format A data frame with 791446 rows and 3 variables:
 #'\describe{
 #'\item{id}{id, as provided by Kaggle}
 #'\item{time}{time of observation, in format %Y-%m-%d %H:%M:%S}
@@ -27,4 +27,4 @@
 #'}
 #'@source \url{https://www.kaggle.com/datasets/arashnic/fitbit/versions/1}
 #'
-"example_heart_14"
+"example_heart_5"
