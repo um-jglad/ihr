@@ -1,4 +1,8 @@
 scatter_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
+
+  id = hr = NULL
+  rm(list = c("id", "hr"))
+
   data = check_data_columns(data)
 
   # Summarizing data at a minute level
@@ -7,24 +11,27 @@ scatter_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
     dplyr::group_by(id, time) |>
     dplyr::summarise(hr = mean(hr), .groups = "drop")
 
-  full_hr <- c()
+  # Interpolating for all id, flattening to one row
+  full_hr <- data.frame()
   for(i in unique(data$id)){
     hr_data <- HR2DayByDay(dplyr::filter(data, id == i), dt0 = 1, inter_gap = inter_gap)
-    hr_data <- c(t(hr_data$gd2d))
+    hr_data <- as.data.frame(c(t(hr_data$gd2d)))
     full_hr <- rbind(full_hr, hr_data)
   }
+  colnames(full_hr) <- "hr"
 
-
+  # Generating ROC for all ids
   roc_data <- data |>
     dplyr::group_by(id) |>
     dplyr::reframe(
       roc = roc(data.frame(id, time, hr), timelag, inter_gap, tz)$roc)
 
-  roc_data <- cbind(roc_data, hr_data) |>
+
+  roc_data <- cbind(roc_data, full_hr) |>
     dplyr::filter(!is.na(roc))
 
   .p <- roc_data |>
-    ggplot(aes(x = roc, y = hr_data)) +
+    ggplot(aes(x = roc, y = hr)) +
     geom_point() +
     facet_wrap(~id) +
     scale_x_continuous(name = "Rate of Change") +
