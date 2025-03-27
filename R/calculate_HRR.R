@@ -38,7 +38,7 @@ calculate_HRR <- function(data, method = "max-RHR") {
 
   HRR_hr_data <- data |>
     dplyr::group_by(id) |>
-    dplyr::summarize(max_hr = max(hr, na.rm = TRUE),
+    dplyr::summarize(max_hr = quantile(hr, 0.99, na.rm = TRUE),
                      min_hr = min(hr, na.rm = TRUE),
                      .groups = 'drop')
 
