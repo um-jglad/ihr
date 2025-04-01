@@ -1,3 +1,28 @@
+#' Calculate the time an individual spend in different stages(following the definition in the reference)
+
+#' @description
+#' The function summary_PA computes the time(in days) for different individuals spend in different stages
+#' Using the thresholds: sedentary/sleep (<20% HRR), light (20–39% HRR), moderate (40–59% HRR), and vigorous (≥60% HRR)
+
+#' @usage
+#' summary_PA(data)
+
+#' @param data A DataFrame object with column names "id", "time", "hr".
+#' Missing HR values (NA) are automatically excluded from calculations.
+
+#' @return
+#' If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of summary values is returned.
+#' 'NA' heartrate values are omitted from the calculation of the summary values.
+
+#' @references
+#' Using Heart Rate and Accelerometry to Define Quantity and Intensity of Physical Activity in Older Adults
+#' \doi{10.1093/gerona/gly029}
+
+#' @export
+#' @examples
+#' data(example_heart_1)
+#' summary_PA(example_heart_1)
+
 summarize_PA <- function(data) {
   library(dplyr)
   library(lubridate)
