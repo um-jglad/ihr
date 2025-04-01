@@ -497,15 +497,14 @@ mahe_ma_single <- function(data,
         dplyr::arrange(time) |>
         dplyr::mutate(Excursion = abs(hr - dplyr::lead(hr)),
                timediff = abs(time - dplyr::lead(time))) |>
-        dplyr::select(id, time, peak_or_nadir, Excursion, timediff) |>
+        dplyr::select(id, time, peak_or_nadir, hr, Excursion, timediff) |>
         dplyr::filter(Excursion != 0 | is.na(Excursion))
 
-      # Any excursion values during gaps are invalid excursion values
+      # Any excursion/hr values during gaps are invalid excursion values
       exc_data <- exc_data |>
         dplyr::mutate(Excursion = dplyr::if_else(timediff > (60 * max_gap), NA, Excursion))
 
-
-      dummy <- data.frame(id = exc_data$id[1], time = NA, peak_or_nadir = "NADIR",
+      dummy <- data.frame(id = exc_data$id[1], time = NA, peak_or_nadir = "NADIR", hr = NA,
                           Excursion = NA, timediff = NA)
 
       # Format in Nadir-Peak-Nadir format
@@ -544,7 +543,10 @@ mahe_ma_single <- function(data,
                end = NA,
                plus = NA,
                minus = NA,
-               avg = NA)
+               avg = NA,
+               start_nadir = NA,
+               peak = NA,
+               end_nadir = NA)
 
       for(i in exc_idx){
         exc_data$start[i] <- exc_data$time[i]
@@ -552,14 +554,20 @@ mahe_ma_single <- function(data,
         exc_data$plus[i] <- exc_data$Excursion[i]
         exc_data$minus[i] <- exc_data$Excursion[i + 1]
         exc_data$avg[i] <- ((exc_data$Excursion[i] + exc_data$Excursion[i + 1]) / 2)
+        exc_data$start_nadir[i] <- exc_data$hr[i]
+        exc_data$peak[i] <- exc_data$hr[i + 1]
+        exc_data$end_nadir[i] <- exc_data$hr[i + 2]
       }
 
       exc_data$start <- format(as.POSIXct(exc_data$start, origin = "1970-01-01", tz = "UTC"),
                                "%Y-%m-%d %H:%M:%S")
       exc_data$end <- format(as.POSIXct(exc_data$end, origin = "1970-01-01", tz = "UTC"),
                              "%Y-%m-%d %H:%M:%S")
-      return(exc_data[exc_idx, ] |>
-               dplyr::select(start, end, plus, minus, avg))
+
+      exc_data <- exc_data[exc_idx, ] |>
+        dplyr::select(start, end, plus, minus, avg, start_nadir, peak, end_nadir)
+
+      return(exc_data)
     }
 
 

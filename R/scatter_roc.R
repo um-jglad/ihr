@@ -30,6 +30,7 @@ scatter_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
   roc_data <- cbind(roc_data, full_hr) |>
     dplyr::filter(!is.na(roc))
 
+
   .p <- roc_data |>
     ggplot(aes(x = roc, y = hr)) +
     geom_point() +
