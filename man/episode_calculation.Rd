@@ -6,10 +6,6 @@
 \usage{
 episode_calculation(
   data,
-  lv1_low = 60,
-  lv2_low = 55,
-  lv1_high = 85,
-  lv2_high = 100,
   dur_length = 15,
   end_length = 15,
   return_data = FALSE,
@@ -20,14 +16,6 @@ episode_calculation(
 }
 \arguments{
 \item{data}{DataFrame object with column names "id", "time", "hr"}
-
-\item{lv1_low}{Numeric value specifying a low heart rate threshold for level 1}
-
-\item{lv2_low}{Numeric value specifying a low heart rate threshold for level 2}
-
-\item{lv1_high}{Numeric value specifying a high heart rate threshold for level 1}
-
-\item{lv2_high}{Numeric value specifying a high heart rate threshold for level 2}
 
 \item{dur_length}{Numeric value specifying the minimum duration in minutes to be
 considered an episode. Note dur_length should be a multiple of the data recording
@@ -70,17 +58,13 @@ The function determines episodes or events, calculates summary statistics,
 and optionally returns data with episode label columns added
 }
 \details{
-Note we have classified lv2 as a subset of lv1 since we find the consensus to be
-slightly ambiguous. For lv1 exclusive of lv2, please see lv1_excl which summarises
-episodes that were exclusively lv1 and did not cross the lv2 threshold. Also note,
-low extended refers to episodes that are >120 consecutive minutes below lv1 low
-and ends with at least 15 minutes of normal heart rate.
+Using the thresholds: sedentary/sleep (<20\% HRR), light (20–39\% HRR), moderate (40–59\% HRR), and vigorous (≥60\% HRR)
 }
 \examples{
-episode_calculation(example_heart_1, lv1_low = 100, lv1_high = 120)
+episode_calculation(example_heart_1)
 
 }
 \references{
-“What Your Heart Rate Is Telling You.” Harvard Health, 13 June 2023,
-www.health.harvard.edu/heart-health/what-your-heart-rate-is-telling-you.
+Using Heart Rate and Accelerometry to Define Quantity and Intensity of Physical Activity in Older Adults
+\doi{10.1093/gerona/gly029}
 }

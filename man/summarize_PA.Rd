@@ -15,7 +15,7 @@ If a dataframe object is passed, then a tibble object with a column for subject 
 'NA' heartrate values are omitted from the calculation of the summary values.
 }
 \description{
-The function summary_PA computes the time(in days) for different individuals spend in different stages
+The function summary_PA computes the time(in percentage) for different individuals spend in different stages
 Using the thresholds: sedentary/sleep (<20\% HRR), light (20–39\% HRR), moderate (40–59\% HRR), and vigorous (≥60\% HRR)
 }
 \examples{

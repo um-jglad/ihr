@@ -6,10 +6,6 @@
 \usage{
 epicalc_profile(
   data,
-  lv1_low = 60,
-  lv2_low = 55,
-  lv1_high = 85,
-  lv2_high = 100,
   dur_length = 15,
   end_length = 15,
   subject = NULL,
@@ -20,14 +16,6 @@ epicalc_profile(
 }
 \arguments{
 \item{data}{DataFrame object with column names "id", "time", "hr"}
-
-\item{lv1_low}{Numeric value specifying a low heart rate threshold for level 1}
-
-\item{lv2_low}{Numeric value specifying a low heart rate threshold for level 2}
-
-\item{lv1_high}{Numeric value specifying a high heart rate threshold for level 1}
-
-\item{lv2_high}{Numeric value specifying a high heart rate threshold for level 2}
 
 \item{dur_length}{Numeric value specifying the minimum duration in minutes to be
 considered an episode. Note dur_length should be a multiple of the data recording

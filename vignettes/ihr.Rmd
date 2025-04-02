@@ -137,11 +137,7 @@ mahe(example_heart_1, to = "2016-04-13", plot = T, show_ma = T, show_excursions 
 
 The episode_calculation function identifies episodes where heart rate (HR) exceed predefined thresholds. It classifies each data point as:
 
-Low Episode: Heart rate falls below a given threshold.
-High Episode: Heart rate rises above a given threshold.
-Exclusive Episodes: An episode that remains within Level 1 (lv1) and never reaches Level 2 (lv2).
-Level 2 represents a more extreme states that level 1.
-Extended Episodes: Prolonged episodes that meet a minimum duration criterion.
+sedentary/sleep (<20% HRR), light (20–39% HRR), moderate (40–59% HRR), and vigorous (≥60% HRR)
 
 For each episode, the function computes summary statistics, including:
 1. Average episodes per day.
@@ -150,7 +146,7 @@ For each episode, the function computes summary statistics, including:
 4. Total number of episodes.
 
 ```{r}
-episode_calculation(example_heart_1, lv1_low = 60, lv2_low = 55, lv1_high = 85, lv2_high = 100, dur_length = 15)
+episode_calculation(example_heart_1)
 ```
 
 ## Epicalc_profile: Visualizing Episode Trends
