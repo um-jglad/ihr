@@ -24,18 +24,16 @@
 #' summary_PA(example_heart_1)
 
 summarize_PA <- function(data) {
-  library(dplyr)
-  library(lubridate)
 
   data$time <- as.POSIXct(data$time, format = "%Y-%m-%d %H:%M:%S")
 
   # Round time down to the nearest minute
-  data <- data %>%
+  data <- data |>
     mutate(minute = floor_date(time, unit = "minute"))
 
   # Average HR within each minute per participant
-  min_hr_data <- data %>%
-    group_by(id, minute) %>%
+  min_hr_data <- data |>
+    group_by(id, minute) |>
     summarize(mean_hr = mean(hr, na.rm = TRUE), .groups = "drop")
 
   # Calculate RHR and max HR per participant
@@ -45,9 +43,9 @@ summarize_PA <- function(data) {
     return(NULL)
   }
 
-  classified <- left_join(min_hr_data, HRR_info, by = "id") %>%
+  classified <- left_join(min_hr_data, HRR_info, by = "id") |>
     mutate(
-      pct_HRR = (mean_hr - RHR) / HRR * 100,
+      pct_HRR = mean_hr / HRR * 100,
       PA_stage = case_when(
         pct_HRR < 20 ~ "Sedentary/Sleep",
         pct_HRR < 40 ~ "Light",
@@ -57,12 +55,14 @@ summarize_PA <- function(data) {
       )
     )
 
-desired_order <- c("Sedentary/Sleep", "Light", "Moderate", "Vigorous")
+  desired_order <- c("Sedentary/Sleep", "Light", "Moderate", "Vigorous")
 
-summary_table <- classified %>%
-  group_by(id, PA_stage) %>%
-  summarize(total_hours = n() / (24*60), .groups = "drop") %>%
-  tidyr::pivot_wider(names_from = PA_stage, values_from = total_hours, values_fill = 0) %>%
-  dplyr::select(id, all_of(intersect(desired_order, names(.))))
+  summary_table_raw <- classified |>
+    group_by(id, PA_stage) |>
+    summarize(total_hours = n() / (24*60), .groups = "drop") |>
+    tidyr::pivot_wider(names_from = PA_stage, values_from = total_hours, values_fill = 0)
+
+  summary_table <- summary_table_raw |>
+    dplyr::select(id, all_of(intersect(desired_order, names(summary_table_raw))))
   return(summary_table)
 }
