@@ -97,7 +97,7 @@ plot_hr(example_heart_1, to = "2016-04-13", agg = "minute")
 
 The ihr package have the function of calculating multiple time-dependent metrics.
 
-## active_percent()
+## percent_nonmissing()
 
 The function computes the active percentage, representing the percentage missingness of the heart rate data. 
 
@@ -107,10 +107,10 @@ Id represents the subject.
 start_date and end_date mark the observation period.
 unique_days counts the actual days with recorded data.
 total_days indicates the full monitoring period(including both start and end date).
-active_percent represents the completeness of heart rate recordings as a percentage at the day level.
+percent_nonmissing represents the completeness of heart rate recordings as a percentage at the day level.
 
 ```{r}
-active_percent(example_heart_1)
+percent_nonmissing(example_heart_1)
 ```
 
 # MAHE (Mean Amplitude of Heart Rate Excursions)

@@ -1,18 +1,21 @@
 #' Display Ambulatory Heart rate Profile (AHP) statistics for selected subject
 #'
 #' @usage
-#' agp(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TRUE)
+#' ahp(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TRUE)
 #'
-#' @inheritParams HR2DayByDay
+#' @param data DataFrame object with column names "id", "time", "hr"
+#' @param inter_gap The maximum allowable gap (in minutes) for interpolation.
+#' @param dt0 Grid Length
+#' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #' @param daily \strong{Default: TRUE.} Logical indicator whether AHP should include separate daily plots.
-#'
+#' @param maxd max days
 #' @return A plot displaying heart rate measurements range, selected heart rate statistics (Resting Heart Rate, Heart Rate Reserve), percentage spent in target ranges and quantiles of 24 hour profile.
 #'
 #' @export
 #'
 #' @examples
 #' data(example_heart_1)
-#' agp(example_heart_1, daily = FALSE)
+#' ahp(example_heart_1, daily = FALSE)
 
 
 ahp <- function(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TRUE){
@@ -25,7 +28,7 @@ ahp <- function(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TR
   if (ns > 1){
     subject = subject[1]
     warning(paste("The provided data have", ns, "subjects. The plot will only be created for subject", subject))
-    data = data %>% dplyr::filter(id == subject)
+    data = data |> dplyr::filter(id == subject)
   }
 
   # Calculate range of measurements
