@@ -42,7 +42,7 @@ percent_nonmissing <- function(data) {
       end_date = max(time),
       unique_days = length(unique(format(time, "%m-%d-%Y"))),
       total_days = as.integer(difftime(max(time_date), min(time_date), units = "days")) + 1,
-      active_percent = (unique_days / total_days) * 100
+      percent_nonmissing = (unique_days / total_days) * 100
     )
 
   return(active_data)
