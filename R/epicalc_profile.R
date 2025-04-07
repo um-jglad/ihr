@@ -110,11 +110,17 @@ epicalc_profile <- function(data,
 
   ep_data_long <- ep_data |>
     tidyr::pivot_longer(cols = dplyr::all_of(stages), names_to = "stage", values_to = "event") |>
-    dplyr::filter(event != 0)
+    dplyr::filter(event != 0) |>
+    dplyr::mutate(stage = factor(stage, levels = stages))
+
+  stage_colors <- c("Sedentary" = "#0073C2",
+                    "Light" = "#48BA3C",
+                    "Moderate" = "#F9B500",
+                    "Vigorous" = "#8E1B1B")
 
   p1 <- ggplot2::ggplot(ep_data_long, ggplot2::aes(x = time, y = hr, color = stage)) +
     ggplot2::geom_point(alpha = 0.7, size = 1) +
-    ggplot2::scale_color_manual(values = c("#8E1B1B", "#F9B500", "#48BA3C", "#0073C2")) +
+    ggplot2::scale_color_manual(values = stage_colors, , drop = FALSE) +
     ggplot2::labs(x = "Time", y = "Heart Rate (BPM)", color = "Stage") +
     ggplot2::theme_minimal()
 
