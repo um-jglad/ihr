@@ -63,6 +63,10 @@ ahp <- function(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TR
   mytheme <- gridExtra::ttheme_default(core = list(fg_params = list(hjust = 0, x = 0.03, fontsize = 12)), colhead = list(fg_params = list(fontsize=9, fontface="bold")))
 
   t1 = gridExtra::tableGrob(tableStat, rows = NULL, cols = NULL, theme = mytheme)
-  pFinal = (patchwork::wrap_elements(t1))
+
+  # Create percentage plot
+  p1 = plot_ranges_PA(data)
+
+  pFinal = (patchwork::wrap_elements(t1) + p1)
   pFinal
 }
