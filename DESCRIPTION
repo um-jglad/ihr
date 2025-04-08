@@ -26,7 +26,8 @@ Imports:
     gridExtra,
     gtable,
     patchwork,
-    utils
+    utils,
+    hms
 LazyData: true
 Suggests: 
     knitr,
