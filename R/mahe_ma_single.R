@@ -205,8 +205,8 @@ mahe_ma_single <- function(data,
   }
 
   ## 1. Preprocessing
-  MA_Short = MA_Long = DELTA_SHORT_LONG = TP = id = .xmin = .xmax = gap = x = y = xend = yend = hours = weight = idx = peak_or_nadir = plus_or_minus = first_excursion = max_direction = hr = Excursion = timediff = test = avg = NULL
-  rm(list = c("MA_Short", "MA_Long", "DELTA_SHORT_LONG", "TP", ".xmin", ".xmax", "id", "gap", "x", "y", "xend", "yend", "hours", "weight", "idx", "peak_or_nadir", "plus_or_minus", "first_excursion", "hr", "Excursion", "timediff", "test", "avg"))
+  MA_Short = MA_Long = DELTA_SHORT_LONG = TP = id = .xmin = .xmax = gap = x = y = xend = yend = hours = weight = idx = peak_or_nadir = plus_or_minus = first_excursion = max_direction = hr = Excursion = timediff = test = avg = end_time = start_time = peak_time = time_length = start_nadir = peak = end_nadir = NULL
+  rm(list = c("MA_Short", "MA_Long", "DELTA_SHORT_LONG", "TP", ".xmin", ".xmax", "id", "gap", "x", "y", "xend", "yend", "hours", "weight", "idx", "peak_or_nadir", "plus_or_minus", "first_excursion", "hr", "Excursion", "timediff", "test", "avg", "end_time", "start_time", "peak_time", "time_length", "start_nadir", "peak", "end_nadir"))
 
   data = check_data_columns(data)
 
