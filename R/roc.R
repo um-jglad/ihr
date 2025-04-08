@@ -13,12 +13,12 @@
 #' @param inter_gap \strong{Default: 15.} The maximum allowable gap (in minutes) for interpolation. The values will not be interpolated between the glucose measurements that are more than inter_gap minutes apart.
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #'
-#' @return A tibble object with two columns: subject id and rate of change values
+#' @return A tibble object with three columns: subject id, rate of change values, time of observation
 #'
 #' @export
 #'
 #' @details
-#' A tibble object with a column for subject id and a column for ROC values is
+#' A tibble object with a column for subject id, a column for ROC values, and a column for the time associated is
 #' returned. A ROC value is returned for each time point for all the subjects. Thus
 #' multiple rows are returned for each subject. If the rate of change cannot be
 #' calculated, the function will return \code{NA} for that point.
@@ -65,6 +65,7 @@ roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
     data_ip = HR2DayByDay(data, dt0 = 1, inter_gap = inter_gap, tz = tz)
     hr_ip_vec = as.vector(t(data_ip[[1]]))
     dt0 = data_ip[[3]]
+    unique_days = data_ip[[2]]
 
     if (timelag < dt0) {
       message(paste("Parameter timelag cannot be less than the data collection frequency: " ,
@@ -72,8 +73,15 @@ roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
       timelag <- dt0
     }
 
-    out = c(rep(NA, timelag/dt0),
-            diff(hr_ip_vec, lag = timelag/dt0)/timelag)
+    out = data.frame(
+      roc = c(rep(NA, timelag/dt0),
+            diff(hr_ip_vec, lag = timelag/dt0)/timelag),
+      time = seq(
+        from = as.POSIXct(paste(unique_days[1], "00:00:00")),
+        to = as.POSIXct(paste(unique_days[length(unique_days)], "23:59:00")),
+        by = paste(timelag, "mins")
+      )
+    )
     return(out)
   }
 
@@ -85,9 +93,10 @@ roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
   out = data |>
     dplyr::group_by(id) |>
     dplyr::reframe(
-      roc = roc_single(data.frame(id, time, hr), timelag)
+       roc_single(data.frame(id, time, hr), timelag)
     ) |>
     dplyr::ungroup()
+
 
   return(out)
 }
