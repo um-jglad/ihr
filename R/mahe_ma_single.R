@@ -539,8 +539,9 @@ mahe_ma_single <- function(data,
                          dplyr::lead(exc_data$peak_or_nadir, 2) == "NADIR")
 
       exc_data <- exc_data |>
-        dplyr::mutate(start = NA,
-               end = NA,
+        dplyr::mutate(start_time = NA,
+               peak_time = NA,
+               end_time = NA,
                plus = NA,
                minus = NA,
                avg = NA,
@@ -549,8 +550,9 @@ mahe_ma_single <- function(data,
                end_nadir = NA)
 
       for(i in exc_idx){
-        exc_data$start[i] <- exc_data$time[i]
-        exc_data$end[i] <- exc_data$time[i + 2]
+        exc_data$start_time[i] <- exc_data$time[i]
+        exc_data$peak_time[i] <- exc_data$time[i + 1]
+        exc_data$end_time[i] <- exc_data$time[i + 2]
         exc_data$plus[i] <- exc_data$Excursion[i]
         exc_data$minus[i] <- exc_data$Excursion[i + 1]
         exc_data$avg[i] <- ((exc_data$Excursion[i] + exc_data$Excursion[i + 1]) / 2)
@@ -559,13 +561,18 @@ mahe_ma_single <- function(data,
         exc_data$end_nadir[i] <- exc_data$hr[i + 2]
       }
 
-      exc_data$start <- format(as.POSIXct(exc_data$start, origin = "1970-01-01", tz = "UTC"),
+      exc_data$start_time <- format(as.POSIXct(exc_data$start_time, origin = "1970-01-01", tz = "UTC"),
                                "%Y-%m-%d %H:%M:%S")
-      exc_data$end <- format(as.POSIXct(exc_data$end, origin = "1970-01-01", tz = "UTC"),
+      exc_data$peak_time <- format(as.POSIXct(exc_data$peak_time, origin = "1970-01-01", tz = "UTC"),
+                                    "%Y-%m-%d %H:%M:%S")
+      exc_data$end_time <- format(as.POSIXct(exc_data$end_time, origin = "1970-01-01", tz = "UTC"),
                              "%Y-%m-%d %H:%M:%S")
 
+      exc_data <- exc_data |>
+        dplyr::mutate(time_length = as.numeric(difftime(end_time, start_time), units = "mins"))
+
       exc_data <- exc_data[exc_idx, ] |>
-        dplyr::select(start, end, plus, minus, avg, start_nadir, peak, end_nadir)
+        dplyr::select(start_time, peak_time, end_time, time_length, plus, minus, avg, start_nadir, peak, end_nadir)
 
       return(exc_data)
     }

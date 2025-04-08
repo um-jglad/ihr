@@ -18,6 +18,7 @@ scatter_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
     hr_data <- as.data.frame(c(t(hr_data$gd2d)))
     full_hr <- rbind(full_hr, hr_data)
   }
+
   colnames(full_hr) <- "hr"
 
   # Generating ROC for all ids
@@ -30,6 +31,7 @@ scatter_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
   roc_data <- cbind(roc_data, full_hr) |>
     dplyr::filter(!is.na(roc))
 
+  return(roc_data)
 
   .p <- roc_data |>
     ggplot(aes(x = roc, y = hr)) +
