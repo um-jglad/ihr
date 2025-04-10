@@ -28,7 +28,6 @@
 #' data(example_heart_1)
 #' plot_ranges_PA(example_heart_1)
 #'
-
 plot_ranges_PA <- function(data) {
   id = PA_stage = percent = NULL
   rm(list = c("id", "PA_stage", "percent"))
@@ -41,48 +40,70 @@ plot_ranges_PA <- function(data) {
     data <- dplyr::filter(data, id == subject)
   }
 
-  # Summarize time in PA stages using summarize_PA logic
   summary <- summarize_PA(data)
   if (is.null(summary)) {
     message("Cannot create plot due to missing HRR classification.")
     return(NULL)
   }
 
-  # Transform the summary into long format for plotting
+  # Get actual RHR and HRR
+  HRR_info <- calculate_HRR(data)
+  HRR_info <- dplyr::filter(HRR_info, id == subject)
+
+  if (nrow(HRR_info) == 0 || any(is.na(HRR_info$RHR), is.na(HRR_info$HRR))) {
+    message("Cannot compute threshold HR values for labeling.")
+    return(NULL)
+  }
+
+  RHR <- HRR_info$RHR
+  HRR <- HRR_info$HRR
+
+  # Compute true HR thresholds
+  hr_20 <- round(RHR + 0.20 * HRR)
+  hr_40 <- round(RHR + 0.40 * HRR)
+  hr_60 <- round(RHR + 0.60 * HRR)
+
+  ordered_stages <- c("Vigorous", "Moderate", "Light", "Sedentary/Sleep")
+
   ranges <- summary |>
     tidyr::pivot_longer(
       cols = -id,
       names_to = "PA_stage",
       values_to = "percent"
-    )
+    ) |>
+    dplyr::mutate(PA_stage = factor(PA_stage, levels = ordered_stages))
 
-  # Define order and thresholds from summarize_PA()
-  desired_order <- c("Vigorous", "Moderate", "Light", "Sedentary/Sleep")
-  plot_order <- rev(desired_order)  # So sedentary is at the bottom
+  # Dynamic labels using actual heart rate thresholds
+  stage_labels <- c(
+    "Vigorous" = paste0("Vigorous ≥ 60%HRR  + RHR(", hr_60, ") bpm"),
+    "Moderate" = paste0("Moderate 40%HRR  + RHR(", hr_40, ") – 60%HRR  + RHR(", hr_60 - 1, ")  bpm"),
+    "Light" = paste0("Light 20%HRR  + RHR(", hr_20, ") – 60%HRR + RHR(", hr_40 - 1, ") bpm"),
+    "Sedentary/Sleep" = paste0("Sedentary/Sleep < 20%HRR  + RHR (", hr_20, ") bpm")
+  )
 
-  # Define dynamic labels based on thresholds
-  thresholds <- c("Sedentary/Sleep (<20% HRR)",
-                  "Light (20–39% HRR)",
-                  "Moderate (40–59% HRR)",
-                  "Vigorous (≥60% HRR)")
-  names(thresholds) <- c("Sedentary/Sleep", "Light", "Moderate", "Vigorous")
-
-  colors <- c("#0073C2", "#48BA3C", "#F9B500", "#8E1B1B")
-
-  ranges <- ranges |>
-    dplyr::mutate(PA_stage = factor(PA_stage, levels = plot_order))
+  stage_colors <- c(
+    "Sedentary/Sleep" = "#0073C2",
+    "Light" = "#48BA3C",
+    "Moderate" = "#F9B500",
+    "Vigorous" = "#8E1B1B"
+  )
 
   ggplot2::ggplot(ranges, ggplot2::aes(x = 1, fill = PA_stage, y = percent)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::scale_fill_manual(
-      values = colors,
-      drop = FALSE,
-      labels = thresholds[plot_order]  # apply thresholds in correct order
+      values = stage_colors[ordered_stages],
+      labels = stage_labels[ordered_stages],
+      drop = FALSE
     ) +
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 10)) +
-    ggplot2::labs(y = "Percentage of Time", title = "Physical Activity Distribution by %HRR") +
-    ggplot2::theme(axis.ticks.x = ggplot2::element_blank(),
-                   axis.text.x = ggplot2::element_blank(),
-                   axis.title.x = ggplot2::element_blank(),
-                   panel.background = ggplot2::element_blank())
+    ggplot2::labs(
+      y = "Percentage of Time",
+      title = paste0("Physical Activity Distribution by %HRR (RHR=", RHR, ", HRR=", HRR, ")")
+    ) +
+    ggplot2::theme(
+      axis.ticks.x = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_blank(),
+      axis.title.x = ggplot2::element_blank(),
+      panel.background = ggplot2::element_blank()
+    )
 }
