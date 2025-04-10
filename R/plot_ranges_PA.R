@@ -56,20 +56,29 @@ plot_ranges_PA <- function(data) {
       values_to = "percent"
     )
 
-  # Order and color mapping
-  desired_order <- c("Sedentary/Sleep", "Light", "Moderate", "Vigorous")
+  # Define order and thresholds from summarize_PA()
+  desired_order <- c("Vigorous", "Moderate", "Light", "Sedentary/Sleep")
+  plot_order <- rev(desired_order)  # So sedentary is at the bottom
+
+  # Define dynamic labels based on thresholds
+  thresholds <- c("Sedentary/Sleep (<20% HRR)",
+                  "Light (20–39% HRR)",
+                  "Moderate (40–59% HRR)",
+                  "Vigorous (≥60% HRR)")
+  names(thresholds) <- c("Sedentary/Sleep", "Light", "Moderate", "Vigorous")
+
   colors <- c("#0073C2", "#48BA3C", "#F9B500", "#8E1B1B")
 
   ranges <- ranges |>
-    dplyr::mutate(PA_stage = factor(PA_stage, levels = desired_order))
+    dplyr::mutate(PA_stage = factor(PA_stage, levels = plot_order))
 
   ggplot2::ggplot(ranges, ggplot2::aes(x = 1, fill = PA_stage, y = percent)) +
     ggplot2::geom_bar(stat = "identity") +
-    ggplot2::scale_fill_manual(values = colors, drop = FALSE,
-                               labels = c("Sedentary/Sleep (<20% HRR)",
-                                          "Light (20-39% HRR)",
-                                          "Moderate (40-59% HRR)",
-                                          "Vigorous (>=60% HRR)")) +
+    ggplot2::scale_fill_manual(
+      values = colors,
+      drop = FALSE,
+      labels = thresholds[plot_order]  # apply thresholds in correct order
+    ) +
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 10)) +
     ggplot2::labs(y = "Percentage of Time", title = "Physical Activity Distribution by %HRR") +
     ggplot2::theme(axis.ticks.x = ggplot2::element_blank(),
