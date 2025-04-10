@@ -55,8 +55,8 @@ epicalc_profile <- function(data,
   HRR <- maxHR - RHR
   tableStat[1, ] <- c("Thresholds",
                       paste0("<", round(0.2 * HRR + RHR, 1), " BPM"),
-                      paste0(round(0.2 * HRR + RHR, 1), "-", round(0.4 * HRR + RHR - 1, 1), " BPM"),
-                      paste0(round(0.4 * HRR + RHR, 1), "-", round(0.6 * HRR + RHR - 1, 1), " BPM"),
+                      paste0(round(0.2 * HRR + RHR, 1), "-", round(0.4 * HRR + RHR, 1) - 0.1, " BPM"),
+                      paste0(round(0.4 * HRR + RHR, 1), "-", round(0.6 * HRR + RHR, 1) -0.1, " BPM"),
                       paste0(">=", round(0.6 * HRR + RHR, 1), " BPM"))
 
   tableStat[2, ] <- c("Avg Episodes/Day",
