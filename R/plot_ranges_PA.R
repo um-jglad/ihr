@@ -98,7 +98,7 @@ plot_ranges_PA <- function(data) {
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 10)) +
     ggplot2::labs(
       y = "Percentage of Time",
-      title = paste0("Physical Activity Distribution by %HRR (RHR=", RHR, ", HRR=", HRR, ")")
+      title = paste0("Physical Activity Distribution by %HRR")
     ) +
     ggplot2::theme(
       axis.ticks.x = ggplot2::element_blank(),
