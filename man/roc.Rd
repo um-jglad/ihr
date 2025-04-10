@@ -18,13 +18,13 @@ heart rate over the past 1 minute divided by 1}
 \item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning}
 }
 \value{
-A tibble object with two columns: subject id and rate of change values
+A tibble object with three columns: subject id, rate of change values, time of observation
 }
 \description{
 The function \code{roc} produces rate of change values in a tibble object.
 }
 \details{
-A tibble object with a column for subject id and a column for ROC values is
+A tibble object with a column for subject id, a column for ROC values, and a column for the time associated is
 returned. A ROC value is returned for each time point for all the subjects. Thus
 multiple rows are returned for each subject. If the rate of change cannot be
 calculated, the function will return \code{NA} for that point.
