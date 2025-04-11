@@ -4,12 +4,10 @@
 #' The function `plot_daily` plots daily heart rate time series profiles for a single subject.
 #'
 #' @usage
-#' plot_daily(data, maxd = 14, LLTR = 60, ULTR = 100, inter_gap = 45, tz = "")
+#' plot_daily(data, maxd = 14, inter_gap = 45, tz = "")
 #'
 #' @param data DataFrame object with column names "id", "time", "hr"
 #' @param maxd \strong{Default: 14.} Number of days to plot. If less than `maxd` days of data are available, all days are plotted.
-#' @param LLTR low threshold
-#' @param ULTR high threshold
 #' @param inter_gap The maximum allowable gap (in minutes) for interpolation.
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #' @return Daily heart rate time series plots for a single subject
@@ -19,8 +17,8 @@
 #'
 #' @details
 #' Only a single subject's data may be plotted. The black line shows the heart rate values.
-#' The shaded gray area shows the target range, default 60 - 100 BPM. Areas of the curve
-#' above the ULTR are shaded yellow, while areas below the LLTR are shaded red.
+#' The shaded orange area shows the moderate range, The shaded green area shows the light range, Areas of the curve
+#' above the hr_60 are shaded red(which is the vigorous range), while areas below the hr_20 are shaded blue(which is the Sedentary/Sleep range).
 #'
 #'
 #'
@@ -28,9 +26,8 @@
 #'
 #' data(example_heart_1)
 #' plot_daily(example_heart_1)
-#' plot_daily(example_heart_1, LLTR = 100, ULTR = 140)
 #'
-plot_daily <- function (data, maxd = 14, LLTR = 60, ULTR = 100, inter_gap = 45, tz = "") {
+plot_daily <- function (data, maxd = 14, inter_gap = 45, tz = "") {
 
   hr =  id = level_group = reltime = day_of_week = each_day = gap = time_group = NULL
   rm(list = c("hr", "id", "level_group", "reltime", "day_of_week", "each_day", "gap", "time_group"))
@@ -43,14 +40,30 @@ plot_daily <- function (data, maxd = 14, LLTR = 60, ULTR = 100, inter_gap = 45, 
     }
   }
   data = data[complete.cases(data), ] # prevent downstream warnings for NA time values
-
-  subject = unique(data$id)
-  ns = length(subject)
-  if (ns > 1){
-    subject = subject[1]
+  subject <- unique(data$id)
+  ns <- length(subject)
+  if (ns > 1) {
+    subject <- subject[1]
     warning(paste("The provided data have", ns, "subjects. The plot will only be created for subject", subject))
-    data = data |> dplyr::filter(id == subject)
+    data <- dplyr::filter(data, id == subject)
   }
+
+  # === Get actual thresholds from HRR ===
+  HRR_info <- calculate_HRR(data)
+  HRR_info <- dplyr::filter(HRR_info, id == subject)
+
+  if (nrow(HRR_info) == 0 || any(is.na(HRR_info$RHR), is.na(HRR_info$HRR))) {
+    message("Cannot compute HR thresholds due to missing RHR or HRR.")
+    return(NULL)
+  }
+
+  RHR <- HRR_info$RHR
+  HRR <- HRR_info$HRR
+  hr_20 <- RHR + 0.20 * HRR
+  hr_40 <- RHR + 0.40 * HRR
+  hr_60 <- RHR + 0.60 * HRR
+
+
 
   days = sort(unique(lubridate::date(data$time)))
   max_days = min(length(days), maxd)
@@ -62,7 +75,7 @@ plot_daily <- function (data, maxd = 14, LLTR = 60, ULTR = 100, inter_gap = 45, 
     dplyr::filter(each_day %in% kdays) |> # select only maxd
     dplyr::mutate(day_of_week = as.character(lubridate::wday(time, label = TRUE, abbr = FALSE)),
                   reltime = hms::as_hms(paste(lubridate::hour(time), lubridate::minute(time), lubridate::second(time), sep = ":")),
-                  hr_level = dplyr::case_when(hr > ULTR ~ "high", hr < LLTR ~ "low", TRUE ~ "normal"))
+                  hr_level = dplyr::case_when(hr > hr_60 ~ "Vigorous", hr < hr_20 ~ "Sedentary/Sleep", TRUE ~ "normal"))
 
   hr_level <- plot_data |>
     dplyr::mutate(level_group = rep(1:length(rle(hr_level)[[1]]), rle(hr_level)[[1]])) |>
@@ -70,20 +83,20 @@ plot_daily <- function (data, maxd = 14, LLTR = 60, ULTR = 100, inter_gap = 45, 
     dplyr::reframe(id = id[1], time = c(time[1] - 10, time, time[dplyr::n()] + 10),
                    reltime = hms::as_hms(c(reltime[1] - 10, reltime, reltime[dplyr::n()] + 10)),
                    hr = dplyr::case_when(
-                     hr_level[1] == "high" ~ c(ULTR, hr, ULTR),
-                     hr_level[1] == "low" ~  c(LLTR, hr, LLTR)),
+                     hr_level[1] == "Vigorous" ~ c(hr_60, hr, hr_60),
+                     hr_level[1] == "Sedentary/Sleep" ~  c(hr_20, hr, hr_20)),
                    day_of_week = c(day_of_week[1], day_of_week, day_of_week[dplyr::n()]),
                    each_day = c(each_day[1], each_day, each_day[dplyr::n()]),
                    class = hr_level[1], .groups = "drop")
-  if (!any(hr_level$class == "low")) { # if no low/high, add row for geom_ribbon
+  if (!any(hr_level$class == "Sedentary/Sleep")) { # if no low/high, add row for geom_ribbon
     hr_level = dplyr::add_row(hr_level, hr_level[1, ])
-    hr_level$class[1] <- "low"
-    hr_level$hr[1] <- LLTR
+    hr_level$class[1] <- "Sedentary/Sleep"
+    hr_level$hr[1] <- hr_20
   }
-  if (!any(hr_level$class == "high")) {
+  if (!any(hr_level$class == "Vigorous")) {
     hr_level = dplyr::add_row(hr_level, hr_level[1, ])
-    hr_level$class[1] <- "high"
-    hr_level$hr[1] <- ULTR
+    hr_level$class[1] <- "Vigorous"
+    hr_level$hr[1] <- hr_60
   }
 
   plot_data <- plot_data[complete.cases(plot_data), ] |>
@@ -100,14 +113,16 @@ plot_daily <- function (data, maxd = 14, LLTR = 60, ULTR = 100, inter_gap = 45, 
 
   ggplot2::ggplot(plot_data) +
     ggplot2::geom_line(ggplot2::aes(reltime, hr, group = time_group)) +
-    ggplot2::geom_ribbon(ggplot2::aes(reltime, ymin = LLTR, ymax = ULTR),
-                         fill = "lightgrey", alpha = 0.5) +
-    ggplot2::geom_ribbon(data = hr_level[hr_level$class == "high", ],
-                         ggplot2::aes(reltime, ymin = ULTR, ymax = hr),
-                         fill = "yellow", alpha = 0.5) +
-    ggplot2::geom_ribbon(data = hr_level[hr_level$class == "low", ],
-                         ggplot2::aes(reltime, ymin = LLTR, ymax = hr),
-                         fill = "red", alpha = 0.5) +
+    ggplot2::geom_ribbon(ggplot2::aes(reltime, ymin = hr_40, ymax = hr_60),
+                         fill = "#F9B500", alpha = 0.5) +
+    ggplot2::geom_ribbon(ggplot2::aes(reltime, ymin = hr_20, ymax = hr_40),
+                         fill = "#48BA3C", alpha = 0.5) +
+    ggplot2::geom_ribbon(data = hr_level[hr_level$class == "Vigorous", ],
+                         ggplot2::aes(reltime, ymin = hr_60, ymax = hr),
+                         fill = "#8E1B1B", alpha = 0.5) +
+    ggplot2::geom_ribbon(data = hr_level[hr_level$class == "Sedentary/Sleep", ],
+                         ggplot2::aes(reltime, ymin = hr, ymax = hr_20),
+                         fill = "#0073C2", alpha = 0.5) +
     ggplot2::scale_x_time(breaks = c(hms::as_hms(c('00:00:00', '12:00:00', '24:00:00'))),
                           labels = c('12 am', '12 pm', '12 am')) +
     ggplot2::facet_wrap(~each_day + day_of_week, ncol = 7, ) +
