@@ -51,6 +51,7 @@ plot_daily <- function (data, maxd = 14, inter_gap = 45, tz = "") {
   # === Get actual thresholds from HRR ===
   HRR_info <- calculate_HRR(data)
   HRR_info <- dplyr::filter(HRR_info, id == subject)
+  summary_info <- summary_hr(data)
 
   if (nrow(HRR_info) == 0 || any(is.na(HRR_info$RHR), is.na(HRR_info$HRR))) {
     message("Cannot compute HR thresholds due to missing RHR or HRR.")
@@ -118,10 +119,10 @@ plot_daily <- function (data, maxd = 14, inter_gap = 45, tz = "") {
     ggplot2::geom_ribbon(ggplot2::aes(reltime, ymin = hr_20, ymax = hr_40),
                          fill = "#48BA3C", alpha = 0.5) +
     ggplot2::geom_ribbon(data = hr_level[hr_level$class == "Vigorous", ],
-                         ggplot2::aes(reltime, ymin = hr_60, ymax = hr),
+                         ggplot2::aes(reltime, ymin = hr_60, ymax = summary_info$max_hr),
                          fill = "#8E1B1B", alpha = 0.5) +
     ggplot2::geom_ribbon(data = hr_level[hr_level$class == "Sedentary/Sleep", ],
-                         ggplot2::aes(reltime, ymin = hr, ymax = hr_20),
+                         ggplot2::aes(reltime, ymin = summary_info$min_hr, ymax = hr_20),
                          fill = "#0073C2", alpha = 0.5) +
     ggplot2::scale_x_time(breaks = c(hms::as_hms(c('00:00:00', '12:00:00', '24:00:00'))),
                           labels = c('12 am', '12 pm', '12 am')) +
