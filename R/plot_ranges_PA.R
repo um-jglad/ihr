@@ -75,10 +75,10 @@ plot_ranges_PA <- function(data) {
 
   # Dynamic labels using actual heart rate thresholds
   stage_labels <- c(
-    "Vigorous" = paste0("Vigorous (>= RHR + 60%HRR)[", hr_60, " bpm]"),
+    "Vigorous" = paste0("Vigorous (>= RHR + 60%HRR) [", hr_60, " bpm]"),
     "Moderate" = paste0("Moderate (RHR + [40% - 60%]HRR) [", hr_40, " - ", hr_60 - 0.1, " bpm]"),
     "Light" = paste0("Light (RHR + [20% - 40%]HRR) [", hr_20, " - ", hr_40 - 0.1, " bpm]"),
-    "Sedentary/Sleep" = paste0("Sedentary/Sleep <= RHR + 20%HRR)[", hr_20 - 0.1, " bpm]")
+    "Sedentary/Sleep" = paste0("Sedentary/Sleep (<= RHR + 20%HRR) [", hr_20 - 0.1, " bpm]")
   )
 
   stage_colors <- c(
