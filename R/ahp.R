@@ -40,6 +40,7 @@ ahp <- function(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TR
   # Extract values for subject
   RHR_value <- if (!is.null(RHR_data)) round(RHR_data$RHR[RHR_data$id == subject]) else NA
   HRR_value <- if (!is.null(HRR_data)) round(HRR_data$HRR[HRR_data$id == subject]) else NA
+  Max_value <- if (!is.null(HRR_data)) round(HRR_data$max_hr[HRR_data$id == subject]) else NA
 
   # Calculate metrics
   tableStat = data.frame("Heartrate statistics", "value")
@@ -57,6 +58,8 @@ ahp <- function(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TR
   tableStat[6, 2] = if (!is.na(RHR_value)) paste0(RHR_value, " bpm") else "Not available"
   tableStat[7, 1] = "Heart Rate Reserve(HRR)"
   tableStat[7, 2] = if (!is.na(HRR_value)) paste0(HRR_value, " bpm") else "Not available"
+  tableStat[8, 1] = "Max Heart Rate"
+  tableStat[8, 2] = if (!is.na(HRR_value)) paste0(Max_value, " bpm") else "Not available"
 
 
   # Make a pretty table
