@@ -29,8 +29,8 @@
 #' plot_ranges_PA(example_heart_1)
 #'
 plot_ranges_PA <- function(data) {
-  id = PA_stage = percent = NULL
-  rm(list = c("id", "PA_stage", "percent"))
+  id = Stages = percent = NULL
+  rm(list = c("id", "Stages", "percent"))
 
   subject <- unique(data$id)
   ns <- length(subject)
@@ -68,16 +68,16 @@ plot_ranges_PA <- function(data) {
   ranges <- summary |>
     tidyr::pivot_longer(
       cols = -id,
-      names_to = "PA_stage",
+      names_to = "Stages",
       values_to = "percent"
     ) |>
-    dplyr::mutate(PA_stage = factor(PA_stage, levels = ordered_stages))
+    dplyr::mutate(Stages = factor(Stages, levels = ordered_stages))
 
   # Dynamic labels using actual heart rate thresholds
   stage_labels <- c(
-    "Vigorous" = paste0("Vigorous ≥ 60%HRR  + RHR(", hr_60, ") bpm"),
-    "Moderate" = paste0("Moderate 40%HRR  + RHR(", hr_40, ") – 60%HRR  + RHR(", hr_60 - 0.1, ")  bpm"),
-    "Light" = paste0("Light 20%HRR  + RHR(", hr_20, ") – 60%HRR + RHR(", hr_40 - 0.1, ") bpm"),
+    "Vigorous" = paste0("Vigorous >= 60%HRR  + RHR(", hr_60, ") bpm"),
+    "Moderate" = paste0("Moderate 40%HRR  + RHR(", hr_40, ") - 60%HRR  + RHR(", hr_60 - 0.1, ")  bpm"),
+    "Light" = paste0("Light 20%HRR  + RHR(", hr_20, ") - 60%HRR + RHR(", hr_40 - 0.1, ") bpm"),
     "Sedentary/Sleep" = paste0("Sedentary/Sleep < 20%HRR  + RHR (", hr_20, ") bpm")
   )
 
@@ -88,7 +88,7 @@ plot_ranges_PA <- function(data) {
     "Vigorous" = "#8E1B1B"
   )
 
-  ggplot2::ggplot(ranges, ggplot2::aes(x = 1, fill = PA_stage, y = percent)) +
+  ggplot2::ggplot(ranges, ggplot2::aes(x = 1, fill = Stages, y = percent)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::scale_fill_manual(
       values = stage_colors[ordered_stages],

@@ -4,16 +4,12 @@
 \alias{plot_daily}
 \title{Plot daily heart rate profiles}
 \usage{
-plot_daily(data, maxd = 14, LLTR = 60, ULTR = 100, inter_gap = 45, tz = "")
+plot_daily(data, maxd = 14, inter_gap = 45, tz = "")
 }
 \arguments{
 \item{data}{DataFrame object with column names "id", "time", "hr"}
 
 \item{maxd}{\strong{Default: 14.} Number of days to plot. If less than \code{maxd} days of data are available, all days are plotted.}
-
-\item{LLTR}{low threshold}
-
-\item{ULTR}{high threshold}
 
 \item{inter_gap}{The maximum allowable gap (in minutes) for interpolation.}
 
@@ -27,13 +23,12 @@ The function \code{plot_daily} plots daily heart rate time series profiles for a
 }
 \details{
 Only a single subject's data may be plotted. The black line shows the heart rate values.
-The shaded gray area shows the target range, default 60 - 100 BPM. Areas of the curve
-above the ULTR are shaded yellow, while areas below the LLTR are shaded red.
+The shaded orange area shows the moderate range, The shaded green area shows the light range, Areas of the curve
+above the hr_60 are shaded red(which is the vigorous range), while areas below the hr_20 are shaded blue(which is the Sedentary/Sleep range).
 }
 \examples{
 
 data(example_heart_1)
 plot_daily(example_heart_1)
-plot_daily(example_heart_1, LLTR = 100, ULTR = 140)
 
 }
