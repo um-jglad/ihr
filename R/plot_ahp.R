@@ -47,27 +47,53 @@ plot_ahp <- function (data, smooth = FALSE,
   data_ip = HR2DayByDay(data, dt0 = 1, inter_gap = inter_gap, tz = tz)
   hr_ip = data_ip[[1]]
   quartiles <- apply(hr_ip, 2, quantile, probs = c(0.05, 0.25, 0.50, 0.75, 0.95), na.rm = TRUE)
+  # Next line of code adds labels, issue needs to be fixed
   q_labels <- dplyr::as_tibble(quartiles[, ncol(quartiles)])
 
 
   if (smooth) {
-    plot_data = dplyr::tibble(
-      times_numeric = as.numeric(seq(data_ip[[3]]*60, 86400, by = data_ip[[3]]*60)),
-      median = loess(quartiles[3, ]~times_numeric, span = span)$fitted,
-      five = loess(quartiles[1, ]~times_numeric, span = span)$fitted,
-      twentyfive = loess(quartiles[2, ]~times_numeric, span = span)$fitted,
-      seventyfive = loess(quartiles[4, ]~times_numeric, span = span)$fitted,
-      ninetyfive = loess(quartiles[5, ]~times_numeric, span = span)$fitted,
-      times = hms::as_hms(times_numeric)
+    # complete <- are indicators of minutes where observations were valid
+    times_full = as.numeric(seq(data_ip[[3]]*60, 86400, by = data_ip[[3]]*60))
+    complete <- complete.cases(quartiles[1, ], times_full)
+    temp_data = dplyr::tibble(
+      # Time for 24 Hour span
+      times_numeric = as.numeric(seq(data_ip[[3]]*60, 86400, by = data_ip[[3]]*60))[complete],
+      # Calculating Smoothing
+      median = loess(quartiles[3, complete]~times_numeric, span = span)$fitted,
+      five = loess(quartiles[1, complete]~times_numeric, span = span)$fitted,
+      twentyfive = loess(quartiles[2, complete]~times_numeric, span = span)$fitted,
+      seventyfive = loess(quartiles[4, complete]~times_numeric, span = span)$fitted,
+      ninetyfive = loess(quartiles[5, complete]~times_numeric, span = span)$fitted
     )
+    total_min <- as.numeric(length(times_full))
+    plot_data <- data.frame(times_numeric = rep(NA, total_min),
+                            median = rep(NA, total_min),
+                            five = rep(NA, total_min),
+                            twentyfive = rep(NA, total_min),
+                            seventyfive = rep(NA, total_min),
+                            ninetyfive = rep(NA, total_min)
+    )
+    # j represents current row of the temp_data, incremented for every addition
+    j <- 1
+    for(i in 1:length(times_full)){
+      if(complete[i]){
+        plot_data[i, ] <- temp_data[j, ]
+        j <- j + 1
+      }
+      else{
+        plot_data$times_numeric[i] <- times_full[i]
+      }
+    }
+    # Add proper time variable
+    plot_data <- plot_data |> dplyr::mutate(times = hms::as_hms(times_numeric))
   } else {
     plot_data = dplyr::tibble(
+      # Time for 24 Hour span
       times = hms::as_hms(seq(data_ip[[3]]*60, 86400, by = data_ip[[3]]*60)),
       median = quartiles[3, ], five = quartiles[1, ], twentyfive = quartiles[2, ],
       seventyfive = quartiles[4, ], ninetyfive = quartiles[5, ]
     )
   }
-
   p = ggplot2::ggplot(plot_data) +
     ggplot2::geom_line(ggplot2::aes(times, median), color = "black", size = 1) +
     ggplot2::geom_line(ggplot2::aes(times, five), linetype = "longdash", color = "#325DAA") +
