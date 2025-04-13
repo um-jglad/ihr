@@ -561,12 +561,12 @@ mahe_ma_single <- function(data,
         exc_data$end_nadir[i] <- exc_data$hr[i + 2]
       }
 
-      exc_data$start_time <- format(as.POSIXct(exc_data$start_time, origin = "1970-01-01", tz = "UTC"),
-                               "%Y-%m-%d %H:%M:%S")
-      exc_data$peak_time <- format(as.POSIXct(exc_data$peak_time, origin = "1970-01-01", tz = "UTC"),
-                                    "%Y-%m-%d %H:%M:%S")
-      exc_data$end_time <- format(as.POSIXct(exc_data$end_time, origin = "1970-01-01", tz = "UTC"),
-                             "%Y-%m-%d %H:%M:%S")
+      exc_data$start_time <- as.POSIXct(format(as.POSIXct(exc_data$start_time, origin = "1970-01-01", tz = "UTC"),
+                               "%Y-%m-%d %H:%M:%S"))
+      exc_data$peak_time <- as.POSIXct(format(as.POSIXct(exc_data$peak_time, origin = "1970-01-01", tz = "UTC"),
+                                    "%Y-%m-%d %H:%M:%S"))
+      exc_data$end_time <- as.POSIXct(format(as.POSIXct(exc_data$end_time, origin = "1970-01-01", tz = "UTC"),
+                             "%Y-%m-%d %H:%M:%S"))
 
       exc_data <- exc_data |>
         dplyr::mutate(time_length = as.numeric(difftime(end_time, start_time), units = "mins"))
