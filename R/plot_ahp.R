@@ -24,7 +24,7 @@
 #' plot_ahp(example_heart_1)
 #'
 
-plot_ahp <- function (data, smooth = FALSE,
+plot_ahp <- function (data, smooth = TRUE,
                       span = 0.3, inter_gap = 15, tz = "", title = FALSE) {
 
   # Summarizing data at a minute level
