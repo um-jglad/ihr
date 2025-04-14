@@ -70,14 +70,16 @@ ahp <- function(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TR
   # Create percentage plot
   p1 = plot_ranges_PA(data)
 
+  p2 = plot_ahp(data, inter_gap = inter_gap, tz = tz)
+
   if (daily){
     # Create daily plots
     p3 = plot_daily(data, maxd = maxd, inter_gap = inter_gap, tz = tz)
 
     # Combine metrics and plot in one display
-    pFinal = (patchwork::wrap_elements(t1) +  p1 + patchwork::guide_area() + patchwork::plot_layout(widths = c(4, 1, 1))) / p3
+    pFinal = (patchwork::wrap_elements(t1) +  p1 + patchwork::guide_area() + patchwork::plot_layout(widths = c(4, 1, 1))) / p2 / p3
   }else{
-    pFinal = (patchwork::wrap_elements(t1) +  p1 + patchwork::guide_area() + patchwork::plot_layout(widths = c(4, 1, 1)))
+    pFinal = (patchwork::wrap_elements(t1) +  p1 + patchwork::guide_area() + patchwork::plot_layout(widths = c(4, 1, 1))) / p2
   }
   pFinal
 }
