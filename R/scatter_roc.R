@@ -23,7 +23,6 @@
 #' 2. Moderate: 40 % HRR + RHR -  60 % HRR + RHR
 #' 3. Light: 20 % HRR + RHR -  40 % HRR + RHR
 #' 4. Sedentary/Sleep: <= 20 % HRR + RHR
-
 #'
 #' @examples
 #' data(example_heart_1)
@@ -31,8 +30,8 @@
 #'
 scatter_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
 
-  id = hr = NULL
-  rm(list = c("id", "hr"))
+  id = hr = RHR = HRR = hr_20 = hr_40 = hr_60 = NULL
+  rm(list = c("id", "hr", "RHR", "HRR", "hr_20", "hr_40", "hr_60"))
 
   data = check_data_columns(data)
 
@@ -66,7 +65,7 @@ scatter_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
   personal_hr <- calculate_HRR(data)
 
   personal_hr <- personal_hr |>
-    mutate(hr_20 = round(RHR + 0.20 * HRR, 1),
+    dplyr::mutate(hr_20 = round(RHR + 0.20 * HRR, 1),
            hr_40 = round(RHR + 0.40 * HRR, 1),
            hr_60 = round(RHR + 0.60 * HRR, 1))
 

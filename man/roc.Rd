@@ -54,5 +54,5 @@ Diabetes
 \doi{10.1089/dia.2008.0138}.
 }
 \author{
-Elizabeth Chun, David Buchanan
+Original code in iglu by Elizabeth Chun, David Buchanan
 }

@@ -4,7 +4,7 @@
 \alias{plot_ahp}
 \title{Plot Ambulatory Heart Rate Profile (AHP) modal day}
 \usage{
-plot_ahp(data, smooth = FALSE, span = 0.3,
+plot_ahp(data, smooth = TRUE, span = 0.3,
 inter_gap = 15, tz = "", title = FALSE)
 }
 \arguments{

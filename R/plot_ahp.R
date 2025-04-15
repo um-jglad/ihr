@@ -4,7 +4,7 @@
 #' The function plot_ahp produces an AhP plot that collapses all data into a single 24 hr "modal day".
 #'
 #' @usage
-#' plot_ahp(data, smooth = FALSE, span = 0.3,
+#' plot_ahp(data, smooth = TRUE, span = 0.3,
 #' inter_gap = 15, tz = "", title = FALSE)
 #'
 #' @param data DataFrame object with column names "id", "time", "hr"
