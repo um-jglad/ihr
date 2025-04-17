@@ -47,8 +47,6 @@ plot_ahp <- function (data, smooth = TRUE,
   data_ip = HR2DayByDay(data, dt0 = 1, inter_gap = inter_gap, tz = tz)
   hr_ip = data_ip[[1]]
   quartiles <- apply(hr_ip, 2, quantile, probs = c(0.05, 0.25, 0.50, 0.75, 0.95), na.rm = TRUE)
-  # Next line of code adds labels, issue needs to be fixed
-  q_labels <- dplyr::as_tibble(quartiles[, ncol(quartiles)])
 
 
   if (smooth) {
@@ -94,10 +92,16 @@ plot_ahp <- function (data, smooth = TRUE,
       seventyfive = quartiles[4, ], ninetyfive = quartiles[5, ]
     )
   }
+
+  num_missing <- plot_data |> dplyr::filter(dplyr::if_all(c(median, five, twentyfive, seventyfive, ninetyfive), is.na)) |> nrow()
+  if(num_missing > 0){
+    warning(num_missing, " observations are missing for plot_ahp. Times with missing values will be empty in the plot.")
+  }
+
   p = ggplot2::ggplot(plot_data) +
-    ggplot2::geom_line(ggplot2::aes(times, median), color = "black", size = 1) +
-    ggplot2::geom_line(ggplot2::aes(times, five), linetype = "longdash", color = "#325DAA") +
-    ggplot2::geom_line(ggplot2::aes(times, ninetyfive), linetype = "longdash", color = "#325DAA") +
+    ggplot2::geom_line(ggplot2::aes(times, median), color = "black", size = 1, na.rm = T) +
+    ggplot2::geom_line(ggplot2::aes(times, five), linetype = "longdash", color = "#325DAA", na.rm = T) +
+    ggplot2::geom_line(ggplot2::aes(times, ninetyfive), linetype = "longdash", color = "#325DAA", na.rm = T) +
     ggplot2::geom_ribbon(ggplot2::aes(times, ymin = seventyfive, ymax = ninetyfive),
                          fill = "#A7BEE7", alpha = 0.5) +
     ggplot2::geom_ribbon(ggplot2::aes(times, ymin = five, ymax = twentyfive),
@@ -110,9 +114,6 @@ plot_ahp <- function (data, smooth = TRUE,
                                      '3 pm', '6 pm', '9 pm', '12 am')) +
     ggplot2::ylab("Heart Rate [BPM]") + ggplot2::xlab(NULL) +
     ggplot2::theme(plot.margin = ggplot2::unit(c(1,3,1,1), "lines")) +
-    ggplot2::geom_text(data = q_labels,
-                       ggplot2::aes(label = c("5%", "25%", "50%", "75%", "95%"), y = value),
-                       x = 90700, hjust = 0, size = 3.25) +
     ggplot2::coord_cartesian(clip = "off") +
     ggplot2::theme(plot.margin = ggplot2::unit(c(1,3,1,1), units = "line"))
 
