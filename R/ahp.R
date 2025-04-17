@@ -54,7 +54,7 @@ ahp <- function(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TR
   tableStat[4, 2] = paste(as.character(out_range$unique_days),"days")
   tableStat[5, 1] = "% Time Heart rate is not missing"
   tableStat[5, 2] = paste0(round(out_range$percent_nonmissing), "%")
-  tableStat[6, 1] = "Resting Heart Rate(RHH)"
+  tableStat[6, 1] = "Resting Heart Rate(RHR)"
   tableStat[6, 2] = if (!is.na(RHR_value)) paste0(RHR_value, " bpm") else "Not available"
   tableStat[7, 1] = "Heart Rate Reserve(HRR)"
   tableStat[7, 2] = if (!is.na(HRR_value)) paste0(HRR_value, " bpm") else "Not available"
