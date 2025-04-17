@@ -19,6 +19,9 @@ event_class = function(data, level_type, threshold, event_duration, end_duration
     annotated$level = annotated$pct_HRR < threshold
   } else if (level_type == 'high') {
     annotated$level = annotated$pct_HRR >= threshold
+  } else if (level_type == 'range') {
+    # threshold must be a vector of two values: c(lower_bound, upper_bound)
+    annotated$level = (annotated$pct_HRR >= threshold[1]) & (annotated$pct_HRR < threshold[2])
   }
 
   level_rle = rle(annotated$level)$lengths
@@ -45,8 +48,8 @@ event_class = function(data, level_type, threshold, event_duration, end_duration
   } else {
     pairs = pairs[!duplicated(pairs$ends_ref), ]
     vseq = Vectorize(seq.default, c("from", "to"))
-    event_idx = unlist(vseq(pairs$starts_ref, pairs$ends_ref))
-    event_label = rep(1:nrow(pairs), (pairs$ends_ref - pairs$starts_ref)+1)
+    event_idx = unlist(vseq(pairs$start, pairs$end))
+    event_label = rep(1:nrow(pairs), (pairs$end - pairs$start)+1)
 
     output = rep(0, nrow(data))
     output[event_idx] = event_label
@@ -55,15 +58,16 @@ event_class = function(data, level_type, threshold, event_duration, end_duration
 }
 
 # Summary function using HRR stages
-episode_summary = function(data, dt0) {
+episode_summary = function(data, dt0, dur_length) {
   event = segment = hr = NULL
   rm(list = c("event", "segment", "hr"))
 
-  episode_summary_helper = function(data, level_label, dt0) {
+  episode_summary_helper = function(data, level_label, dt0, dur_length) {
     hr = NULL
     rm(list = c("hr"))
     data = data[, c(1:4, which(colnames(data) == level_label))]
     colnames(data) = c("id", "time", "hr", "segment", "event")
+
 
     if (all(data$event == 0)) {
       output = c(0, 0, NA, 0)
@@ -79,6 +83,15 @@ episode_summary = function(data, dt0) {
         .groups = "drop"
       )
 
+    min_duration = dt0 * ceiling(dur_length / dt0)
+    data_sum = data_sum |>
+      dplyr::filter(event_duration >= min_duration)
+
+    if (nrow(data_sum) == 0) {
+      output = c(0, 0, NA, 0)
+      return(output)
+    }
+
     avg_ep_per_day = nrow(data_sum)/(nrow(data) * dt0 / 60 / 24)
     avg_ep_duration = mean(data_sum$event_duration)
     avg_ep_hr = mean(data_sum$event_hr)
@@ -89,10 +102,10 @@ episode_summary = function(data, dt0) {
   }
 
   labels = c("Sedentary", "Light", "Moderate", "Vigorous")
-  out_list = sapply(labels, function(x) episode_summary_helper(data, x, dt0))
+  out_list = sapply(labels, function(x) episode_summary_helper(data, x, dt0, dur_length))
 
   output = data.frame(
-    stage = labels,
+    level = labels,
     avg_ep_per_day = out_list[1, ],
     avg_ep_duration = out_list[2, ],
     avg_ep_hr = out_list[3, ],
@@ -136,20 +149,20 @@ episode_single = function(data, dur_length, end_length, return_data, dt0, inter_
   segment_data$segment = rep(1:length(segment_rle), segment_rle)
   segment_data = segment_data[!is.na(segment_data$hr), ]
 
-  segment_data = segment_data |>
+  ep_per_seg = segment_data |>
     dplyr::group_by(segment) |>
     dplyr::mutate(
       Sedentary = event_class(data.frame(id, time, hr, pct_HRR), "low", 20, dur_idx, end_idx),
-      Light = event_class(data.frame(id, time, hr, pct_HRR), "high", 20, dur_idx, end_idx) * (pct_HRR < 40),
-      Moderate = event_class(data.frame(id, time, hr, pct_HRR), "high", 40, dur_idx, end_idx) * (pct_HRR < 60),
+      Light = event_class(data.frame(id, time, hr, pct_HRR), "range", c(20,40), dur_idx, end_idx),
+      Moderate = event_class(data.frame(id, time, hr, pct_HRR), "range", c(40,60), dur_idx, end_idx),
       Vigorous = event_class(data.frame(id, time, hr, pct_HRR), "high", 60, dur_idx, end_idx)
     )
 
   if (return_data) {
-    return(segment_data)
+    return(ep_per_seg)
   }
 
-  output = episode_summary(segment_data, dt0)
+  output = episode_summary(ep_per_seg, dt0, dur_length)
   return(output)
 }
 
@@ -243,4 +256,3 @@ episode_calculation = function(data, dur_length = 15, end_length = 15, return_da
 
   return(out)
 }
-
