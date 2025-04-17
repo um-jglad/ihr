@@ -125,7 +125,7 @@ episode_single = function(data, dur_length, end_length, return_data, dt0, inter_
   maxHR <- HRR_info$max_hr[1]
   HRR <- maxHR - RHR
 
-  data_ip <- HR2DayByDay(data, dt0 = 5, inter_gap = inter_gap, tz = tz)
+  data_ip <- HR2DayByDay(data, dt0 = dt0, inter_gap = inter_gap, tz = tz)
   dt0 = data_ip[[3]]
   day_one = as.POSIXct(data_ip[[2]][1], tz = tz)
   ndays = length(data_ip[[2]])
@@ -220,9 +220,15 @@ episode_single = function(data, dur_length, end_length, return_data, dt0, inter_
 #'
 
 
-episode_calculation = function(data, dur_length = 15, end_length = 15, return_data = FALSE, dt0 = NULL, inter_gap = 45, tz = "") {
+episode_calculation = function(data, dur_length = 15, end_length = 15, return_data = FALSE, dt0 = 1, inter_gap = 15, tz = "") {
   id = hr = NULL
   rm(list = c("id", "hr"))
+
+  # Summarizing data at a minute level
+  data <- data |>
+    dplyr::mutate(time = lubridate::floor_date(time, unit = "minute")) |>
+    dplyr::group_by(id, time) |>
+    dplyr::summarise(hr = mean(hr), .groups = "drop")
 
   if (dur_length > inter_gap) {
     warning("Interpolation gap parameter less than episode duration; data gaps may cause incorrect computation")
