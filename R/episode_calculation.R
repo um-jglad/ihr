@@ -83,8 +83,6 @@ episode_summary = function(data, dt0, dur_length) {
       )
 
     min_duration = dt0 * ceiling(dur_length / dt0)
-    data_sum = data_sum |>
-      dplyr::filter(event_duration >= min_duration)
 
     if (nrow(data_sum) == 0) {
       output = c(0, 0, NA, 0)
