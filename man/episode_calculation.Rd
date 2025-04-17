@@ -9,8 +9,8 @@ episode_calculation(
   dur_length = 15,
   end_length = 15,
   return_data = FALSE,
-  dt0 = NULL,
-  inter_gap = 45,
+  dt0 = 1,
+  inter_gap = 15,
   tz = ""
 )
 }

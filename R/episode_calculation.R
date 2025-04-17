@@ -63,20 +63,19 @@ episode_summary = function(data, dt0, dur_length) {
   rm(list = c("event", "segment", "hr"))
 
   episode_summary_helper = function(data, level_label, dt0, dur_length) {
-    hr = NULL
-    rm(list = c("hr"))
-    data = data[, c(1:4, which(colnames(data) == level_label))]
-    colnames(data) = c("id", "time", "hr", "segment", "event")
-
+    hr = event_duration = NULL
+    rm(list = c("hr", "event_duration"))
+    data = data[, c(1:5, which(colnames(data) == level_label))]
+    colnames(data) = c("id", "time", "hr", "pct_HRR", "segment", "event")
 
     if (all(data$event == 0)) {
       output = c(0, 0, NA, 0)
       return(output)
     }
 
-    events = data[data$event != 0, 3:5]
+    events = data[data$event != 0, c("hr", "segment", "event")]
     data_sum = events |>
-      dplyr::group_by(segment, event) |>
+      dplyr::group_by(event, segment) |>
       dplyr::summarise(
         event_duration = dplyr::n() * dt0,
         event_hr = mean(hr),
