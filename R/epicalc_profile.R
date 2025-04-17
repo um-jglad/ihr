@@ -15,7 +15,7 @@
 #'
 epicalc_profile <- function(data,
                             dur_length = 15, end_length = 15, subject = NULL,
-                            dt0 = NULL, inter_gap = 45, tz = "") {
+                            dt0 = 1, inter_gap = 15, tz = "") {
 
   id = hr = event = NULL
   rm(list = c("id"))
@@ -23,6 +23,10 @@ epicalc_profile <- function(data,
   if (!is.null(subject)) {
     data = data[data$id == subject, ]
   }
+  data <- data |>
+    dplyr::mutate(time = lubridate::floor_date(time, unit = "minute")) |>
+    dplyr::group_by(id, time) |>
+    dplyr::summarise(hr = mean(hr), .groups = "drop")
 
   ns = length(unique(data$id))
   if (ns > 1) {
