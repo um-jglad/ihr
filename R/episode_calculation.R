@@ -220,7 +220,8 @@ episode_single = function(data, dur_length, end_length, return_data, dt0, inter_
 episode_calculation = function(data, dur_length = 15, end_length = 15, return_data = FALSE, dt0 = 1, inter_gap = 15, tz = "") {
   id = hr = NULL
   rm(list = c("id", "hr"))
-
+  data <- data |>
+    dplyr::mutate(time = as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S"))
   # Summarizing data at a minute level
   data <- data |>
     dplyr::mutate(time = lubridate::floor_date(time, unit = "minute")) |>

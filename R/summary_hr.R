@@ -32,7 +32,7 @@ summary_hr <- function(data) {
 
   # Convert Time column to Date-Time format
   data <- data |>
-    dplyr::mutate(time = as.POSIXct(time, format = "%Y/%d/%m %I:%M:%S %p"))
+    dplyr::mutate(time = as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S"))
 
   # Remove rows with missing HR values
   data <- dplyr::filter(data, !is.na(hr))
