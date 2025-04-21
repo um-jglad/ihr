@@ -95,11 +95,11 @@ plot_ahp <- function (data, smooth = TRUE,
 
   num_missing <- plot_data |> dplyr::filter(dplyr::if_all(c(median, five, twentyfive, seventyfive, ninetyfive), is.na)) |> nrow()
   if(num_missing > 0){
-    warning(num_missing, " observations are missing for plot_ahp. Times with missing values will be empty in the plot.")
+    warning(num_missing, " ", "observations are missing for plot_ahp. Times with missing values will be empty in the plot.")
   }
 
   p = ggplot2::ggplot(plot_data) +
-    ggplot2::geom_line(ggplot2::aes(times, median), color = "black", size = 1, na.rm = T) +
+    ggplot2::geom_line(ggplot2::aes(times, median), color = "black", linewidth = 1, na.rm = T) +
     ggplot2::geom_line(ggplot2::aes(times, five), linetype = "longdash", color = "#325DAA", na.rm = T) +
     ggplot2::geom_line(ggplot2::aes(times, ninetyfive), linetype = "longdash", color = "#325DAA", na.rm = T) +
     ggplot2::geom_ribbon(ggplot2::aes(times, ymin = seventyfive, ymax = ninetyfive),
