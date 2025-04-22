@@ -4,7 +4,7 @@
 #' The function `plot_daily` plots daily heart rate time series profiles for a single subject.
 #'
 #' @usage
-#' plot_daily(data, maxd = 14, inter_gap = 45, tz = "")
+#' plot_daily(data, maxd = 14, inter_gap = 15, tz = "")
 #'
 #' @param data DataFrame object with column names "id", "time", "hr"
 #' @param maxd \strong{Default: 14.} Number of days to plot. If less than `maxd` days of data are available, all days are plotted.
@@ -27,7 +27,7 @@
 #' data(example_heart_1)
 #' plot_daily(example_heart_1)
 #'
-plot_daily <- function (data, maxd = 14, inter_gap = 45, tz = "") {
+plot_daily <- function (data, maxd = 14, inter_gap = 15, tz = "") {
 
   hr =  id = level_group = reltime = day_of_week = each_day = gap = time_group = NULL
   rm(list = c("hr", "id", "level_group", "reltime", "day_of_week", "each_day", "gap", "time_group"))

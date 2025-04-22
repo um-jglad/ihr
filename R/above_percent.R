@@ -25,8 +25,6 @@
 #' values is passed, then a tibble object without the subject id is returned. Wrap
 #' `as.numeric()` around the latter to output a numeric vector.
 #'
-#' @seealso plot_ranges()
-#'
 #' @export
 #'
 #'

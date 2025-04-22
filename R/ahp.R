@@ -18,7 +18,7 @@
 #' ahp(example_heart_1, daily = FALSE)
 
 
-ahp <- function(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TRUE){
+ahp <- function(data, maxd = 14, inter_gap = 15, dt0 = 1, tz = "", daily = TRUE){
 
   id = NULL
   rm(list = c("id"))
