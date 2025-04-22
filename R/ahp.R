@@ -47,9 +47,9 @@ ahp <- function(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TR
   tableStat[1, 1] = "id"
   tableStat[1, 2] = as.character(subject)
   tableStat[2, 1] = "Start Date"
-  tableStat[2, 2] = as.character(out_range$start_date)
+  tableStat[2, 2] = as.character(out_range$start_time)
   tableStat[3, 1] = "End Date"
-  tableStat[3, 2] = as.character(out_range$end_date)
+  tableStat[3, 2] = as.character(out_range$end_time)
   tableStat[4, 1] = "Duration"
   tableStat[4, 2] = paste(as.character(out_range$unique_days),"days")
   tableStat[5, 1] = "% Time Heart rate is not missing"
