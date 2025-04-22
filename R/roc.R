@@ -77,8 +77,8 @@ roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
       roc = c(rep(NA, timelag/dt0),
             diff(hr_ip_vec, lag = timelag/dt0)/timelag),
       time = seq(
-        from = as.POSIXct(paste(unique_days[1], "00:00:00")),
-        to = as.POSIXct(paste(unique_days[length(unique_days)], "23:59:00")),
+        from = as.POSIXct(paste(unique_days[1], "00:00:00"), tz = tz),
+        to = as.POSIXct(paste(unique_days[length(unique_days)], "23:59:00"), tz = tz),
         by = paste(timelag, "mins")
       )
     )
