@@ -83,22 +83,10 @@ plot_daily <- function (data, maxd = 14, inter_gap = 15, tz = "") {
     dplyr::group_by(level_group) |>
     dplyr::reframe(id = id[1], time = c(time[1] - 10, time, time[dplyr::n()] + 10),
                    reltime = hms::as_hms(c(reltime[1] - 10, reltime, reltime[dplyr::n()] + 10)),
-                   hr = dplyr::case_when(
-                     hr_level[1] == "Vigorous" ~ c(hr_60, hr, hr_60),
-                     hr_level[1] == "Sedentary/Sleep" ~  c(hr_20, hr, hr_20)),
                    day_of_week = c(day_of_week[1], day_of_week, day_of_week[dplyr::n()]),
                    each_day = c(each_day[1], each_day, each_day[dplyr::n()]),
                    class = hr_level[1], .groups = "drop")
-  if (!any(hr_level$class == "Sedentary/Sleep")) { # if no low/high, add row for geom_ribbon
-    hr_level = dplyr::add_row(hr_level, hr_level[1, ])
-    hr_level$class[1] <- "Sedentary/Sleep"
-    hr_level$hr[1] <- hr_20
-  }
-  if (!any(hr_level$class == "Vigorous")) {
-    hr_level = dplyr::add_row(hr_level, hr_level[1, ])
-    hr_level$class[1] <- "Vigorous"
-    hr_level$hr[1] <- hr_60
-  }
+
 
   plot_data <- plot_data[complete.cases(plot_data), ] |>
     dplyr::group_by(id) |>
@@ -118,11 +106,9 @@ plot_daily <- function (data, maxd = 14, inter_gap = 15, tz = "") {
                          fill = "#F9B500", alpha = 0.5) +
     ggplot2::geom_ribbon(ggplot2::aes(reltime, ymin = hr_20, ymax = hr_40),
                          fill = "#48BA3C", alpha = 0.5) +
-    ggplot2::geom_ribbon(data = hr_level[hr_level$class == "Vigorous", ],
-                         ggplot2::aes(reltime, ymin = hr_60, ymax = summary_info$max_hr),
+    ggplot2::geom_ribbon(ggplot2::aes(reltime, ymin = hr_60, ymax = summary_info$max_hr),
                          fill = "#8E1B1B", alpha = 0.5) +
-    ggplot2::geom_ribbon(data = hr_level[hr_level$class == "Sedentary/Sleep", ],
-                         ggplot2::aes(reltime, ymin = summary_info$min_hr, ymax = hr_20),
+    ggplot2::geom_ribbon(ggplot2::aes(reltime, ymin = summary_info$min_hr, ymax = hr_20),
                          fill = "#0073C2", alpha = 0.5) +
     ggplot2::scale_x_time(breaks = c(hms::as_hms(c('00:00:00', '12:00:00', '24:00:00'))),
                           labels = c('12 am', '12 pm', '12 am')) +
