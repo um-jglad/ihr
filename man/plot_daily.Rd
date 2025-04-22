@@ -4,7 +4,7 @@
 \alias{plot_daily}
 \title{Plot daily heart rate profiles}
 \usage{
-plot_daily(data, maxd = 14, inter_gap = 45, tz = "")
+plot_daily(data, maxd = 14, inter_gap = 15, tz = "")
 }
 \arguments{
 \item{data}{DataFrame object with column names "id", "time", "hr"}

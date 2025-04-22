@@ -39,6 +39,3 @@ above_percent(example_heart_1)
 above_percent(example_heart_1, targets_above = c(100, 150, 180))
 
 }
-\seealso{
-plot_ranges()
-}

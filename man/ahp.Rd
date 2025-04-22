@@ -4,7 +4,7 @@
 \alias{ahp}
 \title{Display Ambulatory Heart rate Profile (AHP) statistics for selected subject}
 \usage{
-ahp(data, maxd = 14, inter_gap = 45, dt0 = NULL, tz = "", daily = TRUE)
+ahp(data, maxd = 14, inter_gap = 15, dt0 = 1, tz = "", daily = TRUE)
 }
 \arguments{
 \item{data}{DataFrame object with column names "id", "time", "hr"}
