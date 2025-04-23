@@ -2,7 +2,7 @@ mahe_ma_single <- function(data,
                            short_ma = 5, long_ma = 32,
                            return_type = c('num', 'df-seg', 'df-exc'),
                            direction = c('avg', 'service', 'max', 'plus', 'minus'),
-                           tz = "", inter_gap = 45,
+                           tz = "", inter_gap = 15,
                            max_gap = 180,
                            plot = FALSE, title = NA, xlab = NA, ylab = NA, show_ma = FALSE, show_excursions = TRUE,
                            static_or_gui=c('plotly', 'ggplot')) {
@@ -504,7 +504,7 @@ mahe_ma_single <- function(data,
       exc_data <- exc_data |>
         dplyr::mutate(Excursion = dplyr::if_else(timediff > (60 * max_gap), NA, Excursion))
 
-      dummy <- data.frame(id = exc_data$id[1], time = NA, peak_or_nadir = "NADIR", hr = NA,
+      dummy <- data.frame(id = exc_data$id[1], time = as.POSIXct(NA, tz = tz), peak_or_nadir = "NADIR", hr = NA,
                           Excursion = NA, timediff = NA)
 
       # Format in Nadir-Peak-Nadir format
@@ -539,9 +539,9 @@ mahe_ma_single <- function(data,
                          dplyr::lead(exc_data$peak_or_nadir, 2) == "NADIR")
 
       exc_data <- exc_data |>
-        dplyr::mutate(start_time = NA,
-               peak_time = NA,
-               end_time = NA,
+        dplyr::mutate(start_time = as.POSIXct(NA, tz = tz),
+               peak_time = as.POSIXct(NA, tz = tz),
+               end_time = as.POSIXct(NA, tz = tz),
                plus = NA,
                minus = NA,
                avg = NA,
@@ -560,13 +560,6 @@ mahe_ma_single <- function(data,
         exc_data$peak[i] <- exc_data$hr[i + 1]
         exc_data$end_nadir[i] <- exc_data$hr[i + 2]
       }
-
-      exc_data$start_time <- as.POSIXct(format(as.POSIXct(exc_data$start_time, origin = "1970-01-01", tz = "UTC"),
-                               "%Y-%m-%d %H:%M:%S"))
-      exc_data$peak_time <- as.POSIXct(format(as.POSIXct(exc_data$peak_time, origin = "1970-01-01", tz = "UTC"),
-                                    "%Y-%m-%d %H:%M:%S"))
-      exc_data$end_time <- as.POSIXct(format(as.POSIXct(exc_data$end_time, origin = "1970-01-01", tz = "UTC"),
-                             "%Y-%m-%d %H:%M:%S"))
 
       exc_data <- exc_data |>
         dplyr::mutate(time_length = as.numeric(difftime(end_time, start_time), units = "mins"))

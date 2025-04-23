@@ -78,11 +78,11 @@ mahe_ma <- function(data,
     dplyr::summarise(hr = mean(hr), .groups = "drop")
 
   if(from != ""){
-    lower_time <- as.POSIXct(from, format = "%Y-%m-%d")
+    lower_time <- as.POSIXct(from, format = "%Y-%m-%d", tz = tz)
     data <- data |> dplyr::filter(time >= lower_time)
   }
   if(to != ""){
-    upper_time <- as.POSIXct(to, format = "%Y-%m-%d")
+    upper_time <- as.POSIXct(to, format = "%Y-%m-%d", tz = tz)
     data <- data |> dplyr::filter(time < upper_time)
   }
 
