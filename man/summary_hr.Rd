@@ -4,10 +4,12 @@
 \alias{summary_hr}
 \title{Calculate summary heart rate}
 \usage{
-summary_hr(data)
+summary_hr(data, tz)
 }
 \arguments{
-\item{data}{A DataFrame object with column names "id", "time", "hr".
+\item{data}{A DataFrame object with column names "id", "time", "hr".}
+
+\item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 Missing HR values (NA) are automatically excluded from calculations.}
 }
 \value{

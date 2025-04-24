@@ -4,10 +4,12 @@
 \alias{calculate_RHR}
 \title{Calculate resting heart rate}
 \usage{
-calculate_RHR(data)
+calculate_RHR(data, tz)
 }
 \arguments{
 \item{data}{A DataFrame object with column names "id", "time", "hr".}
+
+\item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning}
 }
 \value{
 If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of summary values is returned.

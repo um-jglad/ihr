@@ -5,7 +5,7 @@
 #' It calculates the mean hr value between 3am to 7am and consider it as the resting heart rate according to the reference.
 
 #' @usage
-#' calculate_RHR(data)
+#' calculate_RHR(data, tz)
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning

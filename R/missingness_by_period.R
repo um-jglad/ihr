@@ -5,7 +5,7 @@
 #' Choose 3am-7am as one of the time period due to the definition of resting heart rate in the reference. The other time periods are set following this 3am-7am period.
 
 #' @usage
-#' missingness_by_period(data)
+#' missingness_by_period(data, tz)
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning

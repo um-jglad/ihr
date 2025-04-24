@@ -4,10 +4,12 @@
 \alias{missingness_by_period}
 \title{Calculate the \% missingness of the heart rate value during different time period}
 \usage{
-missingness_by_period(data)
+missingness_by_period(data, tz)
 }
 \arguments{
-\item{data}{A DataFrame object with column names "id", "time", "hr".
+\item{data}{A DataFrame object with column names "id", "time", "hr".}
+
+\item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 Missing HR values (NA) are automatically excluded from calculations.}
 }
 \value{

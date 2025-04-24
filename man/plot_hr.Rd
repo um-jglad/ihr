@@ -11,7 +11,8 @@ plot_hr(
   from = "",
   to = "",
   agg = c("none", "minute", "hour"),
-  inter_gap = 60
+  inter_gap = 60,
+  tz = ""
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ plot_hr(
 \item{agg}{Aggregate data by specified time interval}
 
 \item{inter_gap}{Gap allowed between consecutive observations (in seconds)}
+
+\item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning}
 }
 \value{
 Heart rate time series plot for a single subject

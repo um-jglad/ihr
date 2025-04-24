@@ -4,7 +4,7 @@
 \alias{calculate_HRR}
 \title{Calculate heart rate reserve}
 \usage{
-calculate_HRR(data, method, quantile_val)
+calculate_HRR(data, method, quantile_val, tz)
 }
 \arguments{
 \item{data}{A DataFrame object with column names "id", "time", "hr".}
@@ -12,6 +12,8 @@ calculate_HRR(data, method, quantile_val)
 \item{method}{A choice for the user to choose which formula they want to use: HRR = max - Resting heart rate or HRR = max-min}
 
 \item{quantile_val}{A choice for the user to choose which quantile value they want to use(most common 1, if there's strange max value, recommend to use 0.99)}
+
+\item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning}
 }
 \value{
 If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of summary values is returned.

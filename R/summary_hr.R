@@ -6,7 +6,7 @@
 #' Minimum, 1st Quartile, Median, Mean, 3rd Quartile, Maximum, Standard Deviation (SD).
 
 #' @usage
-#' summary_hr(data)
+#' summary_hr(data, tz)
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning

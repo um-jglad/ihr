@@ -4,7 +4,7 @@
 #' The function plot_ranges produces a barplot showing the percent of time in different stages of heart rate
 #'
 #' @usage
-#' plot_ranges_PA(data)
+#' plot_ranges_PA(data, tz)
 #'
 #' @param data A DataFrame object with column names "id", "time", "hr".
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning

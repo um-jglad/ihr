@@ -5,7 +5,7 @@
 #' It calculates HRR using the formula:maximum heart rate - resting heart rate following the definition gained from the reference.
 
 #' @usage
-#' calculate_HRR(data, method, quantile_val)
+#' calculate_HRR(data, method, quantile_val, tz)
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
 #' @param method A choice for the user to choose which formula they want to use: HRR = max - Resting heart rate or HRR = max-min
