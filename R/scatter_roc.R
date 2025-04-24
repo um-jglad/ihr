@@ -72,10 +72,10 @@ scatter_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
   .p <- roc_data |>
     ggplot(aes(x = roc, y = hr)) +
     geom_point(alpha = 0.3) +
-    geom_vline(xintercept = 0, color = "red", linetype = "dashed") +
-    geom_hline(data = personal_hr, aes(yintercept = hr_20), color = "#0073C2", linetype = "dashed") +
-    geom_hline(data = personal_hr, aes(yintercept = hr_40), color = "#48BA3C", linetype = "dashed") +
-    geom_hline(data = personal_hr, aes(yintercept = hr_60), color = "#F9B500", linetype = "dashed") +
+    geom_vline(xintercept = 0, color = "red", linetype = "dashed", linewidth = 1) +
+    geom_hline(data = personal_hr, aes(yintercept = hr_20), color = "#0073C2", linetype = "dashed", linewidth = 1) +
+    geom_hline(data = personal_hr, aes(yintercept = hr_40), color = "#48BA3C", linetype = "dashed", linewidth = 1) +
+    geom_hline(data = personal_hr, aes(yintercept = hr_60), color = "#F9B500", linetype = "dashed", linewidth = 1) +
     facet_wrap(~id) +
     scale_x_continuous(name = "Rate of Change") +
     scale_y_continuous(name = "Heart Rate (BPM)")
