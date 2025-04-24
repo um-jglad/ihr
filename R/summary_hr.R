@@ -9,6 +9,7 @@
 #' summary_hr(data)
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
+#' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #' Missing HR values (NA) are automatically excluded from calculations.
 
 #' @return
@@ -20,7 +21,7 @@
 #' data(example_heart_1)
 #' summary_hr(example_heart_1)
 
-summary_hr <- function(data) {
+summary_hr <- function(data, tz = "") {
 
   time = hr = id = NULL
   rm(list = c('time', 'hr', 'id'))
@@ -32,7 +33,7 @@ summary_hr <- function(data) {
 
   # Convert Time column to Date-Time format
   data <- data |>
-    dplyr::mutate(time = as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S"))
+    dplyr::mutate(time = as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S", tz = tz))
 
   # Remove rows with missing HR values
   data <- dplyr::filter(data, !is.na(hr))

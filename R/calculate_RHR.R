@@ -8,6 +8,7 @@
 #' calculate_RHR(data)
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
+#' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 
 #' @return
 #' If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of summary values is returned.
@@ -23,10 +24,10 @@
 #' calculate_RHR(example_heart_1)
 
 
-calculate_RHR <- function(data) {
+calculate_RHR <- function(data, tz = "") {
   time = hr = id = hour = NULL
   rm(list = c('time', 'hr', 'id', 'hour'))
-  data$time <- as.POSIXct(data$time, format="%Y-%m-%d %H:%M:%S")
+  data$time <- as.POSIXct(data$time, format="%Y-%m-%d %H:%M:%S", tz = tz)
   data$hour <- format(data$time, "%H")
   filtered_data <- subset(data, hour >= "03" & hour < "07")
 

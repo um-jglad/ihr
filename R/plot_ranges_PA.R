@@ -7,6 +7,7 @@
 #' plot_ranges_PA(data)
 #'
 #' @param data A DataFrame object with column names "id", "time", "hr".
+#' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #' Missing HR values (NA) are automatically excluded from calculations.
 #'
 #'
@@ -28,7 +29,7 @@
 #' data(example_heart_1)
 #' plot_ranges_PA(example_heart_1)
 #'
-plot_ranges_PA <- function(data) {
+plot_ranges_PA <- function(data, tz = "") {
   id = Stages = percent = NULL
   rm(list = c("id", "Stages", "percent"))
 
@@ -40,7 +41,7 @@ plot_ranges_PA <- function(data) {
     data <- dplyr::filter(data, id == subject)
   }
 
-  summary <- summarize_PA(data)
+  summary <- summarize_PA(data, tz)
   if (is.null(summary)) {
     message("Cannot create plot due to missing HRR classification.")
     return(NULL)

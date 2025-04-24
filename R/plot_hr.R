@@ -10,6 +10,7 @@
 #' @param to Ending time of plot exclusive (In format %Y-%m-%d)
 #' @param agg Aggregate data by specified time interval
 #' @param inter_gap Gap allowed between consecutive observations (in seconds)
+#' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #'
 #' @details
 #' See reasoning for default LHR and UHR values at \url{https://www.heart.org/en/health-topics/arrhythmia/about-arrhythmia/tachycardia--fast-heart-rate}
@@ -25,7 +26,7 @@
 
 
 plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none', 'minute', 'hour'),
-                    inter_gap = 60){
+                    inter_gap = 60, tz = ""){
   id = time = hr = gap = time_group = NULL
   rm(list = c("id", "time", "hr", "gap", "time_group"))
 
@@ -37,16 +38,16 @@ plot_hr <- function(data, LHR = 60, UHR = 100, from = "", to = "", agg = c('none
   # Converting time to an appropriate format
   if(!lubridate::is.POSIXct(data$time)){
     data$time <- as.character(data$time)
-    data$time <- as.POSIXct(data$time, format = "%Y-%m-%d %H:%M:%S")
+    data$time <- as.POSIXct(data$time, format = "%Y-%m-%d %H:%M:%S", tz = tz)
   }
 
   # Incorporating time range functionality
   if(from != ""){
-    lower_time <- as.POSIXct(from, format = "%Y-%m-%d")
+    lower_time <- as.POSIXct(from, format = "%Y-%m-%d", tz = tz)
     data <- data |> dplyr::filter(time >= lower_time)
   }
   if(to != ""){
-    upper_time <- as.POSIXct(to, format = "%Y-%m-%d")
+    upper_time <- as.POSIXct(to, format = "%Y-%m-%d", tz = tz)
     data <- data |> dplyr::filter(time < upper_time)
   }
 

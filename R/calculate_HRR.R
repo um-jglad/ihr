@@ -10,6 +10,7 @@
 #' @param data A DataFrame object with column names "id", "time", "hr".
 #' @param method A choice for the user to choose which formula they want to use: HRR = max - Resting heart rate or HRR = max-min
 #' @param quantile_val A choice for the user to choose which quantile value they want to use(most common 1, if there's strange max value, recommend to use 0.99)
+#' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 
 #' @return
 #' If a dataframe object is passed, then a tibble object with a column for subject id and a column for each of summary values is returned.
@@ -25,7 +26,7 @@
 #' calculate_HRR(example_heart_1, 'max-min')
 #' calculate_HRR(example_heart_1, quantile_val = 0.99)
 
-calculate_HRR <- function(data, method = "max-RHR", quantile_val = 1) {
+calculate_HRR <- function(data, method = "max-RHR", quantile_val = 1, tz = "") {
   time = hr = id = max_hr = min_hr = RHR = NULL
   rm(list = c('time', 'hr', 'id'))
   data$time <- as.POSIXct(data$time, format="%Y-%m-%d %H:%M:%S")

@@ -8,6 +8,7 @@
 #' missingness_by_period(data)
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
+#' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #' Missing HR values (NA) are automatically excluded from calculations.
 
 #' @return
@@ -20,7 +21,7 @@
 #' missingness_by_period(example_heart_1)
 
 
-missingness_by_period <- function(data) {
+missingness_by_period <- function(data, tz = "") {
   time = hr = id = period = hour = minute = unique_minutes = time_date = missing_percent = mean_missing_percent = NULL
   rm(list = c('time', 'hr', 'id'))
 
@@ -30,7 +31,7 @@ missingness_by_period <- function(data) {
 
   data <- data |>
     dplyr::mutate(
-      time = as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S"),
+      time = as.POSIXct(time, format = "%Y-%m-%d %H:%M:%S", tz = tz),
       time_date = as.Date(time),
       hour = as.integer(format(time, "%H")),
       minute = as.integer(format(time, "%M")),
