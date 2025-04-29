@@ -45,10 +45,10 @@ epicalc_profile <- function(data,
 
   ep_summary = episodes[[1]]
   ep_data = episodes[[2]]
+  stages = c("Sedentary", "Moderate", "Vigorous")
 
-  stages = c("Sedentary", "Light", "Moderate", "Vigorous")
 
-  tableStat = data.frame(matrix(ncol = 5, nrow = 6))
+  tableStat = data.frame(matrix(ncol = 4, nrow = 6))
   colnames(tableStat) <- c("", stages)
   HRR_info <- calculate_HRR(data)
   if (is.null(HRR_info)) {
@@ -59,33 +59,28 @@ epicalc_profile <- function(data,
   HRR <- maxHR - RHR
   tableStat[1, ] <- c("Thresholds",
                       paste0("<", round(0.2 * HRR + RHR, 1) - 0.1, " BPM"),
-                      paste0(round(0.2 * HRR + RHR, 1), "-", round(0.4 * HRR + RHR, 1) - 0.1, " BPM"),
-                      paste0(round(0.4 * HRR + RHR, 1), "-", round(0.6 * HRR + RHR, 1) - 0.1, " BPM"),
+                      paste0(">=", round(0.4 * HRR + RHR, 1), " BPM"),
                       paste0(">=", round(0.6 * HRR + RHR, 1), " BPM"))
 
   tableStat[2, ] <- c("Avg Episodes/Day",
                       format(round(ep_summary$avg_ep_per_day[1], 2), nsmall = 2),
                       format(round(ep_summary$avg_ep_per_day[2], 2), nsmall = 2),
-                      format(round(ep_summary$avg_ep_per_day[3], 2), nsmall = 2),
-                      format(round(ep_summary$avg_ep_per_day[4], 2), nsmall = 2))
+                      format(round(ep_summary$avg_ep_per_day[3], 2), nsmall = 2))
 
   tableStat[3, ] <- c("Mean Duration",
                       paste0(format(round(ep_summary$avg_ep_duration[1], 2), nsmall = 2), " min"),
                       paste0(format(round(ep_summary$avg_ep_duration[2], 2), nsmall = 2), " min"),
-                      paste0(format(round(ep_summary$avg_ep_duration[3], 2), nsmall = 2), " min"),
-                      paste0(format(round(ep_summary$avg_ep_duration[4], 2), nsmall = 2), " min"))
+                      paste0(format(round(ep_summary$avg_ep_duration[3], 2), nsmall = 2), " min"))
 
   tableStat[4, ] <- c("Mean Heart Rate",
                       paste0(format(round(ep_summary$avg_ep_hr[1], 2), nsmall = 2), " BPM"),
                       paste0(format(round(ep_summary$avg_ep_hr[2], 2), nsmall = 2), " BPM"),
-                      paste0(format(round(ep_summary$avg_ep_hr[3], 2), nsmall = 2), " BPM"),
-                      paste0(format(round(ep_summary$avg_ep_hr[4], 2), nsmall = 2), " BPM"))
+                      paste0(format(round(ep_summary$avg_ep_hr[3], 2), nsmall = 2), " BPM"))
 
   tableStat[5, ] <- c("Total Episodes",
                       format(round(ep_summary$total_episodes[1], 2), nsmall = 2),
                       format(round(ep_summary$total_episodes[2], 2), nsmall = 2),
-                      format(round(ep_summary$total_episodes[3], 2), nsmall = 2),
-                      format(round(ep_summary$total_episodes[4], 2), nsmall = 2))
+                      format(round(ep_summary$total_episodes[3], 2), nsmall = 2))
 
   tableStat[6, ] <- ""
 
@@ -112,19 +107,26 @@ epicalc_profile <- function(data,
   t1 <- gtable::gtable_add_grob(t1, list(title, footnote),
                                 t = c(1, nrow(t1)), l = c(1,2), r = ncol(t1))
 
-  ep_data_long <- ep_data |>
-    tidyr::pivot_longer(cols = dplyr::all_of(stages), names_to = "stage", values_to = "event") |>
-    dplyr::filter(event != 0) |>
-    dplyr::mutate(stage = factor(stage, levels = stages))
 
-  stage_colors <- c("Sedentary" = "#0073C2",
-                    "Light" = "#48BA3C",
-                    "Moderate" = "#F9B500",
-                    "Vigorous" = "#8E1B1B")
+  ep_data_long = ep_data |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      num_levels = sum(c(Sedentary != 0, Moderate != 0, Vigorous != 0)),
+      class = ifelse(
+        # either no types - normal, one type - keep nonzero, subset - choose lv2
+        num_levels == 0, "Normal",
+        ifelse(num_levels == 1,
+               stages[which(c(Sedentary != 0, Moderate != 0, Vigorous != 0))],
+               c("Vigorous")[which(c(Vigorous != 0))])
+      ),
+      class = factor(class, levels = c("Sedentary", "Normal", "Moderate", "Vigorous"))
+    )
+  stage_colors <- c("#0073C2","#48BA3C", "#F9B500","#8E1B1B")
 
-  p1 <- ggplot2::ggplot(ep_data_long, ggplot2::aes(x = time, y = hr, color = stage)) +
+  p1 <- ggplot2::ggplot(ep_data_long, ggplot2::aes(x = time, y = hr, color = class)) +
     ggplot2::geom_point(alpha = 0.7, size = 1) +
-    ggplot2::scale_color_manual(values = stage_colors, , drop = FALSE) +
+    ggplot2::scale_color_manual(values = stage_colors, drop = FALSE,
+                                labels = c("Sedentary", "Normal", "Moderate", "Vigorous")) +
     ggplot2::labs(x = "Time", y = "Heart Rate (BPM)", color = "Stage") +
     ggplot2::theme_minimal()
 

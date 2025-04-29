@@ -19,9 +19,6 @@ event_class = function(data, level_type, threshold, event_duration, end_duration
     annotated$level = annotated$pct_HRR < threshold
   } else if (level_type == 'high') {
     annotated$level = annotated$pct_HRR >= threshold
-  } else if (level_type == 'range') {
-    # threshold must be a vector of two values: c(lower_bound, upper_bound)
-    annotated$level = (annotated$pct_HRR >= threshold[1]) & (annotated$pct_HRR < threshold[2])
   }
 
   level_rle = rle(annotated$level)$lengths
@@ -98,7 +95,7 @@ episode_summary = function(data, dt0, dur_length) {
     return(output)
   }
 
-  labels = c("Sedentary", "Light", "Moderate", "Vigorous")
+  labels = c("Sedentary", "Moderate", "Vigorous")
   out_list = sapply(labels, function(x) episode_summary_helper(data, x, dt0, dur_length))
 
   output = data.frame(
@@ -150,8 +147,7 @@ episode_single = function(data, dur_length, end_length, return_data, dt0, inter_
     dplyr::group_by(segment) |>
     dplyr::mutate(
       Sedentary = event_class(data.frame(id, time, hr, pct_HRR), "low", 20, dur_idx, end_idx),
-      Light = event_class(data.frame(id, time, hr, pct_HRR), "range", c(20,40), dur_idx, end_idx),
-      Moderate = event_class(data.frame(id, time, hr, pct_HRR), "range", c(40,60), dur_idx, end_idx),
+      Moderate = event_class(data.frame(id, time, hr, pct_HRR), "high", 40, dur_idx, end_idx),
       Vigorous = event_class(data.frame(id, time, hr, pct_HRR), "high", 60, dur_idx, end_idx)
     )
 
