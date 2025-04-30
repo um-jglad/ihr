@@ -34,7 +34,7 @@ mahe(
 
 \item{to}{\strong{Default: Last observed time.} Ending time of the data exclusive (In format \%Y-\%m-\%d)}
 
-\item{return_type}{\strong{Default: "num".} One of ("num", "df-seg", "df-exc). Will return either a single number for the "MAHE over the entire trace" (weighted by segment length), a DataFrame with the MAHE value for each segment, or a DataFrame with the MAHE value for each excursion}
+\item{return_type}{\strong{Default: "num".} One of ("num", "df-seg", "df-exc). Will return either a single number for the "MAHE over the entire trace" (weighted by segment length), a DataFrame with the MAHE value for each segment, or a DataFrame with excursion level details on amplitude, time length, and heart rate at peak and nadirs}
 
 \item{direction}{\strong{Default: "avg".} One of ("avg", "service", "max", "plus", or "minus"). Algorithm will calculate one of the following: MAHE+ (nadir to peak), MAHE- (peak to nadir), MAHEavg = avg(MAHE+, MAHE-), MAHEmax = max(MAHE+, MAHE-), or automatically choose MAHE+/MAHE- based on the first countable excursion (i.e., "service"). NOTE: the selection of peak-to-nadir or nadir-to-peak is chosen independently on each segment, thus MAHEservice may choose peak-to-nadir on one segment and nadir-to-peak on another, for example.}
 
