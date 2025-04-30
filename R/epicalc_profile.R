@@ -17,8 +17,8 @@ epicalc_profile <- function(data,
                             dur_length = 15, end_length = 15, subject = NULL,
                             dt0 = 1, inter_gap = 15, tz = "") {
 
-  id = hr = event = NULL
-  rm(list = c("id"))
+  id = hr = event = Moderate = Sedentary = Vigorous = num_levels = NULL
+  rm(list = c("id", "hr", "event", "Moderate", "Sedentary", "Vigorous", "num_levels"))
 
   if (!is.null(subject)) {
     data = data[data$id == subject, ]
