@@ -50,7 +50,7 @@ mahe(
 
 \item{xlab}{\strong{Default: "Time".} Label for x-axis of ggplot.}
 
-\item{ylab}{\strong{Default: "Glucose Level".} Label for y-axis of ggplot.}
+\item{ylab}{\strong{Default: "Heart Rate (BPM)".} Label for y-axis of ggplot.}
 
 \item{show_ma}{\strong{Default: FALSE.} Boolean. If TRUE, plots the moving average lines on the plot.}
 

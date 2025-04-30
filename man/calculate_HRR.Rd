@@ -9,7 +9,7 @@ calculate_HRR(data, method, quantile_val, tz)
 \arguments{
 \item{data}{A DataFrame object with column names "id", "time", "hr".}
 
-\item{method}{A choice for the user to choose which formula they want to use: HRR = max - Resting heart rate or HRR = max-min}
+\item{method}{\strong{Default: "max-RHR".} A choice for the user to choose which formula they want to use: HRR = max - Resting heart rate ("max-RHR") or HRR = max - min ("max-min")}
 
 \item{quantile_val}{A choice for the user to choose which quantile value they want to use(most common 1, if there's strange max value, recommend to use 0.99)}
 
@@ -20,8 +20,8 @@ If a dataframe object is passed, then a tibble object with a column for subject 
 'NA' heartrate values are omitted from the calculation of the summary values.
 }
 \description{
-The function calculate_RHR computes the heart rate reserve.
-It calculates HRR using the formula:maximum heart rate - resting heart rate following the definition gained from the reference.
+Computes the heart rate reserve (HRR), defined as the difference between the maximum heart rate and resting heart rate following
+the definition of HRR sourced from the reference
 }
 \examples{
 data(example_heart_1)

@@ -10,15 +10,15 @@ calc_thresholds(data, q = 0.5)
 \item{data}{A DataFrame object with column names "id", "time", "hr".
 Missing HR values (NA) are automatically excluded from calculations.}
 
-\item{q}{the quantile user wants to use for the thresholds(default = 0.5, calculating the median)}
+\item{q}{\strong{Default = 0.5.} The quantile user wants to use for the thresholds}
 }
 \value{
 If a dataframe object is passed, then a tibble object with a column for subject id and a column for the thresholds is returned.
 'NA' heart rate values are omitted from the calculation of the thresholds
 }
 \description{
-The function calc_thresholds computes the proper thresholds for different subjects based on the quantile
-It outputs a tibble object with the subject ID and the thresholds.
+Computes the proper thresholds for different subjects based on the quantile,
+outputting a tibble object with the subject ID and the thresholds.
 }
 \examples{
 calc_thresholds(example_heart_1, q = 0.25)

@@ -1,12 +1,12 @@
 #' Calculate the thresholds for different subjects according to the provided quantile
 
 #' @description
-#' The function calc_thresholds computes the proper thresholds for different subjects based on the quantile
-#' It outputs a tibble object with the subject ID and the thresholds.
+#' Computes the proper thresholds for different subjects based on the quantile,
+#' outputting a tibble object with the subject ID and the thresholds.
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
 #' Missing HR values (NA) are automatically excluded from calculations.
-#' @param q the quantile user wants to use for the thresholds(default = 0.5, calculating the median)
+#' @param q \strong{Default = 0.5.} The quantile user wants to use for the thresholds
 
 #' @return
 #' If a dataframe object is passed, then a tibble object with a column for subject id and a column for the thresholds is returned.

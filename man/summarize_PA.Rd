@@ -2,7 +2,7 @@
 % Please edit documentation in R/summarize_PA.R
 \name{summarize_PA}
 \alias{summarize_PA}
-\title{Calculate the time an individual spend in different stages(following the definition in the reference)}
+\title{Calculate the time an individual spend in different stages}
 \usage{
 summarize_PA(data, tz)
 }
@@ -19,6 +19,7 @@ If a dataframe object is passed, then a tibble object with a column for subject 
 \description{
 The function summary_PA computes the time(in percentage) for different individuals spend in different stages
 Using the thresholds: sedentary/sleep (<20\% HRR), light (20–39\% HRR), moderate (40–59\% HRR), and vigorous (≥60\% HRR)
+The definition of these thresholds are sourced from the reference
 }
 \examples{
 data(example_heart_1)

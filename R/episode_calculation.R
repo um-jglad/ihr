@@ -169,15 +169,13 @@ episode_single = function(data, dur_length, end_length, return_data, dt0, inter_
 #'
 #'
 #' @param data DataFrame object with column names "id", "time", "hr"
-#' @param dur_length Numeric value specifying the minimum duration in minutes to be
+#' @param dur_length \strong{Default: 15.} Numeric value specifying the minimum duration in minutes to be
 #' considered an episode. Note dur_length should be a multiple of the data recording
-#' interval otherwise the function will round up to the nearest multiple. Default
-#' is 15 minutes to match consensus.
-#' @param end_length Numeric value specifying the minimum duration in minutes of
-#' improved heart rate for an episode to end. Default is equal to dur_length to match consensus.
+#' interval otherwise the function will round up to the nearest multiple.
+#' @param end_length \strong{Default: 15.} Numeric value specifying the minimum duration in minutes of
+#' improved heart rate for an episode to end.
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
-#' @param return_data Boolean indicating whether to also return data with episode labels.
-#' Defaults to FALSE which means only episode summary statistics will be returned
+#' @param return_data \strong{Default: FALSE.} Boolean indicating whether to also return data with episode labels.
 #' @param inter_gap The maximum allowable gap (in minutes) for interpolation.
 #' @param dt0 Grid Length
 #'

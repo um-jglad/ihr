@@ -17,13 +17,12 @@ epicalc_profile(
 \arguments{
 \item{data}{DataFrame object with column names "id", "time", "hr"}
 
-\item{dur_length}{Numeric value specifying the minimum duration in minutes to be
+\item{dur_length}{\strong{Default: 15.} Numeric value specifying the minimum duration in minutes to be
 considered an episode. Note dur_length should be a multiple of the data recording
-interval otherwise the function will round up to the nearest multiple. Default
-is 15 minutes to match consensus.}
+interval otherwise the function will round up to the nearest multiple.}
 
-\item{end_length}{Numeric value specifying the minimum duration in minutes of
-improved heart rate for an episode to end. Default is equal to dur_length to match consensus.}
+\item{end_length}{\strong{Default: 15.} Numeric value specifying the minimum duration in minutes of
+improved heart rate for an episode to end.}
 
 \item{subject}{String corresponding to subject id}
 

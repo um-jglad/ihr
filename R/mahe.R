@@ -16,7 +16,7 @@
 #' @param max_gap \strong{Default: 180.} Integer for the maximum length of a gap in minutes before the trace is split into segments and MAGE is calculated on each segment independently.
 #' @param title  \strong{Default: "Heart Rate Trace Trace - Subject ID".} Title for the ggplot.
 #' @param xlab \strong{Default: "Time".} Label for x-axis of ggplot.
-#' @param ylab \strong{Default: "Glucose Level".} Label for y-axis of ggplot.
+#' @param ylab \strong{Default: "Heart Rate (BPM)".} Label for y-axis of ggplot.
 #' @param show_ma \strong{Default: FALSE.} Boolean. If TRUE, plots the moving average lines on the plot.
 #' @param show_excursions \strong{Default: TRUE.} Boolean. If TRUE, shows identified excursions as arrows from peak-to-nadir/nadir-to-peak on the plot.
 #'

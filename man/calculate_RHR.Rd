@@ -16,8 +16,8 @@ If a dataframe object is passed, then a tibble object with a column for subject 
 'NA' heartrate values are omitted from the calculation of the summary values.
 }
 \description{
-The function calculate_RHR computes the resting heart rate.
-It calculates the mean hr value between 3am to 7am and consider it as the resting heart rate according to the reference.
+Computes the resting heart rate (RHR) according to the mean heart rate
+value between 3am to 7am as described in the reference.
 }
 \examples{
 data(example_heart_1)

@@ -1,14 +1,14 @@
 #' Calculate heart rate reserve
 
 #' @description
-#' The function calculate_RHR computes the heart rate reserve.
-#' It calculates HRR using the formula:maximum heart rate - resting heart rate following the definition gained from the reference.
+#' Computes the heart rate reserve (HRR), defined as the difference between the maximum heart rate and resting heart rate following
+#' the definition of HRR sourced from the reference
 
 #' @usage
 #' calculate_HRR(data, method, quantile_val, tz)
 
 #' @param data A DataFrame object with column names "id", "time", "hr".
-#' @param method A choice for the user to choose which formula they want to use: HRR = max - Resting heart rate or HRR = max-min
+#' @param method \strong{Default: "max-RHR".} A choice for the user to choose which formula they want to use: HRR = max - Resting heart rate ("max-RHR") or HRR = max - min ("max-min")
 #' @param quantile_val A choice for the user to choose which quantile value they want to use(most common 1, if there's strange max value, recommend to use 0.99)
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 
