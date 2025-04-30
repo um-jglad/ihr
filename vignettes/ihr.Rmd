@@ -81,7 +81,7 @@ The ihr package supports the following plotting functions:
 |`epicalc_profile` | Profile of heart rate episodes | 
 |`mahe` | MAHE plot displaying peaks and nadirs | 
 
-The time series plots will be detailed below.
+The time series and rate of change plots will be highlighted below.
 
 ## Example Plots: Time Series
 
@@ -105,10 +105,20 @@ The red lines can be shifted to any Lower or Upper Heart Rate using the paramete
 plot_hr(example_heart_1, LHR = 100, UHR = 120)
 ```
 
-Finally, `plot_hr` supports a time aggregation argument. Using the parameter `agg`, users can specify if the plot should be plotted using minute or hour long summary for heart rate. If the user chooses to use `agg`, the `inter_gap` argument must be adjusted accordingly, where `inter_gap` must be equal to or longer than the aggregated time in seconds.
+## Example Plots: Rate of Change (ROC)
+
+Rate of Change is a CGM inspired metric that allows a user to view local variability and changed within a subject's heart rate profile. ROC can be used to view patterns of rapid heart rate increase or recovery for a subject. The ROC based plots highlights both the frequency and the context of each ROC values.
+
+The figure below shows a histogram for observed ROC values for one subject. Here we notice that though the histogram is mostly normal centered at 0, we have some extreme values that lie in the positive direction. This can be due to inaccuracies within the PPG heart rate calculation method or random periods of extreme activities. The histogram below both shows patterns of a subject's activity rate and outliers that are worth investigating.
 
 ```{r fig.width= 7}
-plot_hr(example_heart_1, to = "2016-04-13", agg = "minute")
+hist_roc(example_heart_1)
+```
+
+The figure below shows a scatter plot between an ROC value, and the corresponding heart rate associated with the value (The latter heart rate used for calculation). Here, we put these ROC values into context. Horizontal lines represent personalized thresholds (See **Episode Calculation** below). Not all ROC values are the same, and this allows us to see the activity from which the ROC value was generated from, with higher heart rate and absolute ROC values representing peak physical activity from a user.
+
+```{r fig.width = 7}
+scatter_roc(example_heart_1)
 ```
 
 # Calculating time-dependent metrics
