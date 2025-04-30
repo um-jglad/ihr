@@ -19,9 +19,9 @@ knitr::opts_chunk$set(
 library(ihr)
 ```
 
-The ihr package is designed to help in the analyses of heart rate data from wearable technologies (i.e. FitBit, Apple Watches, etc.). These wearable technologies capture the heart rate of the user while the user is wearing the device, often in intervals of only a couple of seconds. Wearable technologies commonly track heart rate using Photoplethysmography (PPG). Data from these wearable are increasingly used to understand a user's physical activity and their heart functionality on a day by day basis. 
+The ihr package is designed to help in the analyses of heart rate data from wearable technologies (i.e. FitBit, Apple Watches, etc.). These wearable technologies capture the heart rate of the user while the user is wearing the device, often in intervals of only a couple of seconds. Wearable technologies commonly track heart rate using photoplethysmography (PPG). Data from these wearable are increasingly used to understand a user's physical activity and their heart functionality on a day-by-day basis. The ability to capture heart rate data in an easy and widespread manners make these technologies appealing, and methods for analyzing these data are needed for better understanding of a subject's heart health.
 
-The ihr package is unique in its ability to measure various types of metric that would be of interest to clinicians, each metric being designed to be outputted with one line of code. In addition, many ihr metrics are inspired by metrics commonly used for continuous glucose monitoring (CGM), which transfers well to heart rate data due to the similarity in the structure of the data.
+The ihr package is unique in its ability to measure various types of metrics that would be of interest to clinicians, each metric being designed to be outputted with one line of code. In addition, many ihr metrics are inspired by metrics commonly used for continuous glucose monitoring (CGM), which transfers well to heart rate data due to the similarity in the structure of the data.
 
 The ihr package is designed to work with a data frame object that have the three columns present:
 
@@ -34,7 +34,7 @@ The ihr package is designed to work with a data frame object that have the three
 ihr comes with example data from 5 subjects whose heart rate were tracked with FitBit devices. This data is publicly available from [kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1/data)
 
 # Example Datasets
-The ihr package includes two datasets: example_heart_1, and example_heart_5. The one subject data is simply the first subject of the 5 subject data. 
+The ihr package includes two datasets: `example_heart_1`, and `example_heart_5`. The one subject data is simply the first subject of the 5 subject data. 
 
 ## Example data for 1 subject
 
@@ -59,13 +59,13 @@ head(example_heart_1)
 
 # Summarizing Data
 
-The ihr package provides summary of heart rate data, it returns multiple values using basic function.
+The ihr package provides summaries of heart rate data in an easy and intuitive manner using `summary_hr`. This function returns multiple summary statistics (including mean, median, and standard deviation) for a given heart rate data.
 
 ```{r}
 summary_hr(example_heart_1)
 ```
 
-# Vizualizing Data
+# Visualizing Data
 
 The ihr package supports the following plotting functions:
 
@@ -117,15 +117,15 @@ The ihr package have the function of calculating multiple time-dependent metrics
 
 ## percent_nonmissing()
 
-The function computes the active percentage, representing the percentage missingness of the heart rate data. 
+`percent_nonmissing` computes the active percentage, representing the percentage missingness of the heart rate data. 
 
 The resulting output is a structured table where:
 
-Id represents the subject.
-start_date and end_date mark the observation period.
-unique_days counts the actual days with recorded data.
-total_days indicates the full monitoring period(including both start and end date).
-percent_nonmissing represents the completeness of heart rate recordings as a percentage at the day level.
+* id represents the subject.
+* start_time and end_time mark the observation period.
+* unique_days counts the actual days with recorded data.
+* total_days indicates the full monitoring period(including both start and end date).
+* percent_nonmissing represents the completeness of heart rate recordings as a percentage at the minute level.
 
 ```{r}
 percent_nonmissing(example_heart_1)
@@ -133,7 +133,7 @@ percent_nonmissing(example_heart_1)
 
 # MAHE (Mean Amplitude of Heart Rate Excursions)
 
-MAHE is a variability based metric that is influenced by a similar metric used in continuous glucode monitoring. The algorithm used for this metric is used from the open-source algorithm provided in [Open-Source Algorithm to Calculate Mean Amplitude of Glycemic Excursions Using Short and Long Moving Averages](https://journals.sagepub.com/doi/10.1177/19322968211061165).
+MAHE is a variability based metric that is influenced by a similar metric used in continuous glucose monitoring. The algorithm used for this metric is from the open-source algorithm provided in [Open-Source Algorithm to Calculate Mean Amplitude of Glycemic Excursions Using Short and Long Moving Averages](https://journals.sagepub.com/doi/10.1177/19322968211061165).
 
 `mahe` supports calculation for single or multiple subjects and returns a data frame with columns `id` and `MAHE`. Other parameters adjust the calculation of the algorithm and the return type that the function can support. `mahe` can support return types of either segment long `MAHE` values (using `return_type = "df-seg`) or excursion level amplitude values (using `return_type = "df-exc`)
 
@@ -151,9 +151,13 @@ mahe(example_heart_1, to = "2016-04-13", plot = T, show_ma = T, show_excursions 
 
 # Introduction to episodes
 
+## What are episodes?
+
+Episodes are defined as distinct periods of times within a subject's heart rate where the heart rate exceeds or is between a certain threshold for a certain amount of time. This metric is inspired from a similarly structured metric in CGM. 
+
 ## Episode_calculation
 
-The episode_calculation function identifies episodes where heart rate (HR) exceed predefined thresholds. It classifies each data point as:
+`episode_calculation` identifies episodes where heart rate (HR) exceed predefined thresholds. It classifies each data point as:
 
 sedentary/sleep (<20% HRR), light (20–39% HRR), moderate (40–59% HRR), and vigorous (≥60% HRR)
 
@@ -169,7 +173,7 @@ episode_calculation(example_heart_1)
 
 ## Epicalc_profile: Visualizing Episode Trends
 
-While episode_calculation identifies and summarizes episodes, epicalc_profile provides a visualization of episode trends over time. It generates:
+While episode_calculation identifies and summarizes episodes, `epicalc_profile` provides a visualization of episode trends over time. It generates:
 
 1. A summary table displaying key episode metrics.
 2. A scatter plot of heart rate values over time, with each data point color-coded by episode classification.
