@@ -1,6 +1,6 @@
 ---
 title: "Getting Started in ihr"
-author: "Owen Yoo, Shuiqing Han, Irina Gaynanova"
+author: "Owen Yoo, Shuiqing(Sophia) Han, Irina Gaynanova"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting Started in ihr}
@@ -167,9 +167,12 @@ Episodes are defined as distinct periods of times within a subject's heart rate 
 
 ## Episode_calculation
 
-`episode_calculation` identifies episodes where heart rate (HR) exceed predefined thresholds. It classifies each data point as:
+`episode_calculation` identifies episodes where heart rate (HR) exceed predefined thresholds. We classify four physical activities stages using definition:
 
-sedentary/sleep (<20% HRR), light (20–39% HRR), moderate (40–59% HRR), and vigorous (≥60% HRR)
+sedentary/sleep (<20% HRR + RHR), light (20–39% HRR + RHR), moderate (40–59% HRR + RHR), and vigorous (≥60% HRR + RHR)
+
+For the episode calculation, to make sure our calculations for the episode are accurate, we use the definition:
+sedentary/sleep (<20% HRR + RHR), moderate (>=40% HRR + RHR), and vigorous (≥60% HRR + RHR)
 
 For each episode, the function computes summary statistics, including:
 1. Average episodes per day.
