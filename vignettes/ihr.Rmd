@@ -83,7 +83,7 @@ The ihr package supports the following plotting functions:
 
 The time series and rate of change plots will be highlighted below.
 
-## Example Plots: Time Series
+## Example Plot: Time Series
 
 The `plot_hr` function generates a time series plot. This function can support both single and multiple subjects.
 
@@ -105,7 +105,16 @@ The red lines can be shifted to any Lower or Upper Heart Rate using the paramete
 plot_hr(example_heart_1, LHR = 100, UHR = 120)
 ```
 
-## Example Plots: Rate of Change (ROC)
+## Example Plot: Ambulatory Heart Rate Profile (AHP)
+
+The `ahp` function generates multiple summary plots and table for an individual. Included in the output are select summary statistics, an activity distribution barplot by heart rate reserve, daily heart rate quantile plot, and a daily heart rate profile plot. This function is designed to give a high level overview of the trends for an individual. 
+
+```{r fig.width = 12, fig.height = 8, fig.align='center'}
+ahp(example_heart_1)
+```
+
+
+## Example Plot: Rate of Change (ROC)
 
 Rate of Change is a CGM inspired metric that allows a user to view local variability and changed within a subject's heart rate profile. ROC can be used to view patterns of rapid heart rate increase or recovery for a subject. The ROC based plots highlights both the frequency and the context of each ROC values.
 
