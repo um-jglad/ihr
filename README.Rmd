@@ -15,19 +15,35 @@ knitr::opts_chunk$set(
 ihr: Interpreting heart rate data from wearable devices
 ====================================================================
 
-The R package 'ihr'
+The R package 'ihr' is designed to provide functions for outputting metrics for heart rate data collected from wearable devices (i.e. Apple watches, Fitbits, etc.). ihr supports data that tracks heart rate (measured in BPM) over time.
+
+ihr comes with two example datasets, [publicly provided via Kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1). This data was collected from Fitbit devices. Please refer to the examples below for loading and using the data.
 
 Installation
 ------------
-
-
 ```{r, eval = FALSE}
+# install.packages("devtools")
+
 # Plain installation
-devtools::install_github("") # iglu package
+devtools::install_github("IrinaStatsLab/ihr") # ihr package
 
 # For installation with vignette
-devtools::install_github("", build_vignettes = TRUE)
+devtools::install_github("IrinaStatsLab/ihr", build_vignettes = TRUE)
 ```
 
 Example
 -------
+A simple example of an analysis of heart rate data using ihr are shown below.
+
+```{r fig.width=12, fig.height=10}
+library(ihr)
+data("example_heart_1") # Load single subject data
+# Plot high level overview of a subject's heart rate data
+ahp(example_heart_1)
+# Summary statistics and other metrics
+summary_hr(example_heart_1)
+mahe(example_heart_1)
+episode_calculation(example_heart_1)
+sd_roc(example_heart_1)
+```
+
