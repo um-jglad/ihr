@@ -1,7 +1,7 @@
 #' Plot Ambulatory Heart Rate Profile (AHP) modal day
 #'
 #' @description
-#' The function plot_ahp produces an AhP plot that collapses all data into a single 24 hr "modal day".
+#' The function plot_ahp produces an AHP plot that collapses all data into a single 24 hr "modal day".
 #'
 #' @usage
 #' plot_ahp(data, smooth = TRUE, span = 0.3,
@@ -15,7 +15,12 @@
 #' @param span Optional parameter indicating span for loess smoothing. Default is 0.3, larger values result in more smoothing,
 #' recommended to choose between 0.1 to 0.7.
 #'
-#' @return Plot of a 24 hr modal day collapsing all data to a single day.
+#' @return Plot of a 24 hr modal day collapsing all data to a single day. Lines on the plot represent
+#' the 5th, 25th, 50th, 75th, and 95th percentils from bottom to top
+#'
+#' @details
+#' For details on AHP, see \code{\link{ahp}}
+#'
 #'
 #' @export
 #'

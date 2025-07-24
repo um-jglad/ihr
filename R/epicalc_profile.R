@@ -8,7 +8,9 @@
 #'
 #' @export
 #'
-#' @seealso episode_calculation()
+#' @details
+#' For details on episode calculation, see \code{\link{episode_calculation}}
+#'
 #'
 #' @examples
 #' epicalc_profile(example_heart_1)
