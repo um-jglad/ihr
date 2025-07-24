@@ -2,7 +2,7 @@
 
 #' @description
 #' Computes the resting heart rate (RHR) according to the mean heart rate
-#' value between 3am to 7am as described in the reference.
+#' value between 3am to 7am. See reference for details on computing RHR
 
 #' @usage
 #' calculate_RHR(data, tz)

@@ -16,8 +16,9 @@
 #' @export
 #'
 #' @details
-#' Only a single subject's data may be used. sedentary/sleep (<20% HRR), light (20-39% HRR), moderate (40-59% HRR), and vigorous (>=60% HRR)
+#' Only a single subject's data may be used. sedentary/sleep (<20% HRR), light (20-39% HRR), moderate (40-59% HRR), and vigorous (>=60% HRR). For details on HRR calculations see \code{\link{calculate_HRR}}
 #' This plot is meant to be used as part of the Ambulatory Heart rate Profile (AHP)
+#'
 #'
 #' @references
 #' Using Heart Rate and Accelerometry to Define Quantity and Intensity of Physical Activity in Older Adults

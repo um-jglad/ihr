@@ -1,8 +1,8 @@
-#' Calculate the standard deviation of the rate of change
+#' Calculate the standard deviation of the rate of change (ROC)
 #'
 #' @description
 #' The function \code{sd_roc} produces the standard deviation of the rate of change
-#' values in a tibble object.
+#' values in a tibble object. (see \code{\link{roc}} for details on calculating ROC)
 #'
 #' @usage
 #' sd_roc(data, timelag = 1, inter_gap = 15, tz = "")

@@ -6,8 +6,8 @@
 #'@format A data frame with 154104 rows and 3 variables:
 #'\describe{
 #'\item{id}{id, as provided by Kaggle}
-#'\item{time}{time of observation, in format %Y-%m-%d %H:%M:%S}
-#'\item{hr}{heart rate, measured in BPM}
+#'\item{time}{Time of observation, in format %Y-%m-%d %H:%M:%S}
+#'\item{hr}{Heart rate, measured in BPM}
 #'}
 #'@source \url{https://www.kaggle.com/datasets/arashnic/fitbit/versions/1}
 #'
@@ -22,8 +22,8 @@
 #'@format A data frame with 791446 rows and 3 variables:
 #'\describe{
 #'\item{id}{id, as provided by Kaggle}
-#'\item{time}{time of observation, in format %Y-%m-%d %H:%M:%S}
-#'\item{hr}{heart rate, measured in BPM}
+#'\item{time}{Time of observation, in format %Y-%m-%d %H:%M:%S}
+#'\item{hr}{Heart rate, measured in BPM (Beats per Minute)}
 #'}
 #'@source \url{https://www.kaggle.com/datasets/arashnic/fitbit/versions/1}
 #'

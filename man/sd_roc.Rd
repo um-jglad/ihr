@@ -2,7 +2,7 @@
 % Please edit documentation in R/sd_roc.R
 \name{sd_roc}
 \alias{sd_roc}
-\title{Calculate the standard deviation of the rate of change}
+\title{Calculate the standard deviation of the rate of change (ROC)}
 \usage{
 sd_roc(data, timelag = 1, inter_gap = 15, tz = "")
 }
@@ -23,7 +23,7 @@ of the rate of change values for each subject.
 }
 \description{
 The function \code{sd_roc} produces the standard deviation of the rate of change
-values in a tibble object.
+values in a tibble object. (see \code{\link{roc}} for details on calculating ROC)
 }
 \details{
 A tibble object with one row for each subject, a column for subject id

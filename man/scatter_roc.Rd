@@ -18,7 +18,7 @@ heart rate over the past 1 minute divided by 1}
 \item{tz}{A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning}
 }
 \value{
-A ggplot object with ROC on the X-axis and the latter Heart Rate value on the Y-axis
+A ggplot object with ROC on the X-axis and the latter Heart Rate value on the Y-axis (see \code{\link{roc}} for details on ROC)
 }
 \description{
 The function \code{scatter_roc} produces a scatterplot of ROC and Heart Rate
@@ -28,13 +28,13 @@ A ggplot is returned that shows the relationship of a subject's Rate of Change a
 heart rate. This allows a personalized insight into every subject's ROC, understanding the heart rate in which they ended at
 and whether the ROC value comes from a higher activity heart rate or from another context.
 
-The horizontal lines separate heart rate into 4 distinct sections. These are similar to that generated from
-\code{plot_ranges_PA}. The thresholds here are as follows:
+The horizontal lines separate heart rate into 4 distinct sections. The thresholds here are as follows:
 \enumerate{
 \item Vigorous: >= 60 \% HRR + RHR
 \item Moderate: 40 \% HRR + RHR -  60 \% HRR + RHR
 \item Light: 20 \% HRR + RHR -  40 \% HRR + RHR
 \item Sedentary/Sleep: <= 20 \% HRR + RHR
+(see \code{\link{plot_ranges_PA}})
 }
 }
 \examples{

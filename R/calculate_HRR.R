@@ -1,8 +1,8 @@
 #' Calculate heart rate reserve
 
 #' @description
-#' Computes the heart rate reserve (HRR), defined as the difference between the maximum heart rate and resting heart rate following
-#' the definition of HRR sourced from the reference
+#' Computes the heart rate reserve (HRR), defined as the difference between the maximum heart rate and resting heart rate.
+#' For details on computing resting heart rate, see \code{\link{calculate_RHR}}
 
 #' @usage
 #' calculate_HRR(data, method, quantile_val, tz)

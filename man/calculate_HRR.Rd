@@ -20,8 +20,8 @@ If a dataframe object is passed, then a tibble object with a column for subject 
 'NA' heartrate values are omitted from the calculation of the summary values.
 }
 \description{
-Computes the heart rate reserve (HRR), defined as the difference between the maximum heart rate and resting heart rate following
-the definition of HRR sourced from the reference
+Computes the heart rate reserve (HRR), defined as the difference between the maximum heart rate and resting heart rate.
+For details on computing resting heart rate, see \code{\link{calculate_RHR}}
 }
 \examples{
 data(example_heart_1)
