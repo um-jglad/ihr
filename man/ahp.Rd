@@ -25,6 +25,15 @@ A plot displaying heart rate measurements range, selected heart rate statistics 
 \description{
 Display Ambulatory Heart rate Profile (AHP) statistics for selected subject
 }
+\details{
+For details on the different metrics and plots see the following:
+Time in range bar plot (see \code{\link{plot_ranges_PA}})
+Summary quantile plot (see \code{\link{plot_ahp}})
+Daily Plot (see \code{\link{plot_daily}})
+Resting Heart Rate (see \code{\link{calculate_RHR}})
+Heart Rate Reserve (see \code{\link{calculate_HRR}})
+Range of Measurement Data (see \code{\link{percent_nonmissing}})
+}
 \examples{
 data(example_heart_1)
 ahp(example_heart_1, daily = FALSE)

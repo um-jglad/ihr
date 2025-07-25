@@ -35,7 +35,7 @@
 #' Heart Rate measurement at time \eqn{t_{i-1}}. The time difference between the points,
 #' \eqn{t_i - t_{i-1}}, is selectable and set at a default of 1 minute.
 #'
-#' @author Original code in iglu by Elizabeth Chun, David Buchanan
+#' @author Original code in iglu by Elizabeth Chun, David Buchanan.
 #'
 #' @references
 #' Clarke et al. (2009) Statistical Tools to Analyze Continuous Glucose Monitor Data,

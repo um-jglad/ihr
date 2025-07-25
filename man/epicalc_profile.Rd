@@ -38,10 +38,10 @@ A plot displaying (1) the statistics for the episodes and (2) the episodes color
 \description{
 Display Episode Calculation statistics for selected subject
 }
+\details{
+For details on episode calculation, see \code{\link{episode_calculation}}
+}
 \examples{
 epicalc_profile(example_heart_1)
 
-}
-\seealso{
-episode_calculation()
 }

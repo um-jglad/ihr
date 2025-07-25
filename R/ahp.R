@@ -9,7 +9,17 @@
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #' @param daily \strong{Default: TRUE.} Logical indicator whether AHP should include separate daily plots.
 #' @param maxd max days
+#'
 #' @return A plot displaying heart rate measurements range, selected heart rate statistics (Resting Heart Rate, Heart Rate Reserve), percentage spent in target ranges and quantiles of 24 hour profile.
+#'
+#' @details
+#' For details on the different metrics and plots see the following:
+#' Time in range bar plot (see \code{\link{plot_ranges_PA}})
+#' Summary quantile plot (see \code{\link{plot_ahp}})
+#' Daily Plot (see \code{\link{plot_daily}})
+#' Resting Heart Rate (see \code{\link{calculate_RHR}})
+#' Heart Rate Reserve (see \code{\link{calculate_HRR}})
+#' Range of Measurement Data (see \code{\link{percent_nonmissing}})
 #'
 #' @export
 #'

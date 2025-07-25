@@ -22,10 +22,14 @@ recommended to choose between 0.1 to 0.7.}
 \item{title}{Indicator whether the title of the plot should display the subject ID. The default is FALSE (no title).}
 }
 \value{
-Plot of a 24 hr modal day collapsing all data to a single day.
+Plot of a 24 hr modal day collapsing all data to a single day. Lines on the plot represent
+the 5th, 25th, 50th, 75th, and 95th percentils from bottom to top
 }
 \description{
-The function plot_ahp produces an AhP plot that collapses all data into a single 24 hr "modal day".
+The function plot_ahp produces an AHP plot that collapses all data into a single 24 hr "modal day".
+}
+\details{
+For details on AHP, see \code{\link{ahp}}
 }
 \examples{
 data(example_heart_1)

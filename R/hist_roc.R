@@ -8,6 +8,10 @@
 #'
 #' @inheritParams roc
 #'
+#' @details
+#' For additional information on calculating ROC, see \code{\link{roc}}
+#'
+#'
 #' @export
 #'
 #' @examples

@@ -23,8 +23,8 @@ The function \code{plot_daily} plots daily heart rate time series profiles for a
 }
 \details{
 Only a single subject's data may be plotted. The black line shows the heart rate values.
-The shaded orange area shows the moderate range, The shaded green area shows the light range, Areas of the curve
-above the hr_60 are shaded red(which is the vigorous range), while areas below the hr_20 are shaded blue(which is the Sedentary/Sleep range).
+The colored areas of the plot refers to the individual's episode threshold. For more details on episode
+calculation see \code{\link{episode_calculation}}
 }
 \examples{
 

@@ -20,6 +20,9 @@ heart rate over the past 1 minute divided by 1}
 \description{
 The function hist_roc produces a histogram plot of ROC values
 }
+\details{
+For additional information on calculating ROC, see \code{\link{roc}}
+}
 \examples{
 data(example_heart_1)
 hist_roc(example_heart_1)

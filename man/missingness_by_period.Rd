@@ -18,7 +18,7 @@ If a dataframe object is passed, then a tibble object with a column for subject 
 }
 \description{
 The function missingness_by_period computes the percentage missingness of the heart rate data during six different time periods each day.
-Choose 3am-7am as one of the time period due to the definition of resting heart rate in the reference. The other time periods are set following this 3am-7am period.
+3am-7am is one of the time period due to resting heart rate calculation (see \code{\link{calculate_RHR}}). The other time periods are set following this 3am-7am period.
 }
 \examples{
 data(example_heart_1)

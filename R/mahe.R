@@ -32,6 +32,8 @@
 #' Fernandes, Nathaniel J., et al. "Open-source algorithm to calculate mean amplitude of glycemic excursions using short and long moving averages."
 #' Journal of diabetes science and technology 16.2 (2022): 576-577. \doi{10.1177/19322968211061165}
 #'
+#' @author Original algorithm provided in iglu. Excursion level output written by Owen Yoo
+#'
 #' @examples
 #' data(example_heart_1)
 #' mahe(example_heart_1)
