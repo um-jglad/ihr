@@ -5,8 +5,7 @@
 
 The R package ‘ihr’ is designed to provide functions for outputting
 metrics for heart rate data collected from wearable devices (i.e. Apple
-watches, Fitbits, etc.). ihr supports data that tracks heart rate
-(measured in BPM) over time.
+watches, Fitbits, etc.). ihr supports data that tracks heart rate measured in beats per minute (BPM) over time.
 
 ihr comes with two example datasets, [publicly provided via
 Kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1).
