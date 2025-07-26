@@ -67,3 +67,17 @@ sd_roc(example_heart_1)
 #>        <dbl>  <dbl>
 #> 1 2022484408   5.46
 ```
+
+## Acknowledgements
+
+This package, ihr, incorporates and adapts functionality originally developed in the iglu R package. We acknowledge the authors of iglu for their open-source contributions to the processing of glucose time series data.
+
+The following components in ihr were adapted from iglu:
+
+Interpolation and grid alignment logic in HR2DayByDay() was inspired by CGMS2DayByDay() in iglu, with modifications to support heart rate data rather than glucose values.
+
+Summary episode metrics such as episode count, duration, and average values were conceptually adapted from similar calculations in iglu’s time-in-range and excursion detection functions, refactored to reflect heart rate reserve (HRR) thresholds and levels (Sedentary, Moderate, Vigorous).
+
+Plotting infrastructure and the overall structure of subject-level summaries were influenced by iglu, with extensions specific to heart rate interpretation and visualizations such as plot_ahp().
+
+All adapted code has been modified to suit heart rate time series data from wearable devices.
