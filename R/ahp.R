@@ -3,9 +3,9 @@
 #' @usage
 #' ahp(data, maxd = 14, inter_gap = 15, dt0 = 1, tz = "", daily = TRUE)
 #'
-#' @param data DataFrame object with column names "id", "time", "hr"
+#' @param data A dataFrame object with column names "id", "time", "hr"
 #' @param inter_gap The maximum allowable gap (in minutes) for interpolation.
-#' @param dt0 Grid Length
+#' @param dt0 Grid Length, in minutes
 #' @param tz A character string specifying the time zone to be used. System-specific (see \code{\link{as.POSIXct}}), but " " is the current time zone, and "GMT" is UTC (Universal Time, Coordinated). Invalid values are most commonly treated as UTC, on some platforms with a warning
 #' @param daily \strong{Default: TRUE.} Logical indicator whether AHP should include separate daily plots.
 #' @param maxd max days
