@@ -1,0 +1,14 @@
+citHeader("To cite/acknowledge ihr, please use:")
+
+bibentry(
+  bibtype  = "Manual",
+  title    = "{ihr:} Interpreting Heart Rate Data from Wearable Devices",
+  author   = c(person("Shuiqing", "Han", email = "sophihan@umich.edu"),
+                        person("Owen", "Yoo", email = "owenhy@umich.edu"),
+		                    person(given = "Irina", family = "Gaynanova",
+                          email = "irinagn@umich.edu",
+                          comment = c(ORCID = "0000-0002-4116-0268"))),
+  year     = "2025",
+  note = "R package version 1.0.0",
+   textVersion = paste("Han S, Yoo O, Gaynanova I (2025).","ihr: Interpreting Heart Rate Data from Wearable Devices.","R package version 1.0.0.")
+)
