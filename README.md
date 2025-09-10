@@ -5,11 +5,12 @@
 
 The R package ‘ihr’ is designed to provide functions for outputting
 metrics for heart rate data collected from wearable devices (i.e. Apple
-watches, Fitbits, etc.). ihr supports data that tracks heart rate measured in beats per minute (BPM) over time.
+watches, Fitbits, etc.). ihr supports data that tracks heart rate
+(measured in BPM) over time.
 
 ihr comes with two example datasets, [publicly provided via
 Kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1).
-This data was collected from Fitbit devices. Please refer to the
+These data were collected from Fitbit devices. Please refer to the
 examples below for loading and using the data.
 
 ## Installation
@@ -27,7 +28,9 @@ devtools::install_github("IrinaStatsLab/ihr", build_vignettes = TRUE)
 ## Example
 
 A simple example of an analysis of heart rate data using ihr are shown
-below.
+below. The first plot provides Ambulatory Heart Rate (AHR) profile that
+includes summary statistics and visualizations. The other functions
+provide additional metrics and summaries of the heart rate data.
 
 ``` r
 library(ihr)
@@ -70,14 +73,20 @@ sd_roc(example_heart_1)
 
 ## Acknowledgements
 
-This package, ihr, incorporates and adapts functionality originally developed in the iglu R package. We acknowledge the authors of iglu for their open-source contributions to the processing of glucose time series data.
+This package, ihr, incorporates and adapts functionality originally
+developed in the [iglu R package](https://github.com/irinagain/iglu) in
+the following components:
 
-The following components in ihr were adapted from iglu:
+- Interpolation and grid alignment logic in `HR2DayByDay()` was inspired
+  by `CGMS2DayByDay()` in iglu, with modifications to support heart rate
+  data rather than glucose values.
 
-Interpolation and grid alignment logic in HR2DayByDay() was inspired by CGMS2DayByDay() in iglu, with modifications to support heart rate data rather than glucose values.
+- Summary episode metrics such as episode count, duration, and average
+  values were conceptually adapted from similar calculations in iglu’s
+  time-in-range and excursion detection functions, refactored to reflect
+  heart rate reserve (HRR) thresholds and levels (Sedentary, Moderate,
+  Vigorous).
 
-Summary episode metrics such as episode count, duration, and average values were conceptually adapted from similar calculations in iglu’s time-in-range and excursion detection functions, refactored to reflect heart rate reserve (HRR) thresholds and levels (Sedentary, Moderate, Vigorous).
-
-Plotting infrastructure and the overall structure of subject-level summaries were influenced by iglu, with extensions specific to heart rate interpretation and visualizations such as plot_ahp().
-
-All adapted code has been modified to suit heart rate time series data from wearable devices.
+- Plotting infrastructure and the overall structure of subject-level
+  summaries were influenced by iglu, with extensions specific to heart
+  rate interpretation and visualizations such as plot_ahp().

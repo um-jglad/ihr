@@ -17,7 +17,7 @@ ihr: Interpreting heart rate data from wearable devices
 
 The R package 'ihr' is designed to provide functions for outputting metrics for heart rate data collected from wearable devices (i.e. Apple watches, Fitbits, etc.). ihr supports data that tracks heart rate (measured in BPM) over time.
 
-ihr comes with two example datasets, [publicly provided via Kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1). This data was collected from Fitbit devices. Please refer to the examples below for loading and using the data.
+ihr comes with two example datasets, [publicly provided via Kaggle](https://www.kaggle.com/datasets/arashnic/fitbit/versions/1). These data were collected from Fitbit devices. Please refer to the examples below for loading and using the data.
 
 Installation
 ------------
@@ -33,7 +33,7 @@ devtools::install_github("IrinaStatsLab/ihr", build_vignettes = TRUE)
 
 Example
 -------
-A simple example of an analysis of heart rate data using ihr are shown below.
+A simple example of an analysis of heart rate data using ihr are shown below. The first plot provides Ambulatory Heart Rate (AHR) profile that includes summary statistics and visualizations. The other functions provide additional metrics and summaries of the heart rate data.
 
 ```{r fig.width=12, fig.height=10}
 library(ihr)
@@ -46,4 +46,16 @@ mahe(example_heart_1)
 episode_calculation(example_heart_1)
 sd_roc(example_heart_1)
 ```
+
+Acknowledgements
+------------
+
+This package, ihr, incorporates and adapts functionality originally developed in the [iglu R package](https://github.com/irinagain/iglu) in the following components:
+
+- Interpolation and grid alignment logic in `HR2DayByDay()` was inspired by `CGMS2DayByDay()` in iglu, with modifications to support heart rate data rather than glucose values.
+
+- Summary episode metrics such as episode count, duration, and average values were conceptually adapted from similar calculations in iglu’s time-in-range and excursion detection functions, refactored to reflect heart rate reserve (HRR) thresholds and levels (Sedentary, Moderate, Vigorous).
+
+- Plotting infrastructure and the overall structure of subject-level summaries were influenced by iglu, with extensions specific to heart rate interpretation and visualizations such as plot_ahp().
+
 
