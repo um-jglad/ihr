@@ -28,8 +28,8 @@ calculate_RHR <- function(data, tz = "") {
   time = hr = id = hour = NULL
   rm(list = c('time', 'hr', 'id', 'hour'))
   data$time <- as.POSIXct(data$time, format="%Y-%m-%d %H:%M:%S", tz = tz)
-  data$hour <- format(data$time, "%H")
-  filtered_data <- subset(data, hour >= "03" & hour < "07")
+  data$hour <- as.numeric(format(data$time, "%H"))
+  filtered_data <- subset(data, hour >= 3 & hour < 7)
 
   if (nrow(filtered_data) == 0) {
     print("No data between 03:00 and 07:00")
