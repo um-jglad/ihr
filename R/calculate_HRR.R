@@ -28,7 +28,7 @@
 
 calculate_HRR <- function(data, method = "max-RHR", quantile_val = 1, tz = "") {
   time = hr = id = max_hr = min_hr = RHR = NULL
-  rm(list = c('time', 'hr', 'id'))
+  rm(list = c('time', 'hr', 'id', 'max_hr', 'min_hr', 'RHR'))
   data$time <- as.POSIXct(data$time, format="%Y-%m-%d %H:%M:%S")
 
   RHR_data <- calculate_RHR(data)
