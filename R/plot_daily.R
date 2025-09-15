@@ -48,14 +48,31 @@ plot_daily <- function (data, maxd = 14, inter_gap = 15, tz = "") {
     data <- dplyr::filter(data, id == subject)
   }
 
-  # === Get actual thresholds from HRR ===
-  HRR_info <- calculate_HRR(data)
+  # === Get actual thresholds from HRR (propagate timezone) ===
+  HRR_info <- calculate_HRR(data, tz = tz)
+
+  # Gracefully handle missing HRR info
+  if (is.null(HRR_info)) {
+    message("Cannot compute daily heart rate plot: HRR thresholds unavailable (likely no data between 03:00 and 07:00 to estimate RHR). Returning placeholder plot.")
+    return(
+      ggplot2::ggplot() +
+        ggplot2::theme_void() +
+        ggplot2::annotate("text", x = 0, y = 0, hjust = 0,
+                           label = "Daily plot unavailable:\nRHR/HRR could not be computed.")
+    )
+  }
+
   HRR_info <- dplyr::filter(HRR_info, id == subject)
   summary_info <- summary_hr(data)
 
   if (nrow(HRR_info) == 0 || any(is.na(HRR_info$RHR), is.na(HRR_info$HRR))) {
-    message("Cannot compute HR thresholds due to missing RHR or HRR.")
-    return(NULL)
+    message("Cannot compute HR thresholds due to missing RHR or HRR. Returning placeholder plot.")
+    return(
+      ggplot2::ggplot() +
+        ggplot2::theme_void() +
+        ggplot2::annotate("text", x = 0, y = 0, hjust = 0,
+                           label = "Daily plot unavailable:\nMissing RHR or HRR values.")
+    )
   }
 
   RHR <- HRR_info$RHR
@@ -79,7 +96,7 @@ plot_daily <- function (data, maxd = 14, inter_gap = 15, tz = "") {
                   hr_level = dplyr::case_when(hr > hr_60 ~ "Vigorous", hr < hr_20 ~ "Sedentary/Sleep", TRUE ~ "normal"))
 
   hr_level <- plot_data |>
-    dplyr::mutate(level_group = rep(1:length(rle(hr_level)[[1]]), rle(hr_level)[[1]])) |>
+    dplyr::mutate(level_group = rep(seq_along(rle(hr_level)[[1]]), rle(hr_level)[[1]])) |>
     dplyr::group_by(level_group) |>
     dplyr::reframe(id = id[1], time = c(time[1] - 10, time, time[dplyr::n()] + 10),
                    reltime = hms::as_hms(c(reltime[1] - 10, reltime, reltime[dplyr::n()] + 10)),
@@ -93,8 +110,8 @@ plot_daily <- function (data, maxd = 14, inter_gap = 15, tz = "") {
     dplyr::arrange(data.frame(id, time, hr), time) |>
     dplyr::ungroup() # ensure ascending time by subject
   gaps <- plot_data |>
-    dplyr::mutate(gap = ifelse(difftime(time, dplyr::lag(time), units = "mins") > inter_gap,
-                               TRUE, FALSE), row = 1:length(time)) |>
+  dplyr::mutate(gap = ifelse(difftime(time, dplyr::lag(time), units = "mins") > inter_gap,
+                 TRUE, FALSE), row = seq_along(time)) |>
     dplyr::slice(1, which(gap))
   gaps <- c(gaps$row, nrow(plot_data) + 1)
   plot_data <- plot_data |>
