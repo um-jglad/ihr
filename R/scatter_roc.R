@@ -17,6 +17,10 @@
 #' heart rate. This allows a personalized insight into every subject's ROC, understanding the heart rate in which they ended at
 #' and whether the ROC value comes from a higher activity heart rate or from another context.
 #'
+#' If individualized heart rate reserve (HRR) thresholds cannot be computed (e.g. insufficient
+#' data between 03:00 and 07:00 to estimate resting heart rate), the function will still return
+#' the scatter plot but will omit the horizontal threshold lines and emit an informational message.
+#'
 #'
 #' The horizontal lines separate heart rate into 4 distinct sections. The thresholds here are as follows:
 #' 1. Vigorous: >= 60 % HRR + RHR
@@ -65,21 +69,35 @@ scatter_roc <- function(data, timelag = 1, inter_gap = 15, tz = ""){
 
   personal_hr <- calculate_HRR(data)
 
-  personal_hr <- personal_hr |>
-    dplyr::mutate(hr_20 = round(RHR + 0.20 * HRR, 1),
-           hr_40 = round(RHR + 0.40 * HRR, 1),
-           hr_60 = round(RHR + 0.60 * HRR, 1))
+  if (!is.null(personal_hr) && nrow(personal_hr) > 0 &&
+      all(c("RHR", "HRR") %in% names(personal_hr)) &&
+      !any(is.na(personal_hr$RHR), is.na(personal_hr$HRR))) {
+    personal_hr <- personal_hr |>
+      dplyr::mutate(hr_20 = round(RHR + 0.20 * HRR, 1),
+                    hr_40 = round(RHR + 0.40 * HRR, 1),
+                    hr_60 = round(RHR + 0.60 * HRR, 1))
+    add_thresholds <- TRUE
+  } else {
+    # Graceful degradation: plot without horizontal thresholds
+    add_thresholds <- FALSE
+    msg <- "scatter_roc: HRR thresholds unavailable (likely insufficient 03:00-07:00 data to compute RHR). Plotting without horizontal lines."
+    message(msg)
+  }
 
   .p <- roc_data |>
     ggplot(aes(x = roc, y = hr)) +
     geom_point(alpha = 0.3) +
     geom_vline(xintercept = 0, color = "red", linetype = "dashed", linewidth = 1) +
-    geom_hline(data = personal_hr, aes(yintercept = hr_20), color = "#0073C2", linetype = "dashed", linewidth = 1) +
-    geom_hline(data = personal_hr, aes(yintercept = hr_40), color = "#48BA3C", linetype = "dashed", linewidth = 1) +
-    geom_hline(data = personal_hr, aes(yintercept = hr_60), color = "#F9B500", linetype = "dashed", linewidth = 1) +
     facet_wrap(~id) +
     scale_x_continuous(name = "Rate of Change") +
     scale_y_continuous(name = "Heart Rate (BPM)")
+
+  if (add_thresholds) {
+    .p <- .p +
+      geom_hline(data = personal_hr, aes(yintercept = hr_20), color = "#0073C2", linetype = "dashed", linewidth = 1) +
+      geom_hline(data = personal_hr, aes(yintercept = hr_40), color = "#48BA3C", linetype = "dashed", linewidth = 1) +
+      geom_hline(data = personal_hr, aes(yintercept = hr_60), color = "#F9B500", linetype = "dashed", linewidth = 1)
+  }
 
   return(.p)
 
